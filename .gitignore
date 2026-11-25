@@ -1,0 +1,9 @@
+node_modules
+dist
+storybook-static
+coverage
+*.log
+.DS_Store
+.vercel
+.env*
+.claude/settings.local.json

@@ -1,0 +1,85 @@
+import { Meta } from '@storybook/addon-docs/blocks';
+import {
+  ColorRoles,
+  ContrastTable,
+  MotionScale,
+  PaletteGrid,
+  RadiusScale,
+  ShadowScale,
+  SimpleTokenTable,
+  SpaceScale,
+  TypeScale,
+} from './TokenDocs';
+
+<Meta title="Foundations/Design Tokens" />
+
+# Design tokens
+
+Tokens are the only source of visual values in Lumora. Component CSS never contains a raw
+color, spacing or duration; it references a `--lu-*` custom property instead.
+
+There are three layers:
+
+1. **Palette**: raw color primitives (`--lu-palette-iris-600`). Components never use these
+   directly.
+2. **Semantic tokens**: intent-based names (`--lu-color-accent-solid`) that point at a
+   palette step. Each theme is a different mapping, which is all it takes to support dark mode.
+3. **Scales**: theme-independent tokens for type, space, radius, motion, z-index and sizes.
+
+All tokens are authored in `src/tokens/tokens.ts`. `npm run tokens` generates
+`tokens.css` from it, and CI fails if the two drift apart. Everything on this page is
+rendered from that same file.
+
+## Semantic colors
+
+Each swatch below is rendered live with its CSS variable inside a light or dark theme
+container.
+
+<ColorRoles />
+
+## Contrast
+
+<ContrastTable />
+
+## Palette
+
+<PaletteGrid />
+
+## Typography
+
+<TypeScale />
+
+## Spacing
+
+A 4px-based scale, in `rem` so it follows the user's font size.
+
+<SpaceScale />
+
+## Radius
+
+<RadiusScale />
+
+## Shadow
+
+Dark surfaces need stronger, darker shadows to read as elevation, so shadows are themed too.
+
+<ShadowScale />
+
+## Motion
+
+Durations and easing curves. Under `prefers-reduced-motion: reduce`, every duration
+becomes `0.01ms`. That is effectively instant, but still fires `transitionend`, so
+components that wait for an exit animation never get stuck.
+
+<MotionScale />
+
+## Sizes
+
+Control heights, icon sizes and focus ring geometry. The smallest control height (32px)
+is above the WCAG 2.2 minimum target size of 24×24px.
+
+<SimpleTokenTable group="size" />
+
+## Z-index
+
+<SimpleTokenTable group="z" />

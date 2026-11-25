@@ -1,0 +1,61 @@
+import { Meta } from '@storybook/addon-docs/blocks';
+
+<Meta title="Introduction" />
+
+# Lumora UI
+
+Lumora is an accessible, themeable React component library. It is written in strict
+TypeScript and styled with design tokens and CSS Modules, with no UI framework underneath.
+
+Every component is built to the same definition of done:
+
+- **Accessible by construction.** Components follow the
+  [WAI-ARIA Authoring Practices](https://www.w3.org/WAI/ARIA/apg/) and target WCAG 2.2 AA.
+  They are fully keyboard operable, show a visible focus ring, and are tested with axe.
+- **Themed with tokens.** Colors, type, spacing, radius, shadow and motion all come from
+  CSS custom properties. Light and dark themes are a swap of semantic tokens, not a second
+  stylesheet.
+- **Respectful of user settings.** Motion collapses under `prefers-reduced-motion`, and
+  controls stay visible in Windows High Contrast (`forced-colors`).
+- **Typed and documented.** Props carry JSDoc, refs are forwarded, `className` is merged,
+  and native attributes pass through.
+- **Tested.** Rendering, keyboard interaction, focus management and an axe audit run in
+  CI on every push.
+
+## Getting started
+
+```bash
+npm install lumora-ui
+```
+
+Import the stylesheet once at the root of your app, then use the components:
+
+```tsx
+import 'lumora-ui/styles.css';
+import { Button } from 'lumora-ui';
+
+export function App() {
+  return <Button variant="primary">Save changes</Button>;
+}
+```
+
+## Theming
+
+Set `data-theme` on `<html>` (or on any container) to `light` or `dark`. Use
+`system` on `<html>` to follow the operating system setting. Themes can nest, so a dark
+panel can sit inside a light page.
+
+```ts
+document.documentElement.dataset.theme = 'dark'; // or 'light' | 'system'
+```
+
+Use the **Theme** button in the toolbar above to switch every story between light,
+dark, or both side by side.
+
+## Using this site
+
+- **Foundations → Design Tokens** lists every token, its value in each theme, and the
+  WCAG contrast ratio of every color pairing.
+- **Components** has a docs page for each component, with usage, a props table,
+  accessibility notes and do/don't guidance. Open the **Accessibility** panel on any story
+  to see a live axe report.

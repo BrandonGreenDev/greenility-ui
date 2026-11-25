@@ -1,0 +1,24 @@
+/* Storybook-only chrome around stories. Not shipped with the library. */
+.sb-lu-frame {
+  padding: var(--lu-space-6);
+  min-height: 100vh;
+  box-sizing: border-box;
+}
+
+.sb-lu-frame[data-docs] {
+  min-height: 0;
+  border-radius: var(--lu-radius-md);
+}
+
+.sb-lu-split {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+
+.sb-lu-split > .sb-lu-frame {
+  min-height: 100vh;
+}
+
+.sb-lu-split > .sb-lu-frame[data-docs] {
+  min-height: 0;
+}
