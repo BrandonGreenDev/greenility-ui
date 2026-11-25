@@ -6,7 +6,8 @@ import { IconButton } from './IconButton';
 const meta = {
   title: 'Components/IconButton',
   component: IconButton,
-  tags: ['autodocs'],
+  // The MDX page replaces autodocs (enabled globally in .storybook/preview.tsx).
+  tags: ['!autodocs'],
   args: {
     label: 'Close',
     icon: <CloseIcon />,

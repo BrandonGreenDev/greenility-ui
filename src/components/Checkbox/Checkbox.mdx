@@ -1,0 +1,149 @@
+import { ArgTypes, Canvas, Meta } from '@storybook/addon-docs/blocks';
+import * as CheckboxStories from './Checkbox.stories';
+
+<Meta of={CheckboxStories} />
+
+# Checkbox
+
+Checkbox lets the user turn a single option on or off, or show a mixed state for a group. It
+is a styled native `<input type="checkbox">` with a label, optional help text and an error
+message. Because the input is native, form submission, `form.reset()`, label clicks and
+autofill all work without extra code.
+
+## Usage
+
+```tsx
+import 'greenility-ui/styles.css'; // once, at the root of your app
+import { Checkbox } from 'greenility-ui';
+
+<Checkbox name="newsletter" label="Email me the monthly impact report" />;
+```
+
+<Canvas of={CheckboxStories.Unchecked} />
+
+## Examples
+
+### Checked
+
+<Canvas of={CheckboxStories.Checked} />
+
+### Indeterminate
+
+`'indeterminate'` shows a dash and is exposed to assistive technology as "mixed". It is a
+visual and assistive technology state only. It is not a form value: an indeterminate checkbox
+is not checked, so it is not submitted. When the user clicks it, it becomes checked and
+`onCheckedChange` receives `true`.
+
+<Canvas of={CheckboxStories.Indeterminate} />
+
+### Select all
+
+A common use of the mixed state: a controlled parent whose state is derived from its children.
+
+<Canvas of={CheckboxStories.ControlledSelectAll} />
+
+### With description
+
+<Canvas of={CheckboxStories.WithDescription} />
+
+### Required
+
+Uses native `required`. The asterisk is hidden from screen readers, which announce "required"
+once instead.
+
+<Canvas of={CheckboxStories.Required} />
+
+### Invalid
+
+Pass `errorMessage` whenever you set `invalid`. The message tells the user how to fix the
+problem; without it the error is shown by color alone. The field logs a console warning if
+`invalid` is set without an `errorMessage`.
+
+<Canvas of={CheckboxStories.InvalidWithDescription} />
+
+### Disabled
+
+<Canvas of={CheckboxStories.Disabled} />
+
+<Canvas of={CheckboxStories.DisabledChecked} />
+
+### Right to left
+
+Layout uses logical properties, so the box sits on the right in `dir="rtl"` and the glyphs stay
+centered.
+
+<Canvas of={CheckboxStories.Rtl} />
+
+## Props
+
+`className` and `style` go to the root wrapper `<div>`. `ref`, `id` and every other prop, such
+as `name`, `value` and `onChange`, go to the native `<input>`.
+
+<ArgTypes of={CheckboxStories} />
+
+## Accessibility
+
+**Pattern.** [WAI-ARIA APG Checkbox](https://www.w3.org/WAI/ARIA/apg/patterns/checkbox/), met
+by the native input. The mixed state is set through the DOM `indeterminate` property, not
+`aria-checked`.
+
+**Keyboard.**
+
+<table>
+  <thead>
+    <tr>
+      <th>Key</th>
+      <th>Behavior</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>
+        <kbd>Space</kbd>
+      </td>
+      <td>Toggles the checkbox. From indeterminate it becomes checked.</td>
+    </tr>
+    <tr>
+      <td>
+        <kbd>Tab</kbd>
+      </td>
+      <td>Moves focus to and from the checkbox. A disabled checkbox is skipped.</td>
+    </tr>
+  </tbody>
+</table>
+
+**Focus and pointer.** The focus ring is on the input itself. Clicking the label toggles the
+checkbox and focuses it. The box and label are at least 24px tall, and the hit area covers the
+gap between them, so there is no dead zone (WCAG 2.5.8).
+
+**Screen reader.**
+
+- The name comes from the label. The description and error are linked with
+  `aria-describedby`, in that order.
+- "checked", "not checked" and "mixed" come from the native state.
+- "required" and "invalid" come from native `required` and `aria-invalid="true"`.
+- The error message is not a live region. It is read when the checkbox gets focus. On submit,
+  move focus to the first invalid field.
+
+**What you must provide.**
+
+- A `label` that names the option. It is required.
+- An `errorMessage` whenever `invalid` is true.
+- A `name` (and a `value` if `"on"` is not right) when the checkbox is part of a form.
+- The logic for the mixed state. The component shows it but does not compute it.
+
+## Do / Don't
+
+**Do**
+
+- Use a Checkbox for a value that is submitted later, with the rest of a form.
+- Write the label as a statement the user agrees to, such as "Email me the monthly report".
+- Use the indeterminate state only for a parent of a group of checkboxes.
+- Pair `invalid` with an `errorMessage` that says how to fix it.
+
+**Don't**
+
+- Don't use a Checkbox for a setting that applies at once. Use a Switch.
+- Don't use a group of checkboxes when only one option may be chosen. Use a RadioGroup.
+- Don't expect the indeterminate state to be submitted. Store it in your own state.
+- Don't put links or other controls inside the label.

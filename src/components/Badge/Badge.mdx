@@ -1,0 +1,126 @@
+import { ArgTypes, Canvas, Meta } from '@storybook/addon-docs/blocks';
+import * as BadgeStories from './Badge.stories';
+
+<Meta of={BadgeStories} />
+
+# Badge
+
+Badge is a short, non-interactive label for a status or category, such as "Verified" or
+"Draft". It renders a `<span>` of plain text with a tone (meaning), a variant (solid or subtle)
+and a size. The text carries the meaning; color only supports it.
+
+## Usage
+
+```tsx
+import 'greenility-ui/styles.css'; // once, at the root of your app
+import { Badge } from 'greenility-ui';
+
+<Badge tone="success">Verified</Badge>;
+```
+
+<Canvas of={BadgeStories.Default} />
+
+## Examples
+
+### Tones, variants and sizes
+
+Tones are `neutral` (default), `accent`, `success`, `warning`, `danger` and `info`. Variants
+are `subtle` (default) and `solid`. Sizes are `sm`, `md` (default) and `lg`.
+
+<Canvas of={BadgeStories.Matrix} />
+
+### Subtle and solid
+
+Use `subtle` for most badges. Use `solid` sparingly, for the one status that should stand out.
+
+<Canvas of={BadgeStories.SuccessSubtle} />
+
+<Canvas of={BadgeStories.SuccessSolid} />
+
+### Adding context for screen readers
+
+The text must carry the full meaning on its own. A badge that shows only a number, or a word
+that depends on its position, needs extra words for screen reader users. Add them with
+`VisuallyHidden`:
+
+```tsx
+import { Badge, VisuallyHidden } from 'greenility-ui';
+
+<Badge tone="warning">
+  3 <VisuallyHidden>overdue reports</VisuallyHidden>
+</Badge>;
+```
+
+This is read as "3 overdue reports", while only "3" is shown.
+
+### Announcing a status that changes
+
+A Badge is not a live region, so changing its text is not announced. If a status changes while
+the user is on the page, also report the change in a separate polite live region that is
+already mounted, such as an `Alert` with `live="polite"`:
+
+```tsx
+<>
+  <Badge tone={synced ? 'success' : 'info'}>{synced ? 'Synced' : 'Syncing'}</Badge>
+  {/* Mounted from the start; only its text changes. */}
+  <Alert live="polite" tone="neutral">
+    {synced ? 'Sync complete.' : 'Syncing meter readings.'}
+  </Alert>
+</>
+```
+
+## Props
+
+The ref and every other prop go to the `<span>`.
+
+<ArgTypes of={BadgeStories} />
+
+## Accessibility
+
+**Pattern.** There is no WAI-ARIA pattern for this. It is a plain `<span>` with no role, read
+as normal text.
+
+**Keyboard.**
+
+<table>
+  <thead>
+    <tr>
+      <th>Key</th>
+      <th>Behavior</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>None</td>
+      <td>A Badge is not interactive and not focusable.</td>
+    </tr>
+  </tbody>
+</table>
+
+**Screen reader.**
+
+- Read in place as plain text, with no role and no announcement of its tone.
+- Not a live region: text changes are not announced.
+- Color is not exposed, so a "danger" Badge with the text "Budget" is just read as "Budget".
+
+**What you must provide.**
+
+- Text that states the full meaning, such as "Over budget" rather than a red badge that says
+  "Budget".
+- Extra context with `VisuallyHidden` when the visible text is a number or is ambiguous.
+- A separate polite live region for a status that changes while the page is open.
+
+## Do / Don't
+
+**Do**
+
+- Keep the text short, one or two words or a number.
+- Pick the tone by meaning, and make the text say the same thing.
+- Add `VisuallyHidden` context to count badges, such as "3 overdue reports".
+
+**Don't**
+
+- Don't rely on color alone to show the status.
+- Don't make a Badge clickable or wrap it in a button to act as a filter. Use a Button.
+- Don't expect a changed Badge to be announced. Use a separate polite region.
+- Don't use a Badge for long messages. Use an Alert.

@@ -5,7 +5,8 @@ import { Switch } from './Switch';
 const meta = {
   title: 'Components/Switch',
   component: Switch,
-  tags: ['autodocs'],
+  // The MDX page replaces autodocs (enabled globally in .storybook/preview.tsx).
+  tags: ['!autodocs'],
   args: {
     label: 'Low-carbon mode',
   },

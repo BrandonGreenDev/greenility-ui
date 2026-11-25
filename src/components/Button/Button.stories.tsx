@@ -6,7 +6,8 @@ import { Button } from './Button';
 const meta = {
   title: 'Components/Button',
   component: Button,
-  tags: ['autodocs'],
+  // The MDX page replaces autodocs (enabled globally in .storybook/preview.tsx).
+  tags: ['!autodocs'],
   args: {
     children: 'Save changes',
     variant: 'primary',

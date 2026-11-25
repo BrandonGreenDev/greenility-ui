@@ -4,7 +4,8 @@ import { VisuallyHidden } from './VisuallyHidden';
 const meta = {
   title: 'Components/VisuallyHidden',
   component: VisuallyHidden,
-  tags: ['autodocs'],
+  // The MDX page replaces autodocs (enabled globally in .storybook/preview.tsx).
+  tags: ['!autodocs'],
   args: {
     children: 'for the quarterly emissions report',
   },

@@ -7,7 +7,8 @@ import { TextField, type TextFieldProps } from './TextField';
 const meta = {
   title: 'Components/TextField',
   component: TextField,
-  tags: ['autodocs'],
+  // The MDX page replaces autodocs (enabled globally in .storybook/preview.tsx).
+  tags: ['!autodocs'],
   args: {
     label: 'Project name',
   },
@@ -163,7 +164,13 @@ export const DarkMode: Story = {
   render: (args) => (
     <div style={{ display: 'grid', gap: 'var(--gn-space-4)' }}>
       <TextField {...args} />
-      <TextField {...args} label="Budget (USD)" startAdornment="$" endAdornment="USD" />
+      <TextField
+        {...args}
+        label="Budget (USD)"
+        placeholder="0.00"
+        startAdornment="$"
+        endAdornment="USD"
+      />
       <TextField {...args} label="Name" invalid errorMessage="Enter a project name." />
       <TextField {...args} label="Reference" readOnly defaultValue="GN-2041" />
       <TextField {...args} label="Locked" disabled defaultValue="Riverside solar farm" />

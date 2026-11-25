@@ -1,0 +1,119 @@
+import { ArgTypes, Canvas, Meta } from '@storybook/addon-docs/blocks';
+import * as IconButtonStories from './IconButton.stories';
+
+<Meta of={IconButtonStories} />
+
+# IconButton
+
+IconButton is a square Button whose only content is an icon, such as a close or settings
+control. It shares Button's variants, sizes and loading behavior. Because there is no visible
+text, the `label` prop is required and becomes the button's accessible name.
+
+## Usage
+
+```tsx
+import 'greenility-ui/styles.css'; // once, at the root of your app
+import { IconButton } from 'greenility-ui';
+
+<IconButton label="Close" icon={<CloseIcon />} onClick={close} />;
+```
+
+`CloseIcon` stands for any icon element from your own icon set. The icon is decorative and
+wrapped in `aria-hidden`.
+
+<Canvas of={IconButtonStories.Primary} />
+
+## Examples
+
+### Variants and sizes
+
+Each button in this grid has its own label, because each one needs a unique, accurate name.
+
+<Canvas of={IconButtonStories.AllVariants} />
+
+### Ghost
+
+The most common style for toolbar and dismiss buttons.
+
+<Canvas of={IconButtonStories.Ghost} />
+
+### Loading
+
+Keeps its name and focus, is exposed with `aria-disabled="true"` and ignores clicks. The
+`loadingLabel` text is added as the accessible description.
+
+<Canvas of={IconButtonStories.Loading} />
+
+### Disabled
+
+<Canvas of={IconButtonStories.Disabled} />
+
+## Props
+
+The ref and any other props go to the native `<button>`. All Button props are supported except
+`children`, `startIcon`, `endIcon`, `aria-label` and `aria-labelledby`.
+
+<ArgTypes of={IconButtonStories} />
+
+## Accessibility
+
+**Pattern.** [WAI-ARIA APG Button](https://www.w3.org/WAI/ARIA/apg/patterns/button/), met by
+a native `<button>` with `aria-label`.
+
+**Keyboard.**
+
+<table>
+  <thead>
+    <tr>
+      <th>Key</th>
+      <th>Behavior</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>
+        <kbd>Enter</kbd> / <kbd>Space</kbd>
+      </td>
+      <td>Activates the button. Does nothing while loading.</td>
+    </tr>
+    <tr>
+      <td>
+        <kbd>Tab</kbd>
+      </td>
+      <td>
+        Moves focus to and from the button. A loading button stays in the tab order; a disabled one
+        is skipped.
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+**Screen reader.** The name is `label`, applied as `aria-label`. The icon is hidden. Loading
+behaves exactly like Button: the name stays the same, the button is announced as unavailable,
+and `loadingLabel` is read as the description.
+
+**What you must provide.**
+
+- A `label`. It is required by the types and must be non-empty. An empty or whitespace-only
+  label logs a console warning, because the button would have no name.
+- A label that matches what the icon means in this place. A trash icon that removes a row from
+  a list is "Remove Site A", not "Trash" or "Delete file".
+- A unique label when several icon buttons act on different items, such as "Edit Site A" and
+  "Edit Site B".
+
+## Do / Don't
+
+**Do**
+
+- Write the label as the action, such as "Close dialog" or "Open settings".
+- Include the target when there are several similar buttons, such as "Remove Site A".
+- Use icons that are widely understood, such as close, search or settings.
+- Use `ghost` for low-emphasis controls inside toolbars and alerts.
+
+**Don't**
+
+- Don't pass an empty label or a label that only describes the picture, such as "X" or "Cross".
+- Don't use an IconButton when there is room for text. A text Button is clearer.
+- Don't use a label that disagrees with the icon. Sighted and screen reader users must get the
+  same meaning.
+- Don't rely on a tooltip to explain the icon. The label is the name.

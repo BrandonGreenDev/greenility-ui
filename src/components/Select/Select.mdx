@@ -1,0 +1,173 @@
+import { ArgTypes, Canvas, Meta } from '@storybook/addon-docs/blocks';
+import * as SelectStories from './Select.stories';
+
+<Meta of={SelectStories} />
+
+# Select
+
+Select lets the user pick one option from a list. It is a styled native `<select>` with a
+visible label, optional help text and an error message. Because it is native, it gets the
+platform picker on mobile, keyboard typeahead, autofill, form submission and solid screen
+reader support without extra code. You pass ordinary `<option>` and `<optgroup>` elements as
+children.
+
+## Usage
+
+```tsx
+import 'greenility-ui/styles.css'; // once, at the root of your app
+import { Select } from 'greenility-ui';
+
+<Select name="region" label="Region" placeholder="Choose a region">
+  <option value="north">North</option>
+  <option value="south">South</option>
+</Select>;
+```
+
+<Canvas of={SelectStories.Default} />
+
+## Examples
+
+### With placeholder
+
+`placeholder` adds a first option with `value=""` that is `disabled`. When the Select is
+uncontrolled and has no `defaultValue`, this option is selected at first. The user cannot pick
+it again once they choose a real option. When controlled, pass `value=""` to show it.
+
+<Canvas of={SelectStories.WithPlaceholder} />
+
+### Required
+
+Native `required` works with the placeholder. While the empty placeholder option is selected,
+the browser treats the field as missing and blocks submission. The asterisk is hidden from
+screen readers, which announce "required" once instead. Explain the asterisk once per form.
+
+<Canvas of={SelectStories.Required} />
+
+### With description
+
+Put instructions in `description`, not in the placeholder.
+
+<Canvas of={SelectStories.WithDescription} />
+
+### Invalid
+
+Pass `errorMessage` whenever you set `invalid`. The field logs a console warning if `invalid` is
+set without an `errorMessage`.
+
+<Canvas of={SelectStories.Invalid} />
+
+### Option groups
+
+<Canvas of={SelectStories.WithGroups} />
+
+### Disabled
+
+<Canvas of={SelectStories.Disabled} />
+
+### Sizes
+
+<Canvas of={SelectStories.Sizes} />
+
+### Controlled
+
+<Canvas of={SelectStories.Controlled} />
+
+## Props
+
+`className` and `style` go to the outer wrapper. The ref, `id` and every other prop, such as
+`name` and `autoComplete`, go to the native `<select>`. `multiple` is not supported.
+
+<ArgTypes of={SelectStories} />
+
+## Accessibility
+
+**Pattern.** A native `<select>`, which browsers expose as a combobox (or a listbox) with full
+keyboard and screen reader support. No custom ARIA widget is used. A custom listbox would have
+to rebuild typeahead, the mobile picker and autofill.
+
+**Keyboard.** Native, so details differ slightly between platforms.
+
+<table>
+  <thead>
+    <tr>
+      <th>Key</th>
+      <th>Behavior</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>
+        <kbd>Tab</kbd>
+      </td>
+      <td>Moves focus to and from the select.</td>
+    </tr>
+    <tr>
+      <td>
+        <kbd>Space</kbd> / <kbd>Enter</kbd> / <kbd>Alt</kbd>+<kbd>ArrowDown</kbd>
+      </td>
+      <td>Opens the picker (depends on the platform).</td>
+    </tr>
+    <tr>
+      <td>
+        <kbd>ArrowUp</kbd> / <kbd>ArrowDown</kbd>
+      </td>
+      <td>Changes the option while closed (on Windows), or moves within the open list.</td>
+    </tr>
+    <tr>
+      <td>Type a character</td>
+      <td>Jumps to the first option that starts with the typed text.</td>
+    </tr>
+    <tr>
+      <td>
+        <kbd>Escape</kbd>
+      </td>
+      <td>Closes the picker.</td>
+    </tr>
+  </tbody>
+</table>
+
+**Focus.** Native. The focus ring is drawn on the whole box. Focus does not move when an error
+appears.
+
+**Screen reader.**
+
+- Named by the label, with the selected option read as the value.
+- The description and the error are linked with `aria-describedby`, in that order.
+- "invalid" comes from `aria-invalid="true"`, and "required" from native `required`.
+- The chevron icon is hidden.
+- The error message is not a live region. It is read when the select gets focus.
+
+**Form guidance.**
+
+- Validate on submit or when the user leaves the field (blur), not every time the value changes.
+- On submit, move focus to the first invalid field, or to an error summary (such as an
+  `Alert`) that links to each invalid field.
+- Errors are not live regions. A changed `aria-describedby` is not announced again while the
+  user stays in the field. If you validate on change, also report the result in your own polite
+  region, such as an `Alert` with `live="polite"` that is mounted up front.
+- A placeholder is not a label. Put instructions in `description`.
+- Explain the "\* required" convention once per form.
+
+**What you must provide.**
+
+- A `label`. It is required.
+- `<option>` children with unique `value`s and clear text.
+- An `errorMessage` whenever `invalid` is true.
+- A `placeholder` when there is no sensible default, especially with `required`.
+
+## Do / Don't
+
+**Do**
+
+- Use a Select for one choice from a list of about seven or more options.
+- Use a placeholder such as "Choose a region" with `required` when there is no good default.
+- Group long lists with `<optgroup>`.
+- Validate on submit or blur, and focus the first invalid field.
+
+**Don't**
+
+- Don't use a Select for two to five options that fit on screen. Use a RadioGroup.
+- Don't change the page or navigate when the value changes. Users browse options with the arrow
+  keys.
+- Don't put instructions in the placeholder option.
+- Don't use a Select for multiple choices. Use checkboxes.

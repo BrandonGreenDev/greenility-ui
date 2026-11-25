@@ -1,0 +1,96 @@
+import { ArgTypes, Canvas, Meta } from '@storybook/addon-docs/blocks';
+import * as VisuallyHiddenStories from './VisuallyHidden.stories';
+
+<Meta of={VisuallyHiddenStories} />
+
+# VisuallyHidden
+
+VisuallyHidden renders text that screen readers read but that is not shown on screen. Use it
+to add context that sighted users get from the layout, such as which report a "Download" link
+belongs to. It renders a plain `<span>` and needs no ARIA.
+
+## Usage
+
+```tsx
+import 'greenility-ui/styles.css'; // once, at the root of your app
+import { VisuallyHidden } from 'greenility-ui';
+
+<a href="/reports/q3">
+  Download <VisuallyHidden>the Q3 emissions report</VisuallyHidden>
+</a>;
+```
+
+<Canvas of={VisuallyHiddenStories.Default} />
+
+## Examples
+
+### Dark theme
+
+The hidden text has no visual style, so it looks the same in both themes.
+
+<Canvas of={VisuallyHiddenStories.DarkMode} />
+
+## Props
+
+The ref and any other props go to the `<span>`.
+
+<ArgTypes of={VisuallyHiddenStories} />
+
+## Accessibility
+
+**Pattern.** There is no WAI-ARIA pattern for this. It is a native `<span>` clipped to a 1px box
+with `clip-path`. It does not use `display: none` or `visibility: hidden`, because both remove
+the text from the accessibility tree.
+
+**Keyboard.**
+
+<table>
+  <thead>
+    <tr>
+      <th>Key</th>
+      <th>Behavior</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>None</td>
+      <td>
+        The span is not focusable. Do not put focusable content inside it: a keyboard user would
+        land on something they cannot see.
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+**Screen reader.** The text is read in place, as part of the surrounding content. Inside a
+link or button it becomes part of the accessible name, so a link that shows "Download" is
+announced as "Download the Q3 emissions report".
+
+**When to use it instead of `aria-label`.**
+
+- Use VisuallyHidden when you want to **add to** visible text. The visible words stay in the
+  name, so voice control users can still say "click Download".
+- Use VisuallyHidden for text that is not a name, such as a hidden prefix in a paragraph or a
+  live region. `aria-label` only works on elements that can have a name, and live regions
+  announce content, not names.
+- Use `aria-label` when there is **no** visible text at all, such as an icon-only button.
+  `IconButton` does this for you through its `label` prop.
+- Hidden text is translated by browser translation tools. `aria-label` often is not.
+
+**What you must provide.** Text that makes sense when read together with the visible text
+around it. Check the full phrase, not just the hidden part.
+
+## Do / Don't
+
+**Do**
+
+- Add short context to repeated links or buttons, such as "Edit _Site A_".
+- Make sure the visible text plus the hidden text reads as one natural phrase.
+- Keep the visible words at the start of the accessible name.
+
+**Don't**
+
+- Don't put links, buttons or other focusable elements inside VisuallyHidden.
+- Don't hide content that sighted users also need. If it matters, show it.
+- Don't use it to stuff keywords or long instructions into a control's name.
+- Don't use it for an icon-only button. Use `IconButton` with a `label`.

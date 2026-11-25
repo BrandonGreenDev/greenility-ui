@@ -5,7 +5,8 @@ import { Checkbox } from './Checkbox';
 const meta = {
   title: 'Components/Checkbox',
   component: Checkbox,
-  tags: ['autodocs'],
+  // The MDX page replaces autodocs (enabled globally in .storybook/preview.tsx).
+  tags: ['!autodocs'],
   args: {
     label: 'Email me the monthly impact report',
   },

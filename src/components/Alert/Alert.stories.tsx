@@ -7,7 +7,8 @@ import { Alert } from './Alert';
 const meta = {
   title: 'Components/Alert',
   component: Alert,
-  tags: ['autodocs'],
+  // The MDX page replaces autodocs (enabled globally in .storybook/preview.tsx).
+  tags: ['!autodocs'],
   args: {
     tone: 'info',
     live: 'off',

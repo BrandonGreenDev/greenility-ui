@@ -1,0 +1,167 @@
+import { ArgTypes, Canvas, Meta } from '@storybook/addon-docs/blocks';
+import * as TextAreaStories from './TextArea.stories';
+
+<Meta of={TextAreaStories} />
+
+# TextArea
+
+TextArea is a multi-line text input with a visible label, optional help text and an error
+message. It renders a native `<textarea>` linked to a `<label>`, so form submission,
+`form.reset()` and browser validation all work. With `autoResize` it grows with its content.
+
+## Usage
+
+```tsx
+import 'greenility-ui/styles.css'; // once, at the root of your app
+import { TextArea } from 'greenility-ui';
+
+<TextArea name="notes" label="Site notes" description="Visible to everyone on the project." />;
+```
+
+<Canvas of={TextAreaStories.Default} />
+
+## Examples
+
+### With description
+
+Put instructions and limits, such as a maximum length, in `description`.
+
+<Canvas of={TextAreaStories.WithDescription} />
+
+### With placeholder
+
+A placeholder is an example, not a label or an instruction. It disappears as soon as the user
+types.
+
+<Canvas of={TextAreaStories.WithPlaceholder} />
+
+### Required
+
+Uses native `required`. The asterisk is hidden from screen readers, which announce "required"
+once instead. Explain the asterisk once per form.
+
+<Canvas of={TextAreaStories.Required} />
+
+### Invalid
+
+Pass `errorMessage` whenever you set `invalid`. The field logs a console warning if `invalid` is
+set without an `errorMessage`.
+
+<Canvas of={TextAreaStories.Invalid} />
+
+### Disabled and read-only
+
+<Canvas of={TextAreaStories.Disabled} />
+
+<Canvas of={TextAreaStories.ReadOnly} />
+
+### Rows
+
+`rows` sets the visible height in lines. The default is 3. The user can resize the box
+vertically.
+
+<Canvas of={TextAreaStories.CustomRows} />
+
+### Auto resize
+
+`autoResize` makes the box grow with its content, using CSS `field-sizing: content`. No
+JavaScript measures the text. `rows` becomes the minimum height. Browsers that do not support
+`field-sizing` keep a fixed height from `rows` that the user can resize.
+
+<Canvas of={TextAreaStories.AutoResize} />
+
+### Sizes
+
+`size` sets the font size and padding. The height comes from `rows`.
+
+<Canvas of={TextAreaStories.Sizes} />
+
+### Controlled
+
+<Canvas of={TextAreaStories.Controlled} />
+
+## Props
+
+`className` and `style` go to the outer wrapper. The ref, `id` and every other prop, such as
+`name` and `maxLength`, go to the native `<textarea>`.
+
+<ArgTypes of={TextAreaStories} />
+
+## Accessibility
+
+**Pattern.** No ARIA widget pattern is needed. A native `<textarea>` with a `<label for>` has
+complete semantics. ARIA is used only for `aria-describedby` and `aria-invalid`.
+
+**Keyboard.**
+
+<table>
+  <thead>
+    <tr>
+      <th>Key</th>
+      <th>Behavior</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>
+        <kbd>Tab</kbd>
+      </td>
+      <td>Moves focus into and out of the text area.</td>
+    </tr>
+    <tr>
+      <td>
+        <kbd>Enter</kbd>
+      </td>
+      <td>Inserts a new line. It does not submit the form.</td>
+    </tr>
+    <tr>
+      <td>Editing keys</td>
+      <td>Native text editing.</td>
+    </tr>
+  </tbody>
+</table>
+
+**Focus.** Native. The focus ring is drawn on the whole box. Focus does not move when an error
+appears.
+
+**Screen reader.**
+
+- Announced as a multi-line text field, named by the label.
+- The description and the error are linked with `aria-describedby`, in that order.
+- "invalid" comes from `aria-invalid="true"`, and "required" from native `required`.
+- The error message is not a live region. It is read when the field gets focus.
+
+**Form guidance.**
+
+- Validate on submit or when the user leaves the field (blur), not on every keystroke.
+- On submit, move focus to the first invalid field, or to an error summary (such as an
+  `Alert`) that links to each invalid field.
+- Errors are not live regions. A changed `aria-describedby` is not announced again while the
+  user stays in the field. If you validate while the user types, for example a live character
+  count, report it in your own polite region, such as an `Alert` with `live="polite"` that is
+  mounted up front.
+- A placeholder is not a label. Put instructions in `description`.
+- Explain the "\* required" convention once per form.
+
+**What you must provide.**
+
+- A `label`. It is required.
+- An `errorMessage` whenever `invalid` is true.
+- Any length limit in the `description`, so users know it before they type.
+
+## Do / Don't
+
+**Do**
+
+- Use a TextArea for free text that may run over one line, such as notes or comments.
+- Set `rows` to match the expected length of the answer.
+- State limits, such as "500 characters or fewer", in the description.
+- Validate on submit or blur, and focus the first invalid field.
+
+**Don't**
+
+- Don't use the placeholder as the label or for instructions.
+- Don't use a TextArea for short single values such as a name. Use a TextField.
+- Don't announce every keystroke of a character count. Announce it after a pause or near the
+  limit.
+- Don't make Enter submit the form. Users expect it to add a line.

@@ -1,0 +1,178 @@
+import { ArgTypes, Canvas, Meta } from '@storybook/addon-docs/blocks';
+import { Radio } from './Radio';
+import * as RadioGroupStories from './RadioGroup.stories';
+
+<Meta of={RadioGroupStories} />
+
+# RadioGroup and Radio
+
+RadioGroup lets the user choose exactly one option from a small set. It renders native radio
+inputs that share a `name`, inside a `<fieldset>` named by its `<legend>`. The browser provides
+the arrow-key behavior, the single tab stop, form submission and `form.reset()`, with no extra
+JavaScript. Each option is a `Radio`, which must be inside a `RadioGroup`.
+
+## Usage
+
+```tsx
+import 'greenility-ui/styles.css'; // once, at the root of your app
+import { Radio, RadioGroup } from 'greenility-ui';
+
+<RadioGroup label="Reporting period" name="period" defaultValue="monthly">
+  <Radio value="monthly" label="Monthly" />
+  <Radio value="quarterly" label="Quarterly" />
+  <Radio value="yearly" label="Yearly" />
+</RadioGroup>;
+```
+
+<Canvas of={RadioGroupStories.Vertical} />
+
+## Examples
+
+### Horizontal
+
+`orientation` changes the layout only. The arrow keys work in both directions either way.
+
+<Canvas of={RadioGroupStories.Horizontal} />
+
+### With a default value
+
+<Canvas of={RadioGroupStories.WithDefaultValue} />
+
+### Group and option descriptions
+
+A group `description` is linked to the fieldset and read once when focus enters the group. An
+option `description` is linked to that radio only.
+
+<Canvas of={RadioGroupStories.WithDescription} />
+
+<Canvas of={RadioGroupStories.OptionDescriptions} />
+
+### Controlled
+
+Pass `value` and `onValueChange`. Pass a stable function, such as a state setter or a
+`useCallback`. The handler is part of the group's context, so a new function on every render
+re-renders every `Radio`.
+
+<Canvas of={RadioGroupStories.Controlled} />
+
+### Required and invalid
+
+`required` and `aria-invalid` are set on each radio, because they are not supported on a
+group. Pass `errorMessage` whenever you set `invalid`; the group logs a console warning
+otherwise.
+
+<Canvas of={RadioGroupStories.Required} />
+
+<Canvas of={RadioGroupStories.Invalid} />
+
+### Disabled
+
+The group's `disabled` disables every option through the native fieldset. A Radio's own
+`disabled` disables that option only, and arrow keys skip it.
+
+<Canvas of={RadioGroupStories.Disabled} />
+
+<Canvas of={RadioGroupStories.DisabledOption} />
+
+### Right to left
+
+The circles sit on the right in `dir="rtl"`, and the dots stay centered.
+
+<Canvas of={RadioGroupStories.Rtl} />
+
+## Props
+
+### RadioGroup
+
+The ref, `className` and every other prop go to the `<fieldset>`.
+
+<ArgTypes of={RadioGroupStories} />
+
+### Radio
+
+`className` and `style` go to the option wrapper `<div>`. `ref`, `id` and every other prop go
+to the native `<input>`.
+
+<ArgTypes of={Radio} />
+
+## Accessibility
+
+**Pattern.** [WAI-ARIA APG Radio Group](https://www.w3.org/WAI/ARIA/apg/patterns/radio/), met
+by native radios in a `<fieldset>`. No roving tabindex is needed.
+
+**Keyboard.**
+
+<table>
+  <thead>
+    <tr>
+      <th>Key</th>
+      <th>Behavior</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>
+        <kbd>Tab</kbd> / <kbd>Shift</kbd>+<kbd>Tab</kbd>
+      </td>
+      <td>
+        Moves focus into the group, onto the checked radio (or the first or last radio if none is
+        checked), then out of the group. The group is a single tab stop.
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <kbd>ArrowDown</kbd> / <kbd>ArrowRight</kbd>
+      </td>
+      <td>Focuses and selects the next enabled radio, wrapping at the end.</td>
+    </tr>
+    <tr>
+      <td>
+        <kbd>ArrowUp</kbd> / <kbd>ArrowLeft</kbd>
+      </td>
+      <td>Focuses and selects the previous enabled radio, wrapping at the start.</td>
+    </tr>
+    <tr>
+      <td>
+        <kbd>Space</kbd>
+      </td>
+      <td>Selects the focused radio if it is not already selected.</td>
+    </tr>
+  </tbody>
+</table>
+
+**Focus and pointer.** The focus ring is on the radio input. Clicking a label selects and
+focuses its radio. Each option is at least 24px tall, and the hit area covers the gap to the
+label (WCAG 2.5.8).
+
+**Screen reader.**
+
+- The group is a `group` named by the `<legend>`. The group description and error are linked to
+  the fieldset with `aria-describedby`, so they are read when focus enters the group, not on
+  every arrow press.
+- Each radio is announced with its label, its position ("2 of 3"), its checked state, and
+  "required" or "invalid" when set.
+- The error message is not a live region. On submit, move focus to the first invalid field.
+
+**What you must provide.**
+
+- A group `label` (the legend) that asks the question, and a `label` on every Radio.
+- A unique `value` on every Radio.
+- An `errorMessage` whenever `invalid` is true.
+- A `name` if the form is submitted to a server. Without one, a generated name is used.
+- A stable `onValueChange` when the group is controlled.
+
+## Do / Don't
+
+**Do**
+
+- Use a RadioGroup when the user must pick exactly one of two to about seven options.
+- Write the legend as a question or a short noun phrase, such as "Reporting period".
+- Pre-select a sensible default when one exists.
+- Keep option labels short and parallel in grammar.
+
+**Don't**
+
+- Don't use a RadioGroup when several options can be chosen. Use checkboxes.
+- Don't use a single Radio on its own. A Radio outside a RadioGroup throws.
+- Don't add custom arrow-key handling. The browser already does it.
+- Don't create a new `onValueChange` function on every render of a large group.

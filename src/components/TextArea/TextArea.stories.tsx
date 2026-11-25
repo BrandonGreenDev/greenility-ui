@@ -5,7 +5,8 @@ import { TextArea, type TextAreaProps } from './TextArea';
 const meta = {
   title: 'Components/TextArea',
   component: TextArea,
-  tags: ['autodocs'],
+  // The MDX page replaces autodocs (enabled globally in .storybook/preview.tsx).
+  tags: ['!autodocs'],
   args: {
     label: 'Site notes',
   },

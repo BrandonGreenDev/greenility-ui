@@ -18,7 +18,8 @@ const labels: Record<Tone, string> = {
 const meta = {
   title: 'Components/Badge',
   component: Badge,
-  tags: ['autodocs'],
+  // The MDX page replaces autodocs (enabled globally in .storybook/preview.tsx).
+  tags: ['!autodocs'],
   args: {
     children: 'Verified',
   },

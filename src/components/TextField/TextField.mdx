@@ -1,0 +1,169 @@
+import { ArgTypes, Canvas, Meta } from '@storybook/addon-docs/blocks';
+import * as TextFieldStories from './TextField.stories';
+
+<Meta of={TextFieldStories} />
+
+# TextField
+
+TextField is a single-line text input with a visible label, optional help text and an error
+message. It renders a native `<input>` linked to a `<label>`, so autofill, form submission,
+`form.reset()` and browser validation all work. Optional adornments can show a prefix, a unit
+or a small action, such as a clear button, inside the box.
+
+## Usage
+
+```tsx
+import 'greenility-ui/styles.css'; // once, at the root of your app
+import { TextField } from 'greenility-ui';
+
+<TextField name="project" label="Project name" description="Shown on reports and invoices." />;
+```
+
+<Canvas of={TextFieldStories.Default} />
+
+## Examples
+
+### With description
+
+Put instructions and format hints in `description`. It stays visible while the user types and
+is read by screen readers.
+
+<Canvas of={TextFieldStories.WithDescription} />
+
+### With placeholder
+
+A placeholder is an example value, not a label or an instruction. It disappears as soon as the
+user types and its text has low contrast.
+
+<Canvas of={TextFieldStories.WithPlaceholder} />
+
+### Required
+
+Uses native `required`. The asterisk is hidden from screen readers, which announce "required"
+once instead. Explain the asterisk once per form, for example with "Fields marked \* are
+required" above the first field.
+
+<Canvas of={TextFieldStories.Required} />
+
+### Invalid
+
+Pass `errorMessage` whenever you set `invalid`. The message tells the user how to fix the value;
+without it the error is shown by color alone. The field logs a console warning if `invalid` is
+set without an `errorMessage`.
+
+<Canvas of={TextFieldStories.Invalid} />
+
+### Disabled and read-only
+
+A disabled field is skipped by Tab and not submitted. A read-only field can be focused, selected
+and submitted, but not edited.
+
+<Canvas of={TextFieldStories.Disabled} />
+
+<Canvas of={TextFieldStories.ReadOnly} />
+
+### Sizes
+
+<Canvas of={TextFieldStories.Sizes} />
+
+### Adornments
+
+Adornments are not part of the input's name or description, so screen readers do not read them
+with the field. Put units in the `label` or `description` too, as in "Carbon offset budget (USD
+per tonne)". A decorative icon needs no label.
+
+<Canvas of={TextFieldStories.WithAdornments} />
+
+<Canvas of={TextFieldStories.WithIconAdornment} />
+
+### Interactive adornment
+
+An interactive end adornment, such as a clear button, comes after the input in the tab order.
+If the action removes the button, move focus back to the input, as this example does.
+
+<Canvas of={TextFieldStories.WithInteractiveAdornment} />
+
+### Controlled
+
+<Canvas of={TextFieldStories.Controlled} />
+
+## Props
+
+`className` and `style` go to the outer wrapper. The ref, `id` and every other prop, such as
+`name`, `autoComplete` and `inputMode`, go to the native `<input>`.
+
+<ArgTypes of={TextFieldStories} />
+
+## Accessibility
+
+**Pattern.** No ARIA widget pattern is needed. A native `<input>` with a `<label for>` has
+complete semantics. ARIA is used only for `aria-describedby` and `aria-invalid`.
+
+**Keyboard.**
+
+<table>
+  <thead>
+    <tr>
+      <th>Key</th>
+      <th>Behavior</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>
+        <kbd>Tab</kbd>
+      </td>
+      <td>Moves focus to the input, then to any interactive adornment.</td>
+    </tr>
+    <tr>
+      <td>Editing keys</td>
+      <td>Native text editing.</td>
+    </tr>
+  </tbody>
+</table>
+
+**Focus.** Native. The focus ring is drawn on the whole box. Focus does not move when an error
+appears.
+
+**Screen reader.**
+
+- The name comes from the label.
+- The description and the error are linked with `aria-describedby`, in that order.
+- "invalid" comes from `aria-invalid="true"`, and "required" from native `required`.
+- The error message is not a live region. It is read when the field gets focus.
+
+**Form guidance.**
+
+- Validate on submit or when the user leaves the field (blur), not on every keystroke.
+- On submit, move focus to the first invalid field, or to an error summary (such as an
+  `Alert`) that links to each invalid field.
+- Errors are not live regions. A changed `aria-describedby` is not announced again while the
+  user stays in the field. If you validate while the user types, also report the result in
+  your own polite region, such as an `Alert` with `live="polite"` that is mounted up front.
+- A placeholder is not a label. Put instructions in `description`.
+- Explain the "\* required" convention once per form.
+
+**What you must provide.**
+
+- A `label`. It is required.
+- An `errorMessage` whenever `invalid` is true.
+- The right `type`, `autoComplete` and `inputMode` for the data, such as `type="email"` and
+  `autoComplete="email"`.
+- Units in the label or description, not only in an adornment.
+
+## Do / Don't
+
+**Do**
+
+- Keep the label short and visible, and put hints in `description`.
+- Validate on submit or blur, and focus the first invalid field.
+- Write error messages that say how to fix the value, such as "Enter a project name".
+- Set `autoComplete` so browsers and password managers can fill the field.
+- Return focus to the input after a clear button removes itself.
+
+**Don't**
+
+- Don't use the placeholder as the label or for instructions.
+- Don't show errors while the user is still typing their first value.
+- Don't rely on an adornment alone to show the unit.
+- Don't use `type="number"` for codes or IDs such as postal codes. Use `inputMode="numeric"`.

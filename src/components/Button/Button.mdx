@@ -1,0 +1,144 @@
+import { ArgTypes, Canvas, Meta } from '@storybook/addon-docs/blocks';
+import * as ButtonStories from './Button.stories';
+
+<Meta of={ButtonStories} />
+
+# Button
+
+Button triggers an action, such as saving a form or opening a dialog. It renders a native
+`<button>` with four variants, three sizes, optional decorative icons and a loading state that
+keeps focus. It defaults to `type="button"`, so it never submits a form by accident.
+
+## Usage
+
+```tsx
+import 'greenility-ui/styles.css'; // once, at the root of your app
+import { Button } from 'greenility-ui';
+
+<Button onClick={save}>Save changes</Button>;
+```
+
+<Canvas of={ButtonStories.Primary} />
+
+## Examples
+
+### Variants
+
+`primary` is the main action on a page. `secondary` is for supporting actions. `ghost` is for
+low-emphasis actions such as "Cancel". `danger` is for destructive actions.
+
+<Canvas of={ButtonStories.AllVariants} />
+
+### Sizes
+
+<Canvas of={ButtonStories.AllSizes} />
+
+### With icons
+
+Icons in `startIcon` and `endIcon` are decorative. They are wrapped in `aria-hidden`, so the
+name comes from the text only.
+
+<Canvas of={ButtonStories.WithStartIcon} />
+
+<Canvas of={ButtonStories.WithEndIcon} />
+
+### Loading
+
+While `loading` is true the button shows a spinner, keeps its label in the DOM (hidden
+visually) and ignores clicks. It stays focusable and is exposed with `aria-disabled="true"`.
+The `loadingLabel` text ("Loading" by default) is added as the accessible description.
+
+<Canvas of={ButtonStories.Loading} />
+
+<Canvas of={ButtonStories.CustomLoadingLabel} />
+
+### Disabled
+
+`disabled` uses the native attribute, so the button is skipped by Tab. If you set both
+`disabled` and `loading`, `disabled` wins.
+
+<Canvas of={ButtonStories.Disabled} />
+
+### In a form
+
+Set `type="submit"` for the button that submits the form. A loading submit button blocks
+submission, including Enter in a text field.
+
+<Canvas of={ButtonStories.InForm} />
+
+## Props
+
+The ref and any other props go to the native `<button>`.
+
+<ArgTypes of={ButtonStories} />
+
+## Accessibility
+
+**Pattern.** [WAI-ARIA APG Button](https://www.w3.org/WAI/ARIA/apg/patterns/button/), met by
+the native `<button>` element.
+
+**Keyboard.**
+
+<table>
+  <thead>
+    <tr>
+      <th>Key</th>
+      <th>Behavior</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>
+        <kbd>Enter</kbd> / <kbd>Space</kbd>
+      </td>
+      <td>Activates the button. Does nothing while loading.</td>
+    </tr>
+    <tr>
+      <td>
+        <kbd>Tab</kbd>
+      </td>
+      <td>
+        Moves focus to and from the button. A loading button stays in the tab order; a disabled one
+        is skipped.
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+**Focus.** Native. If a focused button switches to loading, it keeps focus. This is why loading
+uses `aria-disabled` instead of `disabled`: native `disabled` would drop focus to the page body
+in the middle of the task.
+
+**Screen reader.**
+
+- The name comes from the children. Icons are hidden.
+- While loading, the name does not change. The button is announced as dimmed or unavailable
+  (from `aria-disabled`) and described by `loadingLabel`, for example "Save changes, dimmed,
+  Loading".
+- The button does not announce the result of the action. Pair it with a polite live region
+  that is already mounted, such as an `Alert` with `live="polite"`, and change that region's
+  text when the task finishes.
+
+**What you must provide.**
+
+- Visible text that says what the button does.
+- A `loadingLabel` that names the task when "Loading" is too vague, such as "Saving".
+- A polite region for the result of a slow action.
+- `type="submit"` on the button that should submit a form.
+
+## Do / Don't
+
+**Do**
+
+- Use a verb that names the action, such as "Save report", not "OK".
+- Use one `primary` button per section and `danger` only for destructive actions.
+- Use `loading` for async actions, and announce the result in a polite region.
+- Set `type="submit"` explicitly on the form's submit button.
+
+**Don't**
+
+- Don't use a Button for navigation. Use a link (`<a href>`).
+- Don't put meaning in the icon alone. The text must name the action.
+- Don't set `disabled` while a request runs. Use `loading`, so focus is kept.
+- Don't change the button's text to "Loading". The name should stay stable.
+- Don't use an icon-only Button. Use `IconButton`, which requires a label.

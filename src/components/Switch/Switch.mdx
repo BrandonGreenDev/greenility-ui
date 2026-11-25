@@ -1,0 +1,137 @@
+import { ArgTypes, Canvas, Meta } from '@storybook/addon-docs/blocks';
+import * as SwitchStories from './Switch.stories';
+
+<Meta of={SwitchStories} />
+
+# Switch
+
+Switch turns a setting on or off, and the change takes effect at once. It is a native
+`<input type="checkbox" role="switch">` with a label and optional help text. Because the input
+is native, it also works inside a form: its `name` and `value` are submitted when it is on, and
+`form.reset()` restores its default.
+
+## Usage
+
+```tsx
+import 'greenility-ui/styles.css'; // once, at the root of your app
+import { Switch } from 'greenility-ui';
+
+<Switch label="Low-carbon mode" checked={enabled} onCheckedChange={setEnabled} />;
+```
+
+<Canvas of={SwitchStories.Off} />
+
+## Switch or Checkbox?
+
+- Use a **Switch** when the change applies immediately, like a light switch. For example,
+  turning on dark mode or pausing notifications.
+- Use a **Checkbox** when the value is submitted later, with the rest of a form. For example,
+  accepting terms or choosing report types before pressing "Save".
+
+## Examples
+
+### On
+
+<Canvas of={SwitchStories.On} />
+
+### With description
+
+<Canvas of={SwitchStories.WithDescription} />
+
+### Controlled
+
+<Canvas of={SwitchStories.Controlled} />
+
+### Disabled
+
+A disabled Switch that is on fills its track, so disabled on and off still look different.
+
+<Canvas of={SwitchStories.Disabled} />
+
+<Canvas of={SwitchStories.DisabledOn} />
+
+### Right to left
+
+In `dir="rtl"` the thumb starts on the right and slides left when on.
+
+<Canvas of={SwitchStories.Rtl} />
+
+## Props
+
+`className` and `style` go to the root wrapper `<div>`. `ref`, `id` and every other prop, such
+as `name`, `value` and `onChange`, go to the native `<input>`.
+
+The Switch has no `invalid`, `errorMessage` or `required` props. A switch applies its change
+immediately, so there is nothing to validate.
+
+<ArgTypes of={SwitchStories} />
+
+## Accessibility
+
+**Pattern.** [WAI-ARIA APG Switch](https://www.w3.org/WAI/ARIA/apg/patterns/switch/), built on
+a native checkbox input with `role="switch"`.
+
+**Keyboard.**
+
+<table>
+  <thead>
+    <tr>
+      <th>Key</th>
+      <th>Behavior</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>
+        <kbd>Space</kbd>
+      </td>
+      <td>Toggles the switch.</td>
+    </tr>
+    <tr>
+      <td>
+        <kbd>Enter</kbd>
+      </td>
+      <td>Does nothing. The APG lists Enter as optional, and the native behavior is kept.</td>
+    </tr>
+    <tr>
+      <td>
+        <kbd>Tab</kbd>
+      </td>
+      <td>Moves focus to and from the switch. A disabled switch is skipped.</td>
+    </tr>
+  </tbody>
+</table>
+
+**Focus and pointer.** The focus ring is on the input. Clicking the label toggles the switch.
+The control and label are at least 24px tall, and the hit area covers the gap between them
+(WCAG 2.5.8).
+
+**Screen reader.**
+
+- Announced as "switch, on" or "switch, off", with the name from the label. The description is
+  linked with `aria-describedby`.
+- Screen readers that do not support `role="switch"` announce a checkbox, "checked" or "not
+  checked", which is still correct.
+- The visual thumb is hidden from assistive technology.
+
+**What you must provide.**
+
+- A `label` that names the setting, not the action. Write "Low-carbon mode", not "Turn on
+  low-carbon mode".
+- The code that applies the change right away when `onCheckedChange` fires.
+- If applying the change takes time or can fail, a polite live region that reports the result.
+
+## Do / Don't
+
+**Do**
+
+- Use a Switch for settings that take effect immediately.
+- Keep the label short and stable. It should not change with the state.
+- Show the effect of the change on the page, or announce it in a polite region.
+
+**Don't**
+
+- Don't use a Switch inside a form that needs a "Save" button. Use a Checkbox.
+- Don't add "On" or "Off" text to the label. The state is already announced.
+- Don't use a Switch to choose between two different options, such as "List" and "Grid". Use a
+  RadioGroup.

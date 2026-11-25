@@ -4,7 +4,8 @@ import { Spinner } from './Spinner';
 const meta = {
   title: 'Components/Spinner',
   component: Spinner,
-  tags: ['autodocs'],
+  // The MDX page replaces autodocs (enabled globally in .storybook/preview.tsx).
+  tags: ['!autodocs'],
   args: {
     size: 'md',
     label: 'Loading',

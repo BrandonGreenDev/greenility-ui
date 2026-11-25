@@ -1,0 +1,134 @@
+import { ArgTypes, Canvas, Meta } from '@storybook/addon-docs/blocks';
+import * as AlertStories from '../Alert/Alert.stories';
+import * as SpinnerStories from './Spinner.stories';
+
+<Meta of={SpinnerStories} />
+
+# Spinner
+
+Spinner shows that something is loading when you cannot tell how long it will take. On its
+own it is a polite `role="status"` region with hidden text ("Loading" by default). With
+`decorative` it is hidden from assistive technology, so a parent such as a loading Button can
+describe the state instead.
+
+## Usage
+
+```tsx
+import 'greenility-ui/styles.css'; // once, at the root of your app
+import { Spinner } from 'greenility-ui';
+
+<Spinner label="Loading results" />;
+```
+
+<Canvas of={SpinnerStories.Default} />
+
+## Examples
+
+### Sizes
+
+`sm`, `md` and `lg` match the icon sizes, so a spinner can sit next to text or inside a control.
+
+<Canvas of={SpinnerStories.Sizes} />
+
+### Custom label
+
+Say what is loading, not just that something is.
+
+<Canvas of={SpinnerStories.CustomLabel} />
+
+### Decorative
+
+Hidden from assistive technology. Use it only when the surrounding UI already says that it is
+busy.
+
+<Canvas of={SpinnerStories.Decorative} />
+
+### Inherits color
+
+The arc uses `currentColor`, so it follows the text color of its parent.
+
+<Canvas of={SpinnerStories.InheritsColor} />
+
+### Announcing a result
+
+A polite live region must already be mounted before its content changes. Render it up front
+and swap its children; do not mount it together with its message or toggle `live` to start
+announcing.
+
+A Spinner that mounts when loading starts is announced on a best-effort basis only. When the
+announcement matters, keep one polite region mounted for the whole task and change its text.
+This example uses an Alert with `live="polite"`:
+
+<Canvas of={AlertStories.LivePolite} />
+
+```tsx
+<>
+  {loading && <Spinner decorative />}
+  {/* Mounted from the start; only its text changes. */}
+  <Alert live="polite" tone="neutral">
+    {loading ? 'Loading invoices.' : `${count} invoices loaded.`}
+  </Alert>
+</>
+```
+
+## Props
+
+The ref and any other props go to the root `<span>`.
+
+<ArgTypes of={SpinnerStories} />
+
+## Accessibility
+
+**Pattern.** Standalone, the Spinner uses the WAI-ARIA
+[`status` role](https://www.w3.org/TR/wai-aria-1.2/#status), a polite live region. The visible
+SVG is `aria-hidden`. The text comes from a `VisuallyHidden` span, because live regions
+announce their content, not an `aria-label`.
+
+**Keyboard.**
+
+<table>
+  <thead>
+    <tr>
+      <th>Key</th>
+      <th>Behavior</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>None</td>
+      <td>The Spinner is not focusable and has no keyboard interaction.</td>
+    </tr>
+  </tbody>
+</table>
+
+**Screen reader.**
+
+- Standalone: the `label` text is in the accessibility tree as status content. Screen readers
+  may or may not announce it when the Spinner first mounts.
+- Decorative: nothing is exposed. The parent must convey the busy state.
+- Under `prefers-reduced-motion: reduce`, the arc stops rotating and pulses its opacity slowly
+  instead, so it still reads as busy.
+
+**What you must provide.**
+
+- A `label` that names the task, such as "Loading invoices", when the default "Loading" is too
+  vague.
+- A separate, already mounted polite region for the result, such as "12 invoices loaded".
+- Busy semantics on the parent when you use `decorative`. Button does this for you through
+  `loading`.
+
+## Do / Don't
+
+**Do**
+
+- Name the task in `label`, such as "Saving report".
+- Announce the outcome in a polite region that was mounted before the change.
+- Use `decorative` inside components that already announce their own busy state.
+- Place the Spinner where the content will appear.
+
+**Don't**
+
+- Don't rely on a newly mounted Spinner to be announced.
+- Don't use more than one standalone Spinner for the same task. Each one is a live region.
+- Don't use a Spinner when you know the progress. Show the progress instead.
+- Don't nest a standalone Spinner inside another live region. Use `decorative` there.

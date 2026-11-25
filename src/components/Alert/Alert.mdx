@@ -1,0 +1,160 @@
+import { ArgTypes, Canvas, Meta } from '@storybook/addon-docs/blocks';
+import * as AlertStories from './Alert.stories';
+
+<Meta of={AlertStories} />
+
+# Alert
+
+Alert shows an inline message with a tone (info, success, warning, danger or neutral), an
+optional title and an optional dismiss button. By default it is static page content. With the
+`live` prop it becomes a live region, so screen readers announce changes to its message. It
+never moves focus, and it does not hide itself when dismissed.
+
+## Usage
+
+```tsx
+import 'greenility-ui/styles.css'; // once, at the root of your app
+import { Alert } from 'greenility-ui';
+
+<Alert tone="info" title="Scheduled maintenance">
+  Reporting will be read-only on Saturday from 02:00 to 04:00 UTC.
+</Alert>;
+```
+
+<Canvas of={AlertStories.Info} />
+
+## Examples
+
+### Tones
+
+Each tone has its own color and icon shape (circle-i, circle-check, triangle, octagon). Each
+tone except neutral also has a hidden text prefix ("Info:", "Success:", "Warning:", "Error:"),
+so the meaning does not depend on color or the icon.
+
+<Canvas of={AlertStories.AllTones} />
+
+### Title only and body only
+
+The hidden prefix is rendered once, before the title if there is one, otherwise before the body.
+
+<Canvas of={AlertStories.TitleOnly} />
+
+<Canvas of={AlertStories.BodyOnly} />
+
+### Custom tone label
+
+Use `toneLabel` to change the hidden prefix, for example to translate it.
+
+<Canvas of={AlertStories.CustomToneLabel} />
+
+### Dismissible
+
+Pass `onDismiss` to show a dismiss button. The Alert does not remove itself. You decide when
+to remove it and where focus goes next. Here focus moves to the section heading.
+
+<Canvas of={AlertStories.DismissAndMoveFocus} />
+
+<Canvas of={AlertStories.CustomDismissLabel} />
+
+### Polite live region
+
+A polite live region must already be mounted before its content changes. Render it up front
+and swap its children; do not mount it together with its message or toggle `live` to start
+announcing.
+
+In this example the Alert is rendered from the start with `live="polite"`. Pressing "Save
+draft" only changes its text, so screen readers announce "Success: Draft saved (1)."
+
+<Canvas of={AlertStories.LivePolite} />
+
+### Assertive live region
+
+`live="assertive"` uses `role="alert"`, which interrupts whatever the screen reader is saying.
+Use it rarely: only for urgent, time-sensitive messages, such as a session that is about to
+expire or an error that blocks the user. Validation errors, save confirmations and other
+routine updates should be polite.
+
+<Canvas of={AlertStories.LiveAssertive} />
+
+## Props
+
+The ref and any other props go to the root `<div>`. The live role goes to the inner message
+wrapper.
+
+<ArgTypes of={AlertStories} />
+
+## Accessibility
+
+**Pattern.** `live="off"` (the default) has no role. `live="polite"` uses the WAI-ARIA
+[`status` role](https://www.w3.org/TR/wai-aria-1.2/#status). `live="assertive"` follows the
+[WAI-ARIA APG Alert pattern](https://www.w3.org/WAI/ARIA/apg/patterns/alert/) with
+`role="alert"`.
+
+**Keyboard.**
+
+<table>
+  <thead>
+    <tr>
+      <th>Key</th>
+      <th>Behavior</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>
+        <kbd>Tab</kbd>
+      </td>
+      <td>
+        Moves focus to the dismiss button, if there is one. The Alert itself is not focusable.
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <kbd>Enter</kbd> / <kbd>Space</kbd>
+      </td>
+      <td>
+        On the dismiss button, calls <code>onDismiss</code>.
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+**Focus.** The Alert never takes focus, not even with `role="alert"`. When it is dismissed the
+dismiss button unmounts, so move focus to a logical place, such as the heading of the section or
+the control that caused the message.
+
+**Screen reader.**
+
+- The tone is announced through a visually hidden prefix, such as "Warning:". The icon is
+  hidden.
+- The live role sits on the message wrapper (prefix, title and body), not on the root. The icon
+  and the dismiss button are outside the region, so "Dismiss" is not announced with each
+  update.
+- A live region announces changes to content that is already in the page. A region that mounts
+  together with its message is often not announced, especially with `role="status"`.
+
+**What you must provide.**
+
+- Message text that makes sense without the color or icon.
+- For a live Alert: render it before the message changes, then change only its children.
+- For a dismissible Alert: an `onDismiss` handler that removes the Alert and moves focus.
+- A `dismissLabel` that says what is dismissed when there are several alerts, such as "Dismiss
+  maintenance notice".
+
+## Do / Don't
+
+**Do**
+
+- Keep the default `live="off"` for messages that are present when the page loads.
+- Mount a polite Alert up front and swap its text to announce updates.
+- Move focus to a sensible place after dismissal.
+- Pick the tone by meaning, and write a title that states the point.
+
+**Don't**
+
+- Don't mount an Alert together with its message, or switch `live` on, and expect it to be
+  announced.
+- Don't use `live="assertive"` for routine updates such as "Saved".
+- Don't put interactive content other than the dismiss button in a live Alert. Changes would be
+  announced without context.
+- Don't use an Alert for long-lived status labels. Use a Badge.

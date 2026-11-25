@@ -14,7 +14,8 @@ const regionOptions = (
 const meta = {
   title: 'Components/Select',
   component: Select,
-  tags: ['autodocs'],
+  // The MDX page replaces autodocs (enabled globally in .storybook/preview.tsx).
+  tags: ['!autodocs'],
   args: {
     label: 'Region',
     children: regionOptions,

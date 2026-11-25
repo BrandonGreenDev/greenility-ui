@@ -14,8 +14,9 @@ const options = (
 const meta = {
   title: 'Components/RadioGroup',
   component: RadioGroup,
+  // The MDX page replaces autodocs (enabled globally in .storybook/preview.tsx).
+  tags: ['!autodocs'],
   subcomponents: { Radio },
-  tags: ['autodocs'],
   args: {
     label: 'Reporting period',
     children: options,
