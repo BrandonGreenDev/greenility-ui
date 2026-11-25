@@ -6,6 +6,7 @@ import { AlertDialog } from './AlertDialog';
 
 const meta = {
   title: 'Components/AlertDialog',
+  tags: ['!autodocs'],
   component: AlertDialog,
   args: {
     title: 'Delete 3 files?',

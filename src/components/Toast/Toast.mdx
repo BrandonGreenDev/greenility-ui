@@ -1,0 +1,357 @@
+import { ArgTypes, Canvas, Meta } from '@storybook/addon-docs/blocks';
+import * as ToastStories from './Toast.stories';
+
+<Meta of={ToastStories} />
+
+# Toast
+
+A toast is a short, non-blocking message about something that just happened, such as "Report
+submitted". Toasts appear in a notifications region in the bottom-end corner of the screen and
+never take focus. Set up `ToastProvider` once at the root of your app, then call
+`useToast().show(options)` from any component inside it.
+
+\*\*Keyboard users: press <kbd>F8</kbd> to move focus to the newest notification, and
+
+<kbd>F8</kbd> again to go back to where you were.**
+
+## Usage
+
+Wrap your app in one `ToastProvider`, at the root:
+
+```tsx
+import 'greenility-ui/styles.css'; // once, at the root of your app
+import { ToastProvider } from 'greenility-ui';
+
+createRoot(container).render(
+  <ToastProvider>
+    <App />
+  </ToastProvider>,
+);
+```
+
+Then show toasts from anywhere inside it:
+
+```tsx
+import { Button, useToast } from 'greenility-ui';
+
+function SaveButton() {
+  const toast = useToast();
+  return (
+    <Button
+      onClick={async () => {
+        await saveDraft();
+        toast.show({ tone: 'neutral', title: 'Draft saved', description: 'Last edited just now.' });
+      }}
+    >
+      Save draft
+    </Button>
+  );
+}
+```
+
+`useToast()` throws outside a `ToastProvider`. `show()` returns the toast's id, which you can
+pass to `dismiss(id)` to remove it early.
+
+<Canvas of={ToastStories.Neutral} />
+
+## Examples
+
+Each example runs in its own frame. Select the button to show a toast.
+
+### Tones
+
+`tone` sets the color, the icon and a visually hidden prefix that is read first, such as
+"Success:" or "Error:". `neutral` has no prefix. Use `toneLabel` to change the prefix.
+
+<Canvas of={ToastStories.Info} />
+
+<Canvas of={ToastStories.Success} />
+
+<Canvas of={ToastStories.Warning} />
+
+<Canvas of={ToastStories.Danger} />
+
+Up to `max` toasts (3 by default) are visible at once. The newest is closest to the corner.
+
+<Canvas of={ToastStories.AllTones} />
+
+### With an action
+
+A toast can have one action, such as "Undo". A toast with an action does not disappear on its
+own, shows the <kbd>F8</kbd> hint next to the button, and ends its announcement with "Press F8
+to go to notifications." The toast is dismissed after the action runs.
+
+<Canvas of={ToastStories.WithAction} />
+
+### Persistent
+
+`duration: Infinity` keeps a toast until the user dismisses it.
+
+<Canvas of={ToastStories.Persistent} />
+
+### Duration as a user setting
+
+Apps should let users choose how long notifications stay, including "never". Store the choice
+as a user preference and pass it to the provider `duration`. "Never" passes `Infinity`.
+
+<Canvas of={ToastStories.UserPreference} />
+
+```tsx
+<ToastProvider duration={preference === 'never' ? Infinity : Number(preference)}>
+  <App />
+</ToastProvider>
+```
+
+### Queue
+
+When more toasts arrive than `max` allows, the extra ones wait in a queue instead of being
+dropped. A line under the visible toasts says how many are waiting, and they appear as others
+close. On narrow or short screens (30rem or less) one toast shows at a time.
+
+<Canvas of={ToastStories.Queue} />
+
+### Custom labels
+
+Every built-in string can be replaced, for example to translate it: the region `label`,
+`dismissLabel`, `actionHint`, `queueLabel` and each toast's `toneLabel`.
+
+<Canvas of={ToastStories.CustomLabels} />
+
+### Inside a dialog
+
+A modal Dialog makes the rest of the page inert. While one is open, the notifications region
+moves into it, at the top so it does not cover the dialog's footer. Toasts stay clickable and
+are still announced. No setup is needed.
+
+<Canvas of={ToastStories.FromInsideDialog} />
+
+## Timing
+
+Auto-dismiss follows [WCAG 2.2.1 Timing Adjustable](https://www.w3.org/WAI/WCAG22/Understanding/timing-adjustable.html):
+
+- **These toasts stay until dismissed:** `warning` and `danger` toasts, and any toast with an
+  `action`. A `duration` on the toast overrides this.
+- **Other toasts** stay for the provider `duration` (6 seconds by default) plus reading time:
+  60 ms per character of the message, up to 10 seconds more.
+- **Timers pause** while the pointer is over the region, while focus is inside it and while the
+  browser tab is hidden. After a pause, a toast always gets at least 2 more seconds.
+- **Users can change the timing** if you expose `duration` as a setting, as in the example
+  above.
+
+## Props
+
+### ToastProvider
+
+The ref and any other props go to the notifications `<section>`.
+
+<ArgTypes of={ToastStories} />
+
+### useToast
+
+`useToast()` returns `{ show, dismiss }`.
+
+<table>
+  <thead>
+    <tr>
+      <th>Member</th>
+      <th>Type</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>
+        <code>show</code>
+      </td>
+      <td>
+        <code>(options: ToastOptions) =&gt; string</code>
+      </td>
+      <td>Shows a toast and returns its id.</td>
+    </tr>
+    <tr>
+      <td>
+        <code>dismiss</code>
+      </td>
+      <td>
+        <code>(id: string) =&gt; void</code>
+      </td>
+      <td>Dismisses one toast, visible or queued. Unknown ids are ignored.</td>
+    </tr>
+  </tbody>
+</table>
+
+### ToastOptions
+
+<table>
+  <thead>
+    <tr>
+      <th>Option</th>
+      <th>Type</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>
+        <code>title</code>
+      </td>
+      <td>
+        <code>ReactNode</code>
+      </td>
+      <td>Required. The message headline.</td>
+    </tr>
+    <tr>
+      <td>
+        <code>description</code>
+      </td>
+      <td>
+        <code>ReactNode</code>
+      </td>
+      <td>Supporting text.</td>
+    </tr>
+    <tr>
+      <td>
+        <code>tone</code>
+      </td>
+      <td>
+        <code>'neutral' | 'info' | 'success' | 'warning' | 'danger'</code>
+      </td>
+      <td>
+        Sets the color, icon and announced prefix. Default <code>'neutral'</code>.
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <code>action</code>
+      </td>
+      <td>
+        <code>{'{ label: string; onAction: () => void }'}</code>
+      </td>
+      <td>
+        One optional action button. The toast is dismissed after <code>onAction</code> runs. A toast
+        with an action does not auto-dismiss by default.
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <code>duration</code>
+      </td>
+      <td>
+        <code>number</code>
+      </td>
+      <td>
+        Auto-dismiss delay in ms; <code>Infinity</code> turns it off. Default: the provider{' '}
+        <code>duration</code> plus reading time, or <code>Infinity</code> for warning, danger and
+        action toasts.
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <code>toneLabel</code>
+      </td>
+      <td>
+        <code>string</code>
+      </td>
+      <td>Replaces the hidden tone prefix, for example "Saved".</td>
+    </tr>
+  </tbody>
+</table>
+
+## Accessibility
+
+**Pattern.** There is no APG pattern for toasts. Messages are announced through a polite live
+region with the [ARIA `status` role](https://www.w3.org/TR/wai-aria-1.2/#status), which is
+always mounted, and the notifications are a named
+[landmark region](https://www.w3.org/WAI/ARIA/apg/patterns/landmarks/examples/region.html) that
+keyboard users reach with a hotkey.
+
+**Keyboard.**
+
+<table>
+  <thead>
+    <tr>
+      <th>Key</th>
+      <th>Behavior</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>
+        <kbd>F8</kbd>
+      </td>
+      <td>
+        From anywhere on the page: moves focus to the newest toast (its action, or its Dismiss
+        button). Pressed again inside the region: returns focus to where it was. Ignored with Ctrl,
+        Alt, Meta or Shift. Change the key with <code>hotkey</code>.
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <kbd>Tab</kbd> / <kbd>Shift</kbd>+<kbd>Tab</kbd>
+      </td>
+      <td>Moves between the buttons of the visible toasts.</td>
+    </tr>
+    <tr>
+      <td>
+        <kbd>Enter</kbd> / <kbd>Space</kbd>
+      </td>
+      <td>Activates the focused action or Dismiss button.</td>
+    </tr>
+    <tr>
+      <td>
+        <kbd>Escape</kbd>
+      </td>
+      <td>
+        Dismisses the focused toast. Focus moves to the next toast, the previous one, or back to
+        where it was before <kbd>F8</kbd>. An enclosing Dialog does not also close.
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+The hotkey is <kbd>F8</kbd>, not <kbd>F6</kbd>, because browsers use <kbd>F6</kbd> to move
+between their own panes.
+
+**Focus.** A toast never takes focus when it appears, so it does not interrupt typing. Timers
+pause while focus is inside the region. When a focused toast is dismissed, focus moves to a
+nearby toast or back to where it was, never to the page body.
+
+**Screen reader.**
+
+- Every toast is announced politely, including danger toasts, so it never interrupts what is
+  being read. The announcement is the tone prefix, title and description as plain text.
+  Buttons are not read out.
+- Each toast is announced once, even when a Dialog opens or closes at the same moment.
+- A toast with an action adds "Press F8 to go to notifications." to its announcement.
+- The region is a landmark named "Notifications (F8)" while it has toasts, so it can also be
+  found in the landmarks list. It is not listed while empty.
+
+**What you must provide.**
+
+- One `ToastProvider`, at the root of the app.
+- A user setting for `duration`, including an option to keep notifications until dismissed.
+- A short `title` that makes sense on its own.
+- Another way to reach anything a toast links to. A toast can disappear before the user
+  reads it.
+
+**Verified.** Automated: unit tests with axe, plus axe on every story in light and dark themes
+in Chromium, Firefox and WebKit. Not yet verified with NVDA, JAWS or VoiceOver.
+
+## Do / Don't
+
+**Do**
+
+- Use a toast to confirm an action the user just took, such as "Report submitted".
+- Keep the title short, and put details in `description`.
+- Offer "Undo" as the action instead of asking for confirmation first.
+- Let users choose how long toasts stay.
+- Tell users about <kbd>F8</kbd>, for example in your app's keyboard shortcuts help.
+
+**Don't**
+
+- Don't put essential information or the only copy of an error in a toast. Show errors next to
+  the thing that failed, for example with an `Alert` or a field `errorMessage`.
+- Don't add more than one provider, or a provider per page.
+- Don't use a toast for something that needs a decision. Use a Dialog.
+- Don't put links or long text in a toast.
+- Don't show a toast for every background event. Several at once become noise.

@@ -49,6 +49,7 @@ const row = {
 
 const meta = {
   title: 'Components/Toast',
+  tags: ['!autodocs'],
   component: ToastProvider,
   args: {
     children: null,

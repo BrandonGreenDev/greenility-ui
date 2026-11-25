@@ -1,0 +1,172 @@
+import { ArgTypes, Canvas, Meta } from '@storybook/addon-docs/blocks';
+import * as AlertDialogStories from './AlertDialog.stories';
+
+<Meta of={AlertDialogStories} />
+
+# AlertDialog
+
+AlertDialog asks the user to confirm a destructive or consequential action, such as deleting
+files or submitting a report for audit. It is built on the same native `<dialog>` as
+[Dialog](?path=/docs/components-dialog--docs), with `role="alertdialog"`. It always has a
+description of the consequence, a Cancel button and a confirm button. It has no close button
+and a backdrop click does not close it, so it cannot be dismissed by accident. Cancel gets
+focus first.
+
+## Usage
+
+```tsx
+import 'greenility-ui/styles.css'; // once, at the root of your app
+import { AlertDialog, Button } from 'greenility-ui';
+
+<AlertDialog
+  title="Delete 3 files?"
+  description="This permanently deletes the selected invoices. You cannot undo this."
+  confirmLabel="Delete files"
+  onConfirm={deleteFiles}
+  trigger={<Button variant="danger">Delete files</Button>}
+/>;
+```
+
+<Canvas of={AlertDialogStories.Danger} />
+
+## When to use it
+
+Use an AlertDialog when the action cannot be undone or has a serious effect, and the user must
+read the consequence before going on. If the action can be undone, skip the confirmation:
+perform it and offer "Undo" in a toast. For a task with fields or several steps, use a Dialog.
+
+## Examples
+
+Select the trigger button in each example to open the dialog. The Usage example above uses
+`confirmVariant="danger"` (the default), which is for destructive actions.
+
+### Primary
+
+`confirmVariant="primary"` is for an action that is consequential but not destructive.
+
+<Canvas of={AlertDialogStories.Primary} />
+
+### Custom cancel label
+
+`cancelLabel` replaces "Cancel". A specific label such as "Keep files" makes the safe choice
+clear.
+
+<Canvas of={AlertDialogStories.CustomCancelLabel} />
+
+### With details
+
+Extra content goes in `children`, between the description and the buttons. Here it lists the
+files that will be deleted.
+
+<Canvas of={AlertDialogStories.WithDetails} />
+
+### Keep open while working
+
+The confirm button is a `DialogClose`. It calls `onConfirm(event)` and then requests a close
+with `onOpenChange(false)`. There are two ways to keep the dialog open:
+
+- Call `event.preventDefault()` in `onConfirm`, for example when a check fails.
+- Control `open` and ignore the close request until the work is done, as this example does.
+
+<Canvas of={AlertDialogStories.KeepOpenWhileWorking} />
+
+```tsx
+<AlertDialog
+  open={open}
+  onOpenChange={(next) => {
+    if (!next && working) return; // ignore the close request while working
+    setOpen(next);
+  }}
+  onConfirm={(event) => {
+    if (!canDelete) {
+      event.preventDefault(); // keep it open
+      return;
+    }
+    startDeleting();
+  }}
+  {...rest}
+/>
+```
+
+## Props
+
+The ref and any other props go to the native `<dialog>`. AlertDialog takes the Dialog props
+except `footer`, `closeLabel` and `initialFocusRef`, and `description` is required.
+
+<ArgTypes of={AlertDialogStories} />
+
+## Accessibility
+
+**Pattern.** [WAI-ARIA APG Alert Dialog](https://www.w3.org/WAI/ARIA/apg/patterns/alertdialog/),
+on a native `<dialog>` opened with `showModal()` and `role="alertdialog"`.
+
+**Keyboard.**
+
+<table>
+  <thead>
+    <tr>
+      <th>Key</th>
+      <th>Behavior</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>
+        <kbd>Tab</kbd> / <kbd>Shift</kbd>+<kbd>Tab</kbd>
+      </td>
+      <td>Moves focus between Cancel, the confirm button and any controls in the body.</td>
+    </tr>
+    <tr>
+      <td>
+        <kbd>Enter</kbd> / <kbd>Space</kbd>
+      </td>
+      <td>Activates the focused button. On open this is Cancel, so a quick Enter is safe.</td>
+    </tr>
+    <tr>
+      <td>
+        <kbd>Escape</kbd>
+      </td>
+      <td>Closes the dialog, like Cancel.</td>
+    </tr>
+  </tbody>
+</table>
+
+**Focus.** Cancel gets focus on open, because it is the least destructive action. On close,
+focus returns to the trigger, or to `returnFocusRef` when the trigger is gone (for example, the
+deleted row).
+
+**Pointer.** A click on the backdrop does nothing. Only Cancel, the confirm button and
+
+<kbd>Escape</kbd> close the dialog.
+
+**Screen reader.**
+
+- Announced as an alert dialog, named by `title` and described by `description`, so the
+  consequence is read as soon as it opens.
+- The page behind is removed from the accessibility tree while it is open.
+
+**What you must provide.**
+
+- A `title` that asks the question, such as "Delete 3 files?".
+- A `description` that states the consequence, such as "You cannot undo this."
+- A `confirmLabel` that names the action, such as "Delete files", not "OK" or "Yes".
+- A `returnFocusRef` when the action removes the trigger.
+
+**Verified.** Automated: unit tests with axe, plus axe on every story in light and dark themes
+in Chromium, Firefox and WebKit. Not yet verified with NVDA, JAWS or VoiceOver.
+
+## Do / Don't
+
+**Do**
+
+- Use an AlertDialog only for actions that cannot be undone or have a serious effect.
+- Say what will happen and to what, such as "This permanently deletes 3 invoices."
+- Use the same verb in the title and the confirm button: "Delete files?" and "Delete files".
+- Keep the dialog open while the work runs, and close it when the work finishes.
+
+**Don't**
+
+- Don't use it for routine actions that can be undone. Offer "Undo" instead.
+- Don't use "OK", "Yes" or "Continue" as the confirm label.
+- Don't put forms or long content in it. Use a Dialog.
+- Don't move initial focus to the confirm button.

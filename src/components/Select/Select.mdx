@@ -1,0 +1,325 @@
+import { ArgTypes, Canvas, Meta } from '@storybook/addon-docs/blocks';
+import * as SelectStories from './Select.stories';
+
+<Meta of={SelectStories} />
+
+# Select
+
+Select lets the user pick one option from a list, in a styled popup list. It looks like
+[NativeSelect](?path=/docs/components-nativeselect--docs) when closed and takes the same field
+props: `label`, `description`, `errorMessage`, `invalid`, `disabled`, `required` and `size`.
+Use it when the open list must match your design in every browser. Use NativeSelect when you
+want the platform picker on mobile, autofill or native form validation. You pass the choices as
+an `options` array, with optional groups.
+
+## Usage
+
+```tsx
+import 'greenility-ui/styles.css'; // once, at the root of your app
+import { Select, type SelectOption } from 'greenility-ui';
+
+const regions: SelectOption[] = [
+  { value: 'north', label: 'North' },
+  { value: 'east', label: 'East' },
+  { value: 'south', label: 'South' },
+  { value: 'west', label: 'West' },
+];
+
+<Select name="region" label="Region" placeholder="Choose a region" options={regions} />;
+```
+
+<Canvas of={SelectStories.Default} />
+
+## Examples
+
+### With placeholder
+
+`placeholder` is shown in the box while nothing is selected (the value `''`). Unlike
+NativeSelect, it is not an option in the list.
+
+<Canvas of={SelectStories.WithPlaceholder} />
+
+### With description
+
+<Canvas of={SelectStories.WithDescription} />
+
+### Invalid
+
+Pass `errorMessage` whenever you set `invalid`.
+
+<Canvas of={SelectStories.Invalid} />
+
+### Required
+
+`required` sets `aria-required="true"`, so screen readers announce "required", and shows an
+asterisk that is hidden from screen readers. It does **not** block form submission: a
+`<button>` cannot take part in native constraint validation. Validate the value yourself, or
+use NativeSelect when you want the browser to check it.
+
+<Canvas of={SelectStories.Required} />
+
+### Disabled
+
+A disabled Select is skipped by Tab and submits nothing.
+
+<Canvas of={SelectStories.Disabled} />
+
+### Disabled options
+
+Disabled options are shown but skipped by the arrow keys and typeahead, and cannot be chosen.
+
+<Canvas of={SelectStories.DisabledOptions} />
+
+### Option groups
+
+An entry with `options` is a group. Its `label` is shown as a heading and names the group for
+assistive technology. Groups cannot be nested.
+
+<Canvas of={SelectStories.WithGroups} />
+
+### Many options
+
+A long list scrolls. <kbd>PageUp</kbd> and <kbd>PageDown</kbd> move by 10 options, and typing
+jumps to a match.
+
+<Canvas of={SelectStories.ManyOptions} />
+
+### Sizes
+
+`size` uses the same height, font size and padding as NativeSelect. The option text follows it.
+
+<Canvas of={SelectStories.Sizes} />
+
+### Controlled
+
+Pass `value` and `onValueChange`. `onValueChange` receives **only the value**, as a string.
+This differs from NativeSelect's `(value, event)`, because there is no native change event to
+pass. Set the value to `''` to clear the selection.
+
+<Canvas of={SelectStories.Controlled} />
+
+### In a form
+
+With `name`, a hidden input submits the selected value with the form. Nothing is submitted
+while nothing is selected, while the value matches no option, or while the Select is disabled.
+This matches a NativeSelect showing its disabled placeholder. Outside its form, pass the form's
+id in `form`. On form reset, an uncontrolled Select returns to `defaultValue` and calls
+`onValueChange` with it.
+
+<Canvas of={SelectStories.InForm} />
+
+### Right to left
+
+<Canvas of={SelectStories.RightToLeft} />
+
+### Near the bottom of the viewport
+
+When there is no room below the box, the list opens above it.
+
+<Canvas of={SelectStories.NearViewportBottom} />
+
+## Props
+
+`className` and `style` go to the outer wrapper. The ref, `id` and every other prop go to the
+combobox `<button>`.
+
+<ArgTypes of={SelectStories} />
+
+### Options
+
+`options` is an array of `SelectOption` and `SelectOptionGroup` entries, in display order.
+
+<table>
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Field</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>
+        <code>SelectOption</code>
+      </td>
+      <td>
+        <code>value: string</code>
+      </td>
+      <td>
+        The submitted value. It must be unique and must not be <code>''</code>, which means "nothing
+        selected". Duplicates and <code>''</code> log a console warning.
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <code>SelectOption</code>
+      </td>
+      <td>
+        <code>label: string</code>
+      </td>
+      <td>The visible text. Also used for typeahead.</td>
+    </tr>
+    <tr>
+      <td>
+        <code>SelectOption</code>
+      </td>
+      <td>
+        <code>disabled?: boolean</code>
+      </td>
+      <td>Skipped by the keyboard and not selectable.</td>
+    </tr>
+    <tr>
+      <td>
+        <code>SelectOptionGroup</code>
+      </td>
+      <td>
+        <code>label: string</code>
+      </td>
+      <td>The group heading. It names the group.</td>
+    </tr>
+    <tr>
+      <td>
+        <code>SelectOptionGroup</code>
+      </td>
+      <td>
+        <code>options: SelectOption[]</code>
+      </td>
+      <td>The options in the group, in display order.</td>
+    </tr>
+  </tbody>
+</table>
+
+## Accessibility
+
+**Pattern.** [WAI-ARIA APG Select-Only Combobox](https://www.w3.org/WAI/ARIA/apg/patterns/combobox/examples/combobox-select-only/).
+The box is a `<button role="combobox">` that opens a `role="listbox"` popup. DOM focus stays on
+the button the whole time, and the highlighted option is exposed with `aria-activedescendant`.
+
+**Keyboard.**
+
+<table>
+  <thead>
+    <tr>
+      <th>Key</th>
+      <th>Behavior</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>
+        <kbd>Tab</kbd>
+      </td>
+      <td>
+        Moves focus to and from the Select. While the list is open, it selects the highlighted
+        option, closes the list and moves on.
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <kbd>Enter</kbd> / <kbd>Space</kbd> / <kbd>ArrowDown</kbd>
+      </td>
+      <td>
+        Closed: opens the list and highlights the selected option (or the first enabled one). Open:{' '}
+        <kbd>Enter</kbd> and <kbd>Space</kbd> select the highlighted option and close.
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <kbd>ArrowUp</kbd> / <kbd>Home</kbd>
+      </td>
+      <td>Closed: opens the list and highlights the first enabled option.</td>
+    </tr>
+    <tr>
+      <td>
+        <kbd>End</kbd>
+      </td>
+      <td>Closed: opens the list and highlights the last enabled option.</td>
+    </tr>
+    <tr>
+      <td>
+        <kbd>ArrowDown</kbd> / <kbd>ArrowUp</kbd>
+      </td>
+      <td>Open: highlights the next or previous enabled option. It stops at the ends.</td>
+    </tr>
+    <tr>
+      <td>
+        <kbd>Home</kbd> / <kbd>End</kbd>
+      </td>
+      <td>Open: highlights the first or last enabled option.</td>
+    </tr>
+    <tr>
+      <td>
+        <kbd>PageUp</kbd> / <kbd>PageDown</kbd>
+      </td>
+      <td>Open: moves the highlight up or down by 10 enabled options.</td>
+    </tr>
+    <tr>
+      <td>
+        <kbd>Alt</kbd>+<kbd>ArrowUp</kbd>
+      </td>
+      <td>Open: selects the highlighted option and closes the list.</td>
+    </tr>
+    <tr>
+      <td>
+        <kbd>Escape</kbd>
+      </td>
+      <td>Open: closes the list without changing the value. An enclosing Dialog stays open.</td>
+    </tr>
+    <tr>
+      <td>Type a character</td>
+      <td>
+        Highlights the next option whose label starts with the typed text, and opens the list if it
+        is closed. Typing quickly matches several letters, so <kbd>Space</kbd> continues a search
+        such as "new y". Typing the same letter again cycles through matches.
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+**Focus.** Focus stays on the combobox while the list is open, including when you click or
+scroll the list. Clicking the label focuses the combobox without opening it, as with a native
+`<select>`. Selecting an option keeps focus on the combobox.
+
+**Screen reader.**
+
+- Announced as a combobox named by the label, with the selected option's label (or the
+  placeholder) as its value, and its expanded state.
+- As the highlight moves, the highlighted option is read through `aria-activedescendant`, with
+  its selected or disabled state and its group.
+- The description and the error are linked with `aria-describedby`, in that order.
+- "invalid" comes from `aria-invalid="true"`, and "required" from `aria-required="true"`.
+- The chevron and check icons are hidden.
+
+**Form guidance.**
+
+- `required` is announced only. Check for an empty value (`''`) on submit and show an
+  `errorMessage`, or use NativeSelect for native validation.
+- Validate on submit or when the user leaves the field, not every time the value changes.
+- On submit, move focus to the first invalid field.
+
+**What you must provide.**
+
+- A `label`. It is required.
+- Options with unique, non-empty `value`s and clear labels.
+- An `errorMessage` whenever `invalid` is true.
+- Your own validation when the field is `required`.
+
+**Verified.** Automated: unit tests with axe, plus axe on every story in light and dark themes
+in Chromium, Firefox and WebKit. Not yet verified with NVDA, JAWS or VoiceOver.
+
+## Do / Don't
+
+**Do**
+
+- Use a Select for one choice from about seven or more options.
+- Use a placeholder such as "Choose a region" when there is no sensible default.
+- Group long lists with option groups.
+- Validate `required` yourself, on submit, and focus the first invalid field.
+
+**Don't**
+
+- Don't use a Select for two to five options. Use a RadioGroup.
+- Don't rely on `required` to stop submission. Use NativeSelect if you need native validation.
+- Don't use a Select for actions. Use a Menu.
+- Don't navigate or submit when the value changes.
+- Don't use a Select for multiple choices. Use checkboxes.

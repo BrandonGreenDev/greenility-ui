@@ -8,6 +8,7 @@ import { DialogClose } from './DialogClose';
 
 const meta = {
   title: 'Components/Dialog',
+  tags: ['!autodocs'],
   component: Dialog,
   args: {
     title: 'Edit site details',

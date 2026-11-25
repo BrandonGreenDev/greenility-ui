@@ -1,0 +1,228 @@
+import { ArgTypes, Canvas, Meta } from '@storybook/addon-docs/blocks';
+import { Menu, MenuGroup, MenuItem } from './Menu';
+import * as MenuStories from './Menu.stories';
+
+<Meta of={MenuStories} />
+
+# Menu
+
+Menu is a menu button: a trigger that opens a list of actions, such as Edit, Duplicate and
+Delete for a row. It is for actions only. For navigation, use links. To choose a value in a
+form, use [Select](?path=/docs/components-select--docs). You compose it from `MenuItem`,
+`MenuGroup` and `MenuSeparator`.
+
+## Usage
+
+```tsx
+import 'greenility-ui/styles.css'; // once, at the root of your app
+import { Button, Menu, MenuGroup, MenuItem, MenuSeparator } from 'greenility-ui';
+
+<Menu trigger={<Button variant="secondary">Actions</Button>}>
+  <MenuItem startIcon={<PencilIcon />} onSelect={edit}>
+    Edit
+  </MenuItem>
+  <MenuItem onSelect={duplicate}>Duplicate</MenuItem>
+  <MenuItem disabled>Archive</MenuItem>
+  <MenuSeparator />
+  <MenuGroup label="Danger zone">
+    <MenuItem onSelect={remove}>Delete site</MenuItem>
+  </MenuGroup>
+</Menu>;
+```
+
+`PencilIcon` stands for any icon element from your own icon set. The `trigger` is cloned with
+`aria-haspopup="menu"`, `aria-expanded`, `aria-controls`, an `id` (unless it has one) and event
+handlers. Its own handlers run first and its ref is kept.
+
+<Canvas of={MenuStories.Default} />
+
+## Examples
+
+### Plain items
+
+<Canvas of={MenuStories.Simple} />
+
+### Icon button trigger
+
+An IconButton works as the trigger. It keeps its name, and its tooltip hides while the menu is
+open.
+
+<Canvas of={MenuStories.OpenedByIconButton} />
+
+### Placement and alignment
+
+`placement` is the preferred side (`bottom` by default) and `align` lines the menu up with the
+trigger's `start`, `center` or `end` edge. The menu flips and shifts to stay inside the
+viewport. `start` and `end` follow the text direction.
+
+<Canvas of={MenuStories.PlacementTop} />
+
+<Canvas of={MenuStories.AlignEnd} />
+
+<Canvas of={MenuStories.NearViewportEdge} />
+
+### Right to left
+
+<Canvas of={MenuStories.RightToLeft} />
+
+### Many items
+
+A long menu scrolls inside its panel, and the focused item is kept in view without scrolling
+the page. Type letters to jump to an item.
+
+<Canvas of={MenuStories.ManyItems} />
+
+### Opening a dialog
+
+`onSelect` runs after the menu has closed and focus is back on the trigger. A Dialog opened
+from `onSelect` therefore returns focus to the menu button when it closes. Because `onSelect`
+runs in the same user action, it can also copy to the clipboard or open a window.
+
+<Canvas of={MenuStories.SelectOpensDialog} />
+
+### Controlled
+
+<Canvas of={MenuStories.Controlled} />
+
+## Props
+
+### Menu
+
+The ref and any other props go to the `role="menu"` `<div>`. The menu is mounted only while it
+is open, so the ref is `null` while closed.
+
+<ArgTypes of={Menu} />
+
+### MenuItem
+
+Renders `<button type="button" role="menuitem">`. The ref and any other props go to it. A
+consumer `onClick` runs first and can cancel the selection with `event.preventDefault()`.
+
+<ArgTypes of={MenuItem} />
+
+### MenuGroup
+
+A `<div role="group">` named by its visible `label`.
+
+<ArgTypes of={MenuGroup} />
+
+### MenuSeparator
+
+A `<div role="separator">` between items. It is not focusable and takes no props of its own;
+the ref and any `<div>` attributes go to the `<div>`.
+
+## Accessibility
+
+**Pattern.** [WAI-ARIA APG Menu Button](https://www.w3.org/WAI/ARIA/apg/patterns/menu-button/),
+with a `role="menu"` popup of `menuitem` elements.
+
+**Keyboard.**
+
+<table>
+  <thead>
+    <tr>
+      <th>Key</th>
+      <th>Behavior</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>
+        <kbd>Enter</kbd> / <kbd>Space</kbd> / <kbd>ArrowDown</kbd>
+      </td>
+      <td>On the trigger: opens the menu and focuses the first item.</td>
+    </tr>
+    <tr>
+      <td>
+        <kbd>ArrowUp</kbd>
+      </td>
+      <td>On the trigger: opens the menu and focuses the last item.</td>
+    </tr>
+    <tr>
+      <td>
+        <kbd>ArrowDown</kbd> / <kbd>ArrowUp</kbd>
+      </td>
+      <td>In the menu: moves to the next or previous item, wrapping at the ends.</td>
+    </tr>
+    <tr>
+      <td>
+        <kbd>Home</kbd> / <kbd>End</kbd>
+      </td>
+      <td>Moves to the first or last item.</td>
+    </tr>
+    <tr>
+      <td>Type a character</td>
+      <td>
+        Moves to the next item whose label starts with the typed text. Typing quickly matches
+        several letters; the search resets after half a second. Typing the same letter again cycles
+        through items that start with it. Use <code>textValue</code> when an item's content is not
+        plain text.
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <kbd>Enter</kbd> / <kbd>Space</kbd>
+      </td>
+      <td>
+        In the menu: activates the focused item. The menu closes, focus returns to the trigger, then{' '}
+        <code>onSelect</code> runs. Does nothing on a disabled item.
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <kbd>Escape</kbd>
+      </td>
+      <td>Closes the menu and returns focus to the trigger. An enclosing Dialog stays open.</td>
+    </tr>
+    <tr>
+      <td>
+        <kbd>Tab</kbd> / <kbd>Shift</kbd>+<kbd>Tab</kbd>
+      </td>
+      <td>Closes the menu and moves focus on as usual.</td>
+    </tr>
+  </tbody>
+</table>
+
+**Focus.**
+
+- Only one item is focused at a time; items are not separate tab stops.
+- Disabled items stay focusable, so arrow keys reach them and screen reader users can find out
+  they exist. They are announced as unavailable and cannot be activated.
+- Hovering an item with the mouse moves focus to it, so the keyboard continues from there.
+- Activating an item, <kbd>Escape</kbd> and clicking the trigger again return focus to the
+  trigger. Tab, a click outside or focus moving elsewhere close the menu without moving focus.
+
+**Screen reader.**
+
+- The trigger is announced as a menu button with its expanded state.
+- The menu is named by the trigger. Items are exposed as menu items, which screen readers
+  usually read with their position, for example "Duplicate, menu item, 2 of 4".
+- Groups are announced with their `label`. Separators are not focusable.
+- Icons are decorative and hidden.
+
+**What you must provide.**
+
+- A trigger with a clear name, such as "Actions" or "More actions for Site A".
+- Items whose labels are actions (verbs), such as "Duplicate".
+- `textValue` for items whose content is not plain text.
+
+**Verified.** Automated: unit tests with axe, plus axe on every story in light and dark themes
+in Chromium, Firefox and WebKit. Not yet verified with NVDA, JAWS or VoiceOver.
+
+## Do / Don't
+
+**Do**
+
+- Use a Menu for a set of actions on one thing, such as a row or a report.
+- Start item labels with a verb, and end with "…" when the item opens a dialog.
+- Group related actions with `MenuGroup`, and put destructive actions last.
+- Open a Dialog or AlertDialog from `onSelect` for actions that need more input or a
+  confirmation.
+
+**Don't**
+
+- Don't use a Menu for site navigation. Use links in a `<nav>`.
+- Don't use a Menu to pick a form value. Use Select or NativeSelect.
+- Don't hide a disabled item. Keep it and explain elsewhere why it is unavailable.
+- Don't put fields, checkboxes or other controls inside a Menu.
+- Don't nest menus.

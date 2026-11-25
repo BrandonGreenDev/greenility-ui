@@ -160,6 +160,7 @@ const getRowId = (row: Project) => row.id;
 
 const meta = {
   title: 'Components/DataTable',
+  tags: ['!autodocs'],
   component: DataTable<Project>,
   args: {
     caption: 'Renewable projects',

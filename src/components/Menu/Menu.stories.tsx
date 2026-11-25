@@ -71,6 +71,7 @@ const items = (
 
 const meta = {
   title: 'Components/Menu',
+  tags: ['!autodocs'],
   component: Menu,
   subcomponents: { MenuItem, MenuGroup, MenuSeparator },
   args: {

@@ -2,7 +2,8 @@ import type { Meta, StoryObj } from '@storybook/react-vite';
 import { useState, type SyntheticEvent } from 'react';
 import { userEvent, within } from 'storybook/test';
 import { Button } from '../Button';
-import { Select, type SelectOption, type SelectOptionGroup, type SelectProps } from './Select';
+import type { SelectOption, SelectOptionGroup } from './options';
+import { Select, type SelectProps } from './Select';
 
 const regions: SelectOption[] = [
   { value: 'north', label: 'North' },
@@ -67,6 +68,7 @@ const countries: SelectOption[] = [
 
 const meta = {
   title: 'Components/Select',
+  tags: ['!autodocs'],
   component: Select,
   args: {
     label: 'Region',

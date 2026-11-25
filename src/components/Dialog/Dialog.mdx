@@ -1,0 +1,235 @@
+import { ArgTypes, Canvas, Meta } from '@storybook/addon-docs/blocks';
+import { DialogClose } from './DialogClose';
+import * as DialogStories from './Dialog.stories';
+
+<Meta of={DialogStories} />
+
+# Dialog
+
+Dialog is a modal window for a focused task, such as editing a record or reading terms. It is a
+native `<dialog>` opened with `showModal()`, so the browser makes the page behind it inert, puts
+it in the top layer and draws the backdrop. You pass a `title`, an optional `description`, the
+body as children and a `footer` of actions. `DialogClose` is a Button that closes the nearest
+dialog. For a destructive confirmation, use [AlertDialog](?path=/docs/components-alertdialog--docs).
+
+## Usage
+
+```tsx
+import 'greenility-ui/styles.css'; // once, at the root of your app
+import { Button, Dialog, DialogClose, TextField } from 'greenility-ui';
+
+<Dialog
+  title="Edit site details"
+  description="Changes apply to every report that includes this site."
+  trigger={<Button>Edit site</Button>}
+  footer={
+    <>
+      <DialogClose>Cancel</DialogClose>
+      <DialogClose variant="primary" onClick={save}>
+        Save
+      </DialogClose>
+    </>
+  }
+>
+  <TextField label="Site name" defaultValue="Rotterdam warehouse" />
+</Dialog>;
+```
+
+The `trigger` is cloned with an `onClick` that opens the dialog. Your own `onClick` on it runs
+first; call `event.preventDefault()` there to stop the dialog opening.
+
+<Canvas of={DialogStories.Default} />
+
+## Examples
+
+Each example shows its trigger button. Select it to open the dialog.
+
+### Sizes
+
+`size` sets the panel's maximum width: `sm`, `md` (default) or `lg`. On a narrow screen every
+size fills the available width.
+
+<Canvas of={DialogStories.Small} />
+
+<Canvas of={DialogStories.Large} />
+
+### Without a description
+
+Without `description` there is no `aria-describedby`. Put short context in the description
+when you have it: screen readers read it right after the title.
+
+<Canvas of={DialogStories.WithoutDescription} />
+
+### Without a footer
+
+When nothing in the body or footer can take focus, focus goes to the close button.
+
+<Canvas of={DialogStories.NoFooter} />
+
+### Long scrolling body
+
+The header and footer stay in view and only the body scrolls. A scrolling body becomes a tab
+stop, so keyboard users can scroll it with the arrow keys. It is a group named by the title.
+When the first control in the body is out of view, the body itself gets focus on open, so
+reading starts at the top.
+
+<Canvas of={DialogStories.LongScrollingBody} />
+
+### Controlled
+
+Pass `open` and `onOpenChange` to open the dialog from anywhere, without a `trigger`.
+`onOpenChange` receives only the requested state: `false` from the close button,
+`DialogClose`, <kbd>Escape</kbd> or a backdrop click.
+
+<Canvas of={DialogStories.Controlled} />
+
+### Initial focus
+
+`initialFocusRef` picks the element that should get focus on open, for example the field that
+matters most.
+
+<Canvas of={DialogStories.InitialFocus} />
+
+### Return focus
+
+When the trigger no longer exists after the dialog closes, such as a deleted row, pass
+`returnFocusRef` so focus lands somewhere useful instead of on the page body.
+
+<Canvas of={DialogStories.ReturnFocus} />
+
+### Nested dialogs
+
+A dialog can open another dialog. <kbd>Escape</kbd> and a backdrop click close only the
+innermost one, and focus returns to the button that opened it.
+
+<Canvas of={DialogStories.Nested} />
+
+### Custom close label
+
+`closeLabel` sets the accessible name of the close button ("Close" by default). Use it to
+translate the label or to make it more specific.
+
+<Canvas of={DialogStories.CustomCloseLabel} />
+
+## Props
+
+### Dialog
+
+The ref and any other props go to the native `<dialog>`. The body is unmounted while the
+dialog is closed, so its state resets on every open.
+
+<ArgTypes of={DialogStories} />
+
+### DialogClose
+
+A Button that closes the nearest Dialog or AlertDialog after its own `onClick`, unless that
+handler calls `event.preventDefault()`. It takes every Button prop and defaults to
+`variant="secondary"`. It throws when rendered outside a dialog.
+
+<ArgTypes of={DialogClose} />
+
+## Accessibility
+
+**Pattern.** [WAI-ARIA APG Dialog (Modal)](https://www.w3.org/WAI/ARIA/apg/patterns/dialog-modal/),
+met by the native `<dialog>` element opened with `showModal()`. The browser makes everything
+outside it inert, so there is no JavaScript focus trap.
+
+**Keyboard.**
+
+<table>
+  <thead>
+    <tr>
+      <th>Key</th>
+      <th>Behavior</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>
+        <kbd>Tab</kbd> / <kbd>Shift</kbd>+<kbd>Tab</kbd>
+      </td>
+      <td>
+        Moves focus through the controls in the dialog. The page behind is inert, so focus never
+        reaches it. Some browsers let focus move on to the browser's own toolbar, which is normal
+        platform behavior.
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <kbd>Escape</kbd>
+      </td>
+      <td>
+        Closes the dialog. If a Menu, Select or nested Dialog is open inside it, only that inner
+        layer closes. <kbd>Escape</kbd> during text composition (IME) does not close it.
+      </td>
+    </tr>
+    <tr>
+      <td>Arrow keys</td>
+      <td>Scroll the body when it overflows and has focus.</td>
+    </tr>
+  </tbody>
+</table>
+
+**Focus.**
+
+- On open, focus goes to `initialFocusRef` if you set it. Otherwise it goes to the first
+  focusable element in the body, then in the footer, then to the close button, then to the
+  panel itself. Body content is preferred over the close button in the header, so users start
+  in the content.
+- If the body scrolls and its first focusable element is out of view, the body gets focus
+  instead, so reading starts at the top. On a very short screen, where the whole panel
+  scrolls, the panel gets focus for the same reason.
+- On close, focus returns to the element that had focus before the dialog opened (usually the
+  trigger), or to `returnFocusRef` when you set it.
+- If the dialog unmounts while open, for example on a route change, it still closes and returns
+  focus.
+
+**Pointer.** A click on the backdrop closes the dialog. A drag that starts inside the panel and
+ends on the backdrop does not count, and a click that closes an open Menu or Select inside the
+dialog does not also close the dialog.
+
+**Scroll and reflow.** While a dialog is open, the page behind it does not scroll. This is done
+in CSS with `scrollbar-gutter: stable`, so the layout does not shift. At 320 CSS pixels wide or
+400% zoom, the panel fills the width and the dialog scrolls instead of clipping. On short
+screens (30rem high or less), the whole panel scrolls, not only the body. The footer buttons
+wrap onto new lines when there is not enough room.
+
+**Screen reader.**
+
+- The dialog is announced as a dialog, named by `title` (an `<h2>`) through
+  `aria-labelledby` and described by `description` through `aria-describedby`.
+- The page behind is removed from the accessibility tree while the dialog is open.
+- The close button is announced as "Close" (or your `closeLabel`). Its tooltip is decorative.
+- Toasts shown while the dialog is open move into the dialog, so they stay clickable and are
+  still announced.
+
+**What you must provide.**
+
+- A meaningful `title` that names the task, such as "Edit site details". An empty title logs a
+  console warning, because the dialog would have no accessible name.
+- A `description` when the user needs context before acting.
+- At least one way to finish the task, usually a `DialogClose` and a primary action in the
+  `footer`.
+- A `returnFocusRef` when the action removes the trigger.
+
+**Verified.** Automated: unit tests with axe, plus axe on every story in light and dark themes
+in Chromium, Firefox and WebKit. Not yet verified with NVDA, JAWS or VoiceOver.
+
+## Do / Don't
+
+**Do**
+
+- Use a Dialog for a short task that needs the user's full attention.
+- Write a title that names the task, and keep the footer to one or two actions.
+- Use `DialogClose` for Cancel and for actions that should close the dialog.
+- Set `returnFocusRef` when the action deletes the element that opened the dialog.
+- Use an AlertDialog for destructive confirmations.
+
+**Don't**
+
+- Don't open a dialog on page load or without a user action.
+- Don't put long, multi-step flows in a dialog. Use a page.
+- Don't use a generic title such as "Dialog" or "Are you sure?".
+- Don't stack more than two dialogs.
+- Don't render your own `open` attribute on the `<dialog>`. Control it with `open` and
+  `onOpenChange`.

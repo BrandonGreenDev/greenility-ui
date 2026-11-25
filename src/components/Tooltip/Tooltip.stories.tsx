@@ -9,6 +9,7 @@ import { Tooltip } from './Tooltip';
 
 const meta = {
   title: 'Components/Tooltip',
+  tags: ['!autodocs'],
   component: Tooltip,
   args: {
     content: 'Saves a draft you can finish later',

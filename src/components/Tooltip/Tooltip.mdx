@@ -1,0 +1,184 @@
+import { ArgTypes, Canvas, Meta } from '@storybook/addon-docs/blocks';
+import * as TooltipStories from './Tooltip.stories';
+
+<Meta of={TooltipStories} />
+
+# Tooltip
+
+Tooltip shows a short text hint next to a control, such as "Saves a draft you can finish
+later" on a "Save draft" button. It appears on hover after a short delay and immediately on
+keyboard focus. The text becomes the control's accessible description. A tooltip is only for
+supplementary text: the control must make sense without it, and it can never hold links,
+buttons or other interactive content.
+
+## Usage
+
+```tsx
+import 'greenility-ui/styles.css'; // once, at the root of your app
+import { Button, Tooltip } from 'greenility-ui';
+
+<Tooltip content="Saves a draft you can finish later">
+  <Button variant="secondary">Save draft</Button>
+</Tooltip>;
+```
+
+The child must be one focusable element, such as a Button or a link. It is cloned with
+`aria-describedby` and event handlers. Its own handlers run first and its ref is kept.
+
+<Canvas of={TooltipStories.OnButtonWithDescription} />
+
+## Examples
+
+Examples that start with the tooltip open run in their own frame, so each bubble is positioned
+against its own button.
+
+### Placement
+
+`placement` is the preferred side: `top` (default), `bottom`, `start` or `end`. The tooltip
+flips to the opposite side when there is no room, and shifts to stay inside the viewport.
+`start` and `end` follow the text direction.
+
+<Canvas of={TooltipStories.AllPlacements} story={{ inline: false, height: '240px' }} />
+
+### Right to left
+
+In a `dir="rtl"` container, `start` opens on the right. The direction is read from the nearest
+`dir` attribute.
+
+<Canvas of={TooltipStories.RightToLeft} story={{ inline: false, height: '240px' }} />
+
+### Long text
+
+Text wraps at a maximum width. Keep tooltips to one short sentence; longer help belongs on the
+page, for example as a field `description`.
+
+<Canvas of={TooltipStories.LongText} story={{ inline: false, height: '240px' }} />
+
+### Decorative
+
+`decorative` hides the tooltip from assistive technology: it gets `aria-hidden`, no
+`role="tooltip"` and no `aria-describedby`. Use it only when the text repeats the control's
+accessible name, so screen readers do not hear it twice.
+
+<Canvas of={TooltipStories.Decorative} story={{ inline: false, height: '240px' }} />
+
+### IconButton
+
+IconButton already shows its `label` as a decorative tooltip, so you do not need to wrap it.
+Set `tooltip={false}` on the IconButton to turn this off. See
+[IconButton](?path=/docs/components-iconbutton--docs).
+
+<Canvas of={TooltipStories.IconButtonTooltip} />
+
+### Disabled
+
+`disabled` renders the child unchanged, with no tooltip and no description. Use it when the
+trigger is disabled, since a disabled button gets no hover or focus events anyway.
+
+<Canvas of={TooltipStories.Disabled} />
+
+### Controlled
+
+`open` and `onOpenChange` let the parent own the state. Hover, focus, <kbd>Escape</kbd>, a
+press and leaving still request changes through `onOpenChange`.
+
+<Canvas of={TooltipStories.Controlled} story={{ inline: false, height: '240px' }} />
+
+## Props
+
+The ref and any other props go to the tooltip bubble `<div>`. The bubble is the trigger's next
+DOM sibling and stays mounted while hidden, so the trigger's `aria-describedby` always points
+to an element that exists.
+
+<ArgTypes of={TooltipStories} />
+
+## Accessibility
+
+**Pattern.** [WAI-ARIA APG Tooltip](https://www.w3.org/WAI/ARIA/apg/patterns/tooltip/): a
+`role="tooltip"` element linked to its trigger with `aria-describedby`. It also meets
+[WCAG 1.4.13 Content on Hover or Focus](https://www.w3.org/WAI/WCAG22/Understanding/content-on-hover-or-focus.html).
+
+**Keyboard.**
+
+<table>
+  <thead>
+    <tr>
+      <th>Key</th>
+      <th>Behavior</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>
+        <kbd>Tab</kbd>
+      </td>
+      <td>Keyboard focus on the trigger shows the tooltip at once. Moving focus away hides it.</td>
+    </tr>
+    <tr>
+      <td>
+        <kbd>Escape</kbd>
+      </td>
+      <td>
+        Hides the tooltip without moving focus. The tooltip is not a dismiss layer, so the same key
+        press also reaches the layer around it: one <kbd>Escape</kbd> hides the tooltip and closes
+        an enclosing Menu, Dialog or toast. The tooltip stays hidden until focus or the pointer
+        leaves and comes back.
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <kbd>Enter</kbd> / <kbd>Space</kbd>
+      </td>
+      <td>Activates the trigger as usual and hides the tooltip.</td>
+    </tr>
+  </tbody>
+</table>
+
+**Showing and hiding.**
+
+- Hover shows the tooltip after `delay` (500 ms by default). Keyboard focus shows it
+  immediately. A mouse click or touch does not show it, so tooltips do not flash on every
+  click. Keyboard focus is detected with `:focus-visible`.
+- The pointer can move from the trigger onto the tooltip without it closing (hoverable).
+- It stays visible while either hover or keyboard focus remains, and it never times out
+  (persistent).
+- <kbd>Escape</kbd> hides it without moving the pointer or focus (dismissible).
+- It does not show while the trigger has `aria-expanded="true"`, for example while the
+  trigger's Menu is open.
+
+**Screen reader.**
+
+- The tooltip text is read as the trigger's description, after its name and role, for example
+  "Save draft, button, Saves a draft you can finish later".
+- The text is available while the tooltip is hidden too, because the bubble stays mounted.
+- With `decorative`, nothing extra is read.
+- Touch screen users never see the tooltip. Screen reader users on touch devices still hear the
+  description.
+
+**What you must provide.**
+
+- A trigger with its own accessible name. The tooltip is a description, not a name.
+- Plain, short text that adds to the name. Never put essential information only in a tooltip.
+- `decorative` when the text only repeats the name.
+
+**Verified.** Automated: unit tests with axe, plus axe on every story in light and dark themes
+in Chromium, Firefox and WebKit. Not yet verified with NVDA, JAWS or VoiceOver.
+
+## Do / Don't
+
+**Do**
+
+- Use a tooltip for a short extra hint, such as what a button does or a keyboard shortcut.
+- Keep it to one short sentence.
+- Wrap a focusable element, so keyboard users can see the tooltip too.
+- Use `decorative` when the text repeats the trigger's name.
+
+**Don't**
+
+- Don't put links, buttons or other interactive content in a tooltip. Use a Dialog or a Menu.
+- Don't put information the user needs to complete a task only in a tooltip. Touch users
+  cannot see it.
+- Don't use a tooltip as the only label of a control. Give the control an accessible name.
+- Don't wrap an IconButton in a Tooltip that repeats its label. IconButton already shows it.
+- Don't put a tooltip on a disabled button to explain why it is disabled. Explain it in
+  visible text instead.

@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
+import { Button } from '../Button';
 import { useState, type ComponentType } from 'react';
 import {
   Accordion,
@@ -59,6 +60,7 @@ function Items({ disabled }: { disabled?: string }) {
 
 const meta = {
   title: 'Components/Accordion',
+  tags: ['!autodocs'],
   component: Accordion as ComponentType<AccordionStoryArgs>,
   subcomponents: { AccordionItem },
   render: (args) => <Accordion {...(args as AccordionProps)} />,
@@ -143,14 +145,15 @@ export const Controlled: Story = {
         <Accordion {...base} value={value} onValueChange={setValue} />
         <p style={{ margin: 0 }}>
           Open: <code>{value === '' ? '(none)' : value}</code>{' '}
-          <button
-            type="button"
+          <Button
+            size="sm"
+            variant="secondary"
             onClick={() => {
               setValue('');
             }}
           >
             Close all
-          </button>
+          </Button>
         </p>
       </div>
     );
@@ -173,14 +176,15 @@ export const ControlledMultiple: Story = {
         <Accordion {...base} multiple value={value} onValueChange={setValue} />
         <p style={{ margin: 0 }}>
           Open: <code>{value.length === 0 ? '(none)' : value.join(', ')}</code>{' '}
-          <button
-            type="button"
+          <Button
+            size="sm"
+            variant="secondary"
             onClick={() => {
               setValue(faq.map((item) => item.value));
             }}
           >
             Open all
-          </button>
+          </Button>
         </p>
       </div>
     );

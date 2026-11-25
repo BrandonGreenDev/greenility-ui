@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
+import { Button } from '../Button';
 import { useState } from 'react';
 import { Tab, TabList, TabPanel, Tabs } from './Tabs';
 
@@ -46,6 +47,7 @@ function Sections({ disabled }: { disabled?: string }) {
 
 const meta = {
   title: 'Components/Tabs',
+  tags: ['!autodocs'],
   component: Tabs,
   subcomponents: { TabList, Tab, TabPanel },
   args: {
@@ -201,14 +203,15 @@ export const Controlled: Story = {
         <Tabs {...args} value={value} onValueChange={setValue} />
         <p style={{ margin: 0 }}>
           Selected: <code>{value}</code>{' '}
-          <button
-            type="button"
+          <Button
+            size="sm"
+            variant="secondary"
             onClick={() => {
               setValue('overview');
             }}
           >
             Reset to Overview
-          </button>
+          </Button>
         </p>
       </div>
     );

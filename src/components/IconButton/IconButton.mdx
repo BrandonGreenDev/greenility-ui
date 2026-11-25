@@ -55,7 +55,9 @@ A disabled IconButton shows no tooltip.
 By default the `label` is also shown as a small tooltip, so sighted mouse and keyboard users
 can read what the icon means. It appears after a short delay on hover and immediately when the
 button receives keyboard focus (not on a mouse click or touch). <kbd>Escape</kbd> hides it
-without moving focus, and the pointer can move onto it without it closing.
+without moving focus, and the pointer can move onto it without it closing. It does not show
+while the button has `aria-expanded="true"`, for example while it is the trigger of an open
+Menu. See [Tooltip](?path=/docs/components-tooltip--docs) for the full behavior.
 
 <Canvas of={IconButtonStories.TooltipOn} />
 
@@ -120,8 +122,9 @@ a native `<button>` with `aria-label`.
         <kbd>Escape</kbd>
       </td>
       <td>
-        Hides the tooltip; focus stays on the button. A second <kbd>Escape</kbd> reaches outer
-        layers, for example closing a Dialog.
+        Hides the tooltip; focus stays on the button. The tooltip is not a dismiss layer, so the
+        same key press also reaches the layer around it: inside a Dialog or an open Menu, one{' '}
+        <kbd>Escape</kbd> hides the tooltip and closes that layer too.
       </td>
     </tr>
   </tbody>

@@ -1,0 +1,390 @@
+import { ArgTypes, Canvas, Meta } from '@storybook/addon-docs/blocks';
+import * as DataTableStories from './DataTable.stories';
+
+<Meta of={DataTableStories} />
+
+# DataTable
+
+DataTable shows rows of data in a native `<table>` that users can sort by column and read page
+by page. It is typed: the row type is inferred from `rows`, and each column definition is
+checked against it. It can sort and paginate in the browser, or, in `manual` mode, render rows
+that your server has already sorted and paginated. A `caption` is required, so every table has
+a name.
+
+## Usage
+
+```tsx
+import 'greenility-ui/styles.css'; // once, at the root of your app
+import { DataTable, type DataTableColumn } from 'greenility-ui';
+
+interface Site {
+  id: string;
+  name: string;
+  country: string;
+  /** Tonnes of CO₂e per year; null until measured. */
+  emissions: number | null;
+  updated: Date;
+}
+
+const columns: DataTableColumn<Site>[] = [
+  { id: 'name', header: 'Site', accessor: 'name', sortable: true, rowHeader: true },
+  { id: 'country', header: 'Country', accessor: 'country', sortable: true },
+  {
+    id: 'emissions',
+    header: 'Emissions (t CO₂e)',
+    accessor: 'emissions',
+    sortable: true,
+    align: 'end',
+    cell: (site) => (site.emissions === null ? '—' : site.emissions.toLocaleString()),
+  },
+  { id: 'updated', header: 'Last updated', accessor: 'updated', sortable: true },
+];
+
+<DataTable
+  caption="Sites"
+  rows={sites}
+  columns={columns}
+  getRowId={(site) => site.id}
+  defaultSort={{ columnId: 'name', direction: 'ascending' }}
+/>;
+```
+
+<Canvas of={DataTableStories.Default} />
+
+## The column API
+
+Each `DataTableColumn<Row>` describes one column:
+
+- `accessor` is a key of `Row` whose value is a plain cell value (string, number, bigint,
+  boolean, `Date`, `null` or `undefined`), or a function `(row) => value`. TypeScript rejects a
+  key that does not exist or whose value is an object, so `accessor: 'nmae'` fails to compile.
+  The value is the default display and the sort input.
+- `cell` renders custom content, such as a Badge or a formatted number. Without it, the value
+  is shown as text, with dates through `toLocaleDateString()` and `null` as an empty cell.
+- `sortable` turns the header into a sort button. In the browser it needs an `accessor` or a
+  `compare` function.
+- `compare` replaces the default ascending order. The default puts empty values last in both
+  directions, sorts numbers, bigints and dates numerically, and sorts strings with a
+  locale-aware, numeric collator.
+- `align: 'end'` right-aligns numbers (left-aligns in right-to-left text) and uses tabular
+  numerals.
+- `rowHeader` renders the column's cells as `<th scope="row">`, which names each row for
+  screen readers. Use it on the column that identifies the row, such as the name.
+- `header` must be plain text, because it is also used in the sort announcement.
+
+`Row` is inferred from `rows` only, so a mismatch is reported on the column definitions. An
+empty literal `rows={[]}` has no type to infer from: pass a typed array, such as
+`const none: Site[] = []`.
+
+## Examples
+
+### Sorting
+
+Selecting a header sorts by that column, ascending. Selecting it again switches to descending.
+A sort change always returns to page 1. Without `defaultSort`, rows keep their source order
+until a header is selected.
+
+<Canvas of={DataTableStories.Unsorted} />
+
+<Canvas of={DataTableStories.SortedByNumberDescending} />
+
+### Custom cells and comparators
+
+`cell` renders any content. Here the status is a Badge; its text carries the meaning, not its
+color. `compare` sorts the stage by project lifecycle instead of alphabetically.
+
+<Canvas of={DataTableStories.CustomCellRender} />
+
+<Canvas of={DataTableStories.CustomCompare} />
+
+### Pagination
+
+Rows are split into pages of `pageSize` (10 by default). `pageSizeOptions` sets the choices in
+the "Rows per page" select. A page-size change returns to page 1. Out-of-range pages are shown
+as the nearest valid page.
+
+<Canvas of={DataTableStories.PageSizes} />
+
+<Canvas of={DataTableStories.StartOnLastPage} />
+
+`paginated={false}` shows every row with no pagination controls.
+
+<Canvas of={DataTableStories.NotPaginated} />
+
+### Empty and loading
+
+With no rows, `emptyState` fills a full-width cell ("No results" by default). `loading` sets
+`aria-busy` on the table and shows a spinner. Without rows, a loading row is shown; with rows,
+the old rows stay visible but muted until the new ones arrive.
+
+<Canvas of={DataTableStories.Empty} />
+
+<Canvas of={DataTableStories.Loading} />
+
+<Canvas of={DataTableStories.LoadingWithRows} />
+
+### Server data (manual mode)
+
+With `manual`, DataTable does not sort or slice. It renders the `rows` you pass (the current
+page only) and reports changes through `onSortChange`, `onPageChange` and `onPageSizeChange`.
+You must pass `totalRows`, the count across all pages, for the range text and page count.
+Control `sort`, `page` and `pageSize`, fetch when they change, and set `loading` until the
+matching response arrives.
+
+<Canvas of={DataTableStories.ManualServerMode} />
+
+```tsx
+const [sort, setSort] = useState<SortState | null>({ columnId: 'name', direction: 'ascending' });
+const [page, setPage] = useState(1);
+const [pageSize, setPageSize] = useState(10);
+const { rows, total, loading } = useSites({ sort, page, pageSize }); // your data hook
+
+<DataTable
+  manual
+  caption="Sites"
+  rows={rows}
+  totalRows={total}
+  loading={loading}
+  columns={columns}
+  getRowId={(site) => site.id}
+  sort={sort}
+  onSortChange={setSort}
+  page={page}
+  onPageChange={setPage}
+  pageSize={pageSize}
+  onPageSizeChange={setPageSize}
+/>;
+```
+
+In `manual` mode a sortable column needs no `accessor` or `compare`, because the server sorts.
+
+### Controlled sort and page
+
+The parent can own `sort`, `page` and `pageSize` without `manual`, and change them from
+outside. Setting `sort` to `null` clears the sort.
+
+<Canvas of={DataTableStories.ControlledSortAndPage} />
+
+### Narrow container
+
+When the table is wider than its container, it scrolls horizontally. While it overflows, the
+scroll container becomes a focusable region named by the caption, so keyboard users can scroll
+it with the arrow keys.
+
+<Canvas of={DataTableStories.NarrowContainer} />
+
+### Hidden caption
+
+`captionHidden` keeps the caption for assistive technology only. Use it when a visible heading
+right above the table already says the same thing.
+
+<Canvas of={DataTableStories.HiddenCaption} />
+
+### Custom messages
+
+Every built-in string can be replaced through `messages`, for example to translate it. Headers
+come from the columns.
+
+<Canvas of={DataTableStories.CustomMessages} />
+
+### Right to left
+
+<Canvas of={DataTableStories.RightToLeft} />
+
+## Props
+
+`className` and `style` go to the outer wrapper. The ref and every other prop go to the
+`<table>`.
+
+<ArgTypes of={DataTableStories} />
+
+### DataTableColumn
+
+<table>
+  <thead>
+    <tr>
+      <th>Field</th>
+      <th>Type</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>
+        <code>id</code>
+      </td>
+      <td>
+        <code>string</code>
+      </td>
+      <td>
+        Required. Stable column id, used in <code>SortState.columnId</code>.
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <code>header</code>
+      </td>
+      <td>
+        <code>string</code>
+      </td>
+      <td>Required. Header text, also used in the sort announcement.</td>
+    </tr>
+    <tr>
+      <td>
+        <code>accessor</code>
+      </td>
+      <td>
+        <code>keyof Row</code> or <code>(row: Row) =&gt; CellValue</code>
+      </td>
+      <td>The raw cell value: the default display and the sort input.</td>
+    </tr>
+    <tr>
+      <td>
+        <code>cell</code>
+      </td>
+      <td>
+        <code>(row: Row) =&gt; ReactNode</code>
+      </td>
+      <td>Custom cell content.</td>
+    </tr>
+    <tr>
+      <td>
+        <code>sortable</code>
+      </td>
+      <td>
+        <code>boolean</code>
+      </td>
+      <td>
+        The header becomes a sort button. Default <code>false</code>.
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <code>compare</code>
+      </td>
+      <td>
+        <code>(a: Row, b: Row) =&gt; number</code>
+      </td>
+      <td>Ascending comparator; negated for descending.</td>
+    </tr>
+    <tr>
+      <td>
+        <code>align</code>
+      </td>
+      <td>
+        <code>'start' | 'end'</code>
+      </td>
+      <td>
+        Text alignment of the header and cells. Default <code>'start'</code>.
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <code>rowHeader</code>
+      </td>
+      <td>
+        <code>boolean</code>
+      </td>
+      <td>
+        Render the cells as <code>&lt;th scope="row"&gt;</code>. Default <code>false</code>.
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+## Accessibility
+
+**Pattern.** A native `<table>` with `<caption>`, `<th scope="col">` and optional
+`<th scope="row">`, following the
+[WAI-ARIA APG Sortable Table example](https://www.w3.org/WAI/ARIA/apg/patterns/table/examples/sortable-table/):
+a `<button>` in each sortable header, and `aria-sort` only on the sorted column. It is not a
+`role="grid"`, because the cells are not interactive and grid navigation would only add
+keystrokes.
+
+**Keyboard.**
+
+<table>
+  <thead>
+    <tr>
+      <th>Key</th>
+      <th>Behavior</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>
+        <kbd>Tab</kbd> / <kbd>Shift</kbd>+<kbd>Tab</kbd>
+      </td>
+      <td>
+        Moves through the scroll region (only while the table overflows), the sort buttons, the
+        "Rows per page" select, and the Previous and Next buttons, in that order. The scroll region
+        comes first because it wraps the table.
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <kbd>Enter</kbd> / <kbd>Space</kbd>
+      </td>
+      <td>
+        On a sort button: sorts ascending, or toggles the direction if the column is already sorted.
+        On Previous or Next: changes the page.
+      </td>
+    </tr>
+    <tr>
+      <td>Arrow keys</td>
+      <td>On the focused scroll region: scroll the table.</td>
+    </tr>
+  </tbody>
+</table>
+
+**Focus.** Previous and Next use `aria-disabled` on the first and last page instead of
+`disabled`, so they stay focusable and focus is not lost when you reach the end. They do
+nothing while unavailable.
+
+**Screen reader.**
+
+- The table is named by its caption. Screen readers read column headers, and row headers when
+  a `rowHeader` column is set, as the user moves between cells.
+- The sorted column's header has `aria-sort="ascending"` or `"descending"`. Other headers have
+  no `aria-sort`. The arrow icons are hidden.
+- Sort, page, page-size and loading changes are announced through one polite status region
+  that is always mounted, once per action. For example, a sort click announces "Sorted by
+  Capacity (MW), descending". When a sort or page change starts a load, the message waits until
+  loading ends and is then read once, together with the new range, such as "Showing 11–20 of
+  42". "Loading" is announced only when the load was not started by the user, such as on
+  first load.
+- The visible range text is not a live region, so it is not read twice.
+- The pagination controls are a group named "Pagination" plus the caption, such as
+  "Pagination Renewable projects", and described by the range text. Several tables on one page
+  stay distinct.
+- While the table overflows, its scroll container is a region named by the caption.
+
+**What you must provide.**
+
+- A `caption` that names the table. It is required. Use `captionHidden` only when a visible
+  heading already names it.
+- A `rowHeader` column that identifies each row, such as the name.
+- Plain-text `header`s, including units, such as "Capacity (MW)".
+- In `manual` mode: `totalRows`, and `loading` while a request runs.
+- Translated `messages` when your app is not in English.
+
+**Verified.** Automated: unit tests with axe, plus axe on every story in light and dark themes
+in Chromium, Firefox and WebKit. Not yet verified with NVDA, JAWS or VoiceOver.
+
+## Do / Don't
+
+**Do**
+
+- Give every table a caption that says what the rows are.
+- Mark the identifying column with `rowHeader`.
+- Right-align numbers with `align: 'end'`, and put units in the header.
+- Use `manual` mode for large data sets that the server sorts and pages.
+- Keep `loading` true until the response for the latest request arrives.
+
+**Don't**
+
+- Don't use a DataTable for page layout. Use CSS grid or flexbox.
+- Don't put buttons or links in every cell to make rows clickable. Link from the row header.
+- Don't make a column sortable when the order would mean nothing, such as free-text notes.
+- Don't hide the caption when there is no visible heading for the table.
+- Don't rely on color alone in a custom cell. Include text, as the Badge examples do.

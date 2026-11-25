@@ -26,17 +26,9 @@ import { Field, FieldDescription, FieldError, FieldLabel } from '../Field';
 import controlStyles from '../Field/control.module.css';
 import floatingStyles from '../Floating/floating.module.css';
 import { CheckIcon, ChevronDownIcon } from '../Icon';
-import {
-  flattenOptions,
-  type FlatOption,
-  type SelectItem,
-  type SelectOption,
-  type SelectOptionGroup,
-} from './options';
+import { flattenOptions, type FlatOption, type SelectItem } from './options';
 import styles from './Select.module.css';
 import { useFormReset } from './useFormReset';
-
-export type { SelectOption, SelectOptionGroup };
 
 export interface SelectProps
   extends

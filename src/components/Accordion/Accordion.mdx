@@ -1,0 +1,186 @@
+import { ArgTypes, Canvas, Meta } from '@storybook/addon-docs/blocks';
+import { Accordion, AccordionItem } from './Accordion';
+import * as AccordionStories from './Accordion.stories';
+
+<Meta of={AccordionStories} />
+
+# Accordion
+
+Accordion is a stack of sections that the user can show and hide, such as the questions in an
+FAQ. Each section has a heading with a toggle button and a panel of content. By default one
+section is open at a time and it can be closed again. You can also let several sections open at
+once, or keep one always open. You compose it from `AccordionItem` elements.
+
+## Usage
+
+```tsx
+import 'greenility-ui/styles.css'; // once, at the root of your app
+import { Accordion, AccordionItem } from 'greenility-ui';
+
+<Accordion headingLevel={3}>
+  <AccordionItem value="scope" title="Which emission scopes are covered?">
+    Scope 1 and 2 are calculated from your energy data.
+  </AccordionItem>
+  <AccordionItem value="export" title="Can I export the report?">
+    Yes. Reports export to PDF and CSV from the summary page.
+  </AccordionItem>
+</Accordion>;
+```
+
+<Canvas of={AccordionStories.Single} />
+
+## Examples
+
+### Single (default)
+
+One item is open at a time. Opening another item closes the open one, and the open item can be
+closed, leaving none open. `value` and `defaultValue` are a string; `''` means none open.
+
+<Canvas of={AccordionStories.DefaultExpanded} />
+
+### Multiple
+
+With `multiple`, items open and close independently. `value` and `defaultValue` are an array
+of item values, and `onValueChange` receives the new array.
+
+<Canvas of={AccordionStories.Multiple} />
+
+### Non-collapsible
+
+With `collapsible={false}`, one item always stays open. The open item's trigger gets
+`aria-disabled="true"` and its chevron is hidden, because pressing it would do nothing. Set a
+`defaultValue` so an item starts open.
+
+<Canvas of={AccordionStories.NonCollapsible} />
+
+### Disabled item
+
+A disabled item uses native `disabled`: it cannot be opened, is not focusable and is skipped by
+the arrow keys.
+
+<Canvas of={AccordionStories.DisabledItem} />
+
+### Heading level
+
+Each trigger sits inside a heading. `headingLevel` sets its level (`3` by default). Choose the
+level that fits the page outline: one level below the heading the accordion sits under. Here
+the triggers are `<h2>` elements.
+
+<Canvas of={AccordionStories.HeadingLevel} />
+
+### Right to left
+
+<Canvas of={AccordionStories.RightToLeft} />
+
+### Nested
+
+An accordion inside a panel works on its own. Its arrow keys move only between its own items.
+
+<Canvas of={AccordionStories.Nested} />
+
+### Controlled
+
+<Canvas of={AccordionStories.Controlled} />
+
+<Canvas of={AccordionStories.ControlledMultiple} />
+
+## Props
+
+### Accordion
+
+The ref and any other props go to the root `<div>`. The props are a union on `multiple`: in
+single mode `value` is a string and `collapsible` is available; in multiple mode `value` is a
+string array.
+
+<ArgTypes of={Accordion} />
+
+### AccordionItem
+
+The ref and any other props go to the item `<div>`.
+
+<ArgTypes of={AccordionItem} />
+
+## Accessibility
+
+**Pattern.** [WAI-ARIA APG Accordion](https://www.w3.org/WAI/ARIA/apg/patterns/accordion/): a
+`<button>` inside a heading, with `aria-expanded` and `aria-controls`, controlling a
+`role="region"` panel named by the button. It does not use `<details>`, because a heading
+inside `<summary>` loses its heading semantics.
+
+**Keyboard.**
+
+<table>
+  <thead>
+    <tr>
+      <th>Key</th>
+      <th>Behavior</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>
+        <kbd>Enter</kbd> / <kbd>Space</kbd>
+      </td>
+      <td>Opens or closes the focused item.</td>
+    </tr>
+    <tr>
+      <td>
+        <kbd>Tab</kbd> / <kbd>Shift</kbd>+<kbd>Tab</kbd>
+      </td>
+      <td>
+        Moves through the triggers and the focusable content of open panels. Closed panels are
+        skipped.
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <kbd>ArrowDown</kbd> / <kbd>ArrowUp</kbd>
+      </td>
+      <td>Moves to the next or previous enabled trigger, wrapping at the ends.</td>
+    </tr>
+    <tr>
+      <td>
+        <kbd>Home</kbd> / <kbd>End</kbd>
+      </td>
+      <td>Moves to the first or last enabled trigger.</td>
+    </tr>
+  </tbody>
+</table>
+
+**Focus.** Native. Opening or closing an item does not move focus. If a panel is closed from
+code while focus is inside it, focus returns to its trigger.
+
+**Screen reader.**
+
+- Each trigger is announced as a button inside a heading of the chosen level, with its
+  expanded or collapsed state. Screen reader users can jump between items with heading
+  navigation.
+- An open panel is a region named by its trigger.
+- Closed panels are `inert` and hidden, so their content is not read and cannot be focused.
+- In non-collapsible mode, the open trigger is announced as unavailable (`aria-disabled`).
+
+**What you must provide.**
+
+- A `headingLevel` that fits the page outline, so headings do not skip levels.
+- A short, descriptive `title` for each item. It names both the button and the region.
+- A unique `value` for each item.
+
+**Verified.** Automated: unit tests with axe, plus axe on every story in light and dark themes
+in Chromium, Firefox and WebKit. Not yet verified with NVDA, JAWS or VoiceOver.
+
+## Do / Don't
+
+**Do**
+
+- Use an Accordion for content that users scan and read only in part, such as an FAQ.
+- Write titles as clear questions or topics.
+- Set `headingLevel` to match the page outline.
+- Use `multiple` when users may want to compare sections.
+
+**Don't**
+
+- Don't hide essential content, such as required form fields, in a closed panel.
+- Don't use an Accordion for a short page that fits on screen. Show the content.
+- Don't put a whole form or long flow in one panel.
+- Don't nest accordions more than one level deep.
+- Don't rely on find-in-page to reveal closed content. It cannot search closed panels.

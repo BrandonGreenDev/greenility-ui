@@ -1,0 +1,222 @@
+import { ArgTypes, Canvas, Meta } from '@storybook/addon-docs/blocks';
+import { Tab, TabList, TabPanel, Tabs } from './Tabs';
+import * as TabsStories from './Tabs.stories';
+
+<Meta of={TabsStories} />
+
+# Tabs
+
+Tabs switch between related panels of content in one view, such as the Overview, Energy and
+Travel sections of a report. Only one panel shows at a time. You compose them from `TabList`,
+`Tab` and `TabPanel`, linked by a shared `value`. All panels stay mounted, so their state is
+kept when the user switches tabs.
+
+## Usage
+
+```tsx
+import 'greenility-ui/styles.css'; // once, at the root of your app
+import { Tab, TabList, TabPanel, Tabs } from 'greenility-ui';
+
+<Tabs defaultValue="overview">
+  <TabList aria-label="Emissions report">
+    <Tab value="overview">Overview</Tab>
+    <Tab value="energy">Energy</Tab>
+    <Tab value="travel">Travel</Tab>
+  </TabList>
+  <TabPanel value="overview">Total footprint for the period.</TabPanel>
+  <TabPanel value="energy">Electricity and heating use per site.</TabPanel>
+  <TabPanel value="travel">Business travel by mode.</TabPanel>
+</Tabs>;
+```
+
+<Canvas of={TabsStories.AutomaticActivation} />
+
+## Examples
+
+### Automatic or manual activation
+
+With `activation="automatic"` (the default), the arrow keys move focus and select the tab at
+the same time, so the panel changes as you move. With `activation="manual"`, the arrow keys
+only move focus; <kbd>Enter</kbd> or <kbd>Space</kbd> selects the focused tab.
+
+Use **automatic** when panels are already loaded and show instantly. It takes the fewest
+keystrokes. Use **manual** when showing a panel is slow or costly, for example when it fetches
+data or renders a large chart, so that moving past a tab does not load it.
+
+<Canvas of={TabsStories.ManualActivation} />
+
+### Default value
+
+Without `defaultValue`, the first enabled tab is selected. This default selection does not
+call `onValueChange`.
+
+<Canvas of={TabsStories.WithDefaultValue} />
+
+### Vertical
+
+`orientation="vertical"` puts the list beside the panels, and <kbd>ArrowUp</kbd> and
+
+<kbd>ArrowDown</kbd> move between tabs.
+
+<Canvas of={TabsStories.Vertical} />
+
+### Disabled tabs
+
+A disabled tab uses native `disabled`: it is skipped by the arrow keys and cannot be clicked.
+If the first tab is disabled, the first enabled tab is selected by default.
+
+<Canvas of={TabsStories.DisabledTab} />
+
+<Canvas of={TabsStories.FirstTabDisabled} />
+
+### Overflow
+
+When the tabs do not fit, the list scrolls horizontally and fades at the edges. The focused or
+selected tab is scrolled into view inside the list; the page itself never scrolls.
+
+<Canvas of={TabsStories.ManyTabs} />
+
+<Canvas of={TabsStories.ManyTabsLateSelection} />
+
+### Right to left
+
+In a `dir="rtl"` container, <kbd>ArrowLeft</kbd> moves to the next tab and
+
+<kbd>ArrowRight</kbd> to the previous one. The direction is read from the nearest `dir` attribute,
+so set `dir` on an ancestor; CSS `direction` alone is not detected.
+
+<Canvas of={TabsStories.RightToLeft} />
+
+<Canvas of={TabsStories.VerticalRightToLeft} />
+
+### Nested
+
+Tabs inside a panel of other Tabs keep their own layout and keys.
+
+<Canvas of={TabsStories.NestedInVertical} />
+
+### Controlled
+
+<Canvas of={TabsStories.Controlled} />
+
+## Props
+
+### Tabs
+
+The ref and any other props go to the root `<div>`.
+
+<ArgTypes of={Tabs} />
+
+### TabList
+
+The `role="tablist"` `<div>`. `Tab` elements must be its direct children. The ref and any other
+props go to it.
+
+<ArgTypes of={TabList} />
+
+### Tab
+
+A `<button role="tab">`. The ref and any other props go to it. Tabs manages its `id`,
+`aria-selected`, `aria-controls` and `tabIndex`.
+
+<ArgTypes of={Tab} />
+
+### TabPanel
+
+A `role="tabpanel"` `<div>` named by its tab. Inactive panels stay mounted with `hidden`. The
+panel is a tab stop (`tabIndex=0`) unless you pass `tabIndex={-1}`, for example when it starts
+with a focusable element.
+
+<ArgTypes of={TabPanel} />
+
+## Accessibility
+
+**Pattern.** [WAI-ARIA APG Tabs](https://www.w3.org/WAI/ARIA/apg/patterns/tabs/), with
+automatic or manual activation.
+
+**Keyboard.**
+
+<table>
+  <thead>
+    <tr>
+      <th>Key</th>
+      <th>Behavior</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>
+        <kbd>Tab</kbd>
+      </td>
+      <td>
+        Moves focus into the tab list, onto the selected tab. Pressed again, it moves to the active
+        panel. The tab list is one tab stop.
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <kbd>ArrowRight</kbd> / <kbd>ArrowLeft</kbd>
+      </td>
+      <td>
+        Horizontal: moves to the next or previous enabled tab, wrapping at the ends. Reversed in
+        right-to-left text. With automatic activation, the tab is also selected.
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <kbd>ArrowDown</kbd> / <kbd>ArrowUp</kbd>
+      </td>
+      <td>Vertical: moves to the next or previous enabled tab, wrapping at the ends.</td>
+    </tr>
+    <tr>
+      <td>
+        <kbd>Home</kbd> / <kbd>End</kbd>
+      </td>
+      <td>Moves to the first or last enabled tab.</td>
+    </tr>
+    <tr>
+      <td>
+        <kbd>Enter</kbd> / <kbd>Space</kbd>
+      </td>
+      <td>Manual activation: selects the focused tab.</td>
+    </tr>
+  </tbody>
+</table>
+
+**Focus.** Only one tab is in the tab order (roving `tabIndex`). With manual activation, the tab
+stop follows the focused tab while focus is in the list, and goes back to the selected tab when
+focus leaves. If the focused tab becomes disabled or is removed, focus moves to the new tab
+stop.
+
+**Screen reader.**
+
+- The list is announced as a tab list, named by its `aria-label` or `aria-labelledby`.
+- Each tab is announced with its selected state and position, for example "Energy, tab,
+  selected, 2 of 4".
+- Each panel is named by its tab, and the selected tab points to it with `aria-controls`.
+- `aria-orientation` tells screen readers which arrow keys to use.
+
+**What you must provide.**
+
+- An `aria-label` or `aria-labelledby` on `TabList` when no nearby heading names it.
+- Short tab labels that describe each panel.
+- A `TabPanel` for every `Tab`, with the same `value`.
+
+**Verified.** Automated: unit tests with axe, plus axe on every story in light and dark themes
+in Chromium, Firefox and WebKit. Not yet verified with NVDA, JAWS or VoiceOver.
+
+## Do / Don't
+
+**Do**
+
+- Use Tabs for related views of the same subject, at the same level.
+- Keep labels short, one or two words.
+- Use manual activation when a panel is slow to show.
+- Name the tab list when the page has more than one set of tabs.
+
+**Don't**
+
+- Don't use Tabs for site navigation between pages. Use links in a `<nav>`.
+- Don't use Tabs for steps the user must complete in order. Use a step-by-step form.
+- Don't hide content the user needs to compare side by side in different tabs.
+- Don't add so many tabs that most are off screen. Use a Select or a different layout.

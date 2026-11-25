@@ -25,6 +25,78 @@ import { NativeSelect } from 'greenility-ui';
 
 <Canvas of={NativeSelectStories.Default} />
 
+## NativeSelect or Select
+
+The library has two single-choice pickers with the same field props. This component used to be
+called `Select`; that name now belongs to the custom one.
+
+<table>
+  <thead>
+    <tr>
+      <th></th>
+      <th>NativeSelect</th>
+      <th>
+        <a href="?path=/docs/components-select--docs">Select</a>
+      </th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th scope="row">Element</th>
+      <td>
+        A styled native <code>&lt;select&gt;</code>
+      </td>
+      <td>
+        A <code>&lt;button role="combobox"&gt;</code> with a custom popup listbox
+      </td>
+    </tr>
+    <tr>
+      <th scope="row">Open list</th>
+      <td>Drawn by the browser or the platform picker on mobile</td>
+      <td>Styled to match the design system in every browser</td>
+    </tr>
+    <tr>
+      <th scope="row">Options</th>
+      <td>
+        <code>&lt;option&gt;</code> and <code>&lt;optgroup&gt;</code> children
+      </td>
+      <td>
+        An <code>options</code> array, with groups
+      </td>
+    </tr>
+    <tr>
+      <th scope="row">
+        <code>required</code>
+      </th>
+      <td>Native constraint validation: the browser blocks submission</td>
+      <td>
+        <code>aria-required</code> only: announced, but you must validate
+      </td>
+    </tr>
+    <tr>
+      <th scope="row">Forms</th>
+      <td>Native: submission, reset and autofill</td>
+      <td>A hidden input submits the value, and reset works; no autofill</td>
+    </tr>
+    <tr>
+      <th scope="row">
+        <code>onValueChange</code>
+      </th>
+      <td>
+        <code>(value, event)</code>
+      </td>
+      <td>
+        <code>(value)</code>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+Use **NativeSelect** by default, and especially on mobile, for autofill (such as country
+fields) or when you want the browser to validate `required`. Use **Select** when the open list
+must look the same in every browser and theme, for example in a dark theme where the
+browser's own list would not match.
+
 ## Examples
 
 ### With placeholder
