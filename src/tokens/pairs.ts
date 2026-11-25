@@ -22,8 +22,14 @@ export const contrastPairs: ContrastPair[] = [
     { fg: 'border-strong', bg, min: 3, usage: 'Input borders' },
     { fg: 'border-focus', bg, min: 3, usage: 'Focus ring' },
     { fg: 'accent-solid', bg, min: 3, usage: 'Checked controls' },
+    { fg: 'accent-solid-hover', bg, min: 3, usage: 'Checked controls on hover' },
   ]),
   { fg: 'fg-subtle', bg: 'bg-surface', min: 4.5, usage: 'Placeholder text' },
+  // Read-only fields use bg-subtle (their placeholder switches to fg-muted).
+  { fg: 'fg-default', bg: 'bg-subtle', min: 4.5, usage: 'Read-only field text' },
+  { fg: 'fg-muted', bg: 'bg-subtle', min: 4.5, usage: 'Read-only placeholder' },
+  { fg: 'border-strong', bg: 'bg-subtle', min: 3, usage: 'Read-only field border' },
+  { fg: 'danger-border', bg: 'bg-subtle', min: 3, usage: 'Read-only invalid border' },
   { fg: 'fg-inverse', bg: 'bg-inverse', min: 4.5, usage: 'Tooltip text' },
   { fg: 'accent-solid-fg', bg: 'accent-solid', min: 4.5, usage: 'Primary button' },
   { fg: 'accent-solid-fg', bg: 'accent-solid-hover', min: 4.5, usage: 'Primary button hover' },
@@ -38,7 +44,12 @@ export const contrastPairs: ContrastPair[] = [
     min: 4.5,
     usage: 'Field error text / required mark',
   })),
-  { fg: 'danger-border', bg: 'bg-canvas', min: 3, usage: 'Invalid input border on canvas' },
+  ...(['bg-canvas', 'bg-surface', 'bg-raised'] as const).map((bg): ContrastPair => ({
+    fg: 'danger-border',
+    bg,
+    min: 3,
+    usage: 'Invalid control border',
+  })),
   ...(['success', 'warning', 'danger', 'info'] as const).map((tone): ContrastPair => ({
     fg: 'border-focus',
     bg: `${tone}-subtle`,

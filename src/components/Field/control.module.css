@@ -4,6 +4,7 @@
  * The box draws the border and the focus ring; the native element inside is reset.
  */
 .box {
+  box-sizing: border-box;
   display: flex;
   align-items: center;
   gap: var(--gn-space-2);
@@ -28,16 +29,30 @@
   font-size: var(--gn-font-size-lg);
 }
 
-.box:focus-within {
+/*
+ * Ring the box only when the native control has focus, so a focused button inside an
+ * adornment shows its own ring instead of lighting up the whole box. Text controls
+ * always show focus, so :focus (not :focus-visible) is correct here.
+ */
+.box:has(> .input:focus) {
   outline: var(--gn-size-focus-ring-width) solid var(--gn-color-border-focus);
   outline-offset: 0;
 }
 
-.box:has([aria-invalid='true']) {
+.box:has(> .input[aria-invalid='true']) {
   border-color: var(--gn-color-danger-border);
 }
 
-.box:has(:disabled) {
+.box:has(> .input[readonly]:not(:disabled)) {
+  background: var(--gn-color-bg-subtle);
+}
+
+/* fg-subtle on bg-subtle is below 4.5:1, so read-only placeholders use fg-muted. */
+.box:has(> .input[readonly]:not(:disabled)) > .input::placeholder {
+  color: var(--gn-color-fg-muted);
+}
+
+.box:has(> .input:disabled) {
   background: var(--gn-color-bg-disabled);
   color: var(--gn-color-fg-disabled);
   border-color: var(--gn-color-border-default);
@@ -78,12 +93,28 @@
 }
 
 @media (forced-colors: active) {
-  /* Invalid must not rely on the danger colour alone; the error text and icon remain too. */
-  .box:has([aria-invalid='true']) {
-    border-color: Mark;
+  .box:has(> .input:focus) {
+    outline-color: Highlight;
   }
 
-  .box:has(:disabled) {
+  /*
+   * Invalid must not rely on the danger colour alone (all borders share one system colour
+   * here), so the border gets thicker. The first and last children are pulled outwards by
+   * the extra width so the text and adornments do not shift. The error text and icon remain.
+   */
+  .box:has(> .input[aria-invalid='true']) {
+    border-width: var(--gn-size-focus-ring-width);
+  }
+
+  .box:has(> .input[aria-invalid='true']) > :first-child {
+    margin-inline-start: calc(var(--gn-size-border-width) - var(--gn-size-focus-ring-width));
+  }
+
+  .box:has(> .input[aria-invalid='true']) > :last-child {
+    margin-inline-end: calc(var(--gn-size-border-width) - var(--gn-size-focus-ring-width));
+  }
+
+  .box:has(> .input:disabled) {
     border-color: GrayText;
     color: GrayText;
   }

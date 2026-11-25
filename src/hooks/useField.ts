@@ -1,4 +1,5 @@
-import { useId, type ReactNode } from 'react';
+import { useEffect, useId, type ReactNode } from 'react';
+import { isRenderable } from '../utils/isRenderable';
 
 /** Props shared by every field-like component, so the JSDoc is written once. */
 export interface FieldBaseProps {
@@ -6,9 +7,14 @@ export interface FieldBaseProps {
   label: ReactNode;
   /** Help text shown below the label and linked with aria-describedby. */
   description?: ReactNode;
-  /** Error text. Rendered and linked only when `invalid` is true. */
+  /** Error text. Rendered and linked only when `invalid` is true. Always pass it together with `invalid`. */
   errorMessage?: ReactNode;
-  /** Marks the field invalid: sets aria-invalid="true", applies danger styling and shows `errorMessage`. @default false */
+  /**
+   * Marks the field invalid: sets aria-invalid="true", applies danger styling and shows `errorMessage`.
+   * Pair it with an `errorMessage` that says how to fix the value. Without one the error is shown
+   * by colour alone (WCAG 1.4.1, 3.3.1), so a console warning is logged.
+   * @default false
+   */
   invalid?: boolean;
   /** Sets native `required` (announced as "required") and shows an aria-hidden asterisk. @default false */
   required?: boolean;
@@ -62,10 +68,6 @@ export interface UseFieldResult {
   groupProps: { 'aria-describedby'?: string; disabled?: boolean };
 }
 
-function isRenderable(node: ReactNode): boolean {
-  return node != null && node !== false;
-}
-
 /**
  * Generates ids and the ARIA wiring between a label, description, error and control,
  * so every field announces the same way. `aria-describedby` lists the description,
@@ -82,6 +84,16 @@ export function useField(options: UseFieldOptions): UseFieldResult {
     'aria-describedby': consumerDescribedBy,
   } = options;
   const base = useId();
+
+  // Warn once each time a field becomes invalid without an error message, not on every render.
+  const missingErrorMessage = invalid && !isRenderable(errorMessage);
+  useEffect(() => {
+    if (missingErrorMessage) {
+      console.warn(
+        'Greenility field: `invalid` is true but no `errorMessage` was given, so the error is shown by colour alone (WCAG 1.4.1, 3.3.1). Pass an `errorMessage` that explains how to fix the value.',
+      );
+    }
+  }, [missingErrorMessage]);
 
   const controlId = id ?? `${base}-control`;
   const labelId = `${base}-label`;

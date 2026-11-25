@@ -1,5 +1,5 @@
 import { renderHook } from '@testing-library/react';
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import { useField, type UseFieldOptions } from './useField';
 
 function run(options: UseFieldOptions = {}) {
@@ -54,6 +54,7 @@ describe('useField', () => {
   });
 
   it('does not show an error without a renderable message', () => {
+    vi.spyOn(console, 'warn').mockImplementation(() => undefined);
     expect(run({ invalid: true }).showError).toBe(false);
     expect(run({ invalid: true, errorMessage: false }).showError).toBe(false);
     expect(run({ invalid: true, errorMessage: null }).showError).toBe(false);
@@ -85,6 +86,57 @@ describe('useField', () => {
     expect(field.groupProps).toEqual({
       'aria-describedby': `${String(field.descriptionId)} ${String(field.errorId)}`,
       disabled: true,
+    });
+  });
+
+  describe('missing error message warning', () => {
+    function spyWarn() {
+      return vi.spyOn(console, 'warn').mockImplementation(() => undefined);
+    }
+
+    it.each([
+      ['undefined', undefined],
+      ['null', null],
+      ['false', false],
+    ] as const)('warns once when invalid and errorMessage is %s', (_name, errorMessage) => {
+      const warn = spyWarn();
+      run({ invalid: true, errorMessage });
+      expect(warn).toHaveBeenCalledTimes(1);
+      expect(warn.mock.calls[0]?.[0]).toMatch(/errorMessage/);
+    });
+
+    it('does not warn when invalid with a message', () => {
+      const warn = spyWarn();
+      run({ invalid: true, errorMessage: 'Bad' });
+      expect(warn).not.toHaveBeenCalled();
+    });
+
+    it('does not warn when valid, with or without a message', () => {
+      const warn = spyWarn();
+      run();
+      run({ invalid: false });
+      run({ errorMessage: 'Bad' });
+      expect(warn).not.toHaveBeenCalled();
+    });
+
+    it('warns only once across rerenders with the same props', () => {
+      const warn = spyWarn();
+      const { rerender } = renderHook((options: UseFieldOptions) => useField(options), {
+        initialProps: { invalid: true },
+      });
+      rerender({ invalid: true });
+      rerender({ invalid: true });
+      expect(warn).toHaveBeenCalledTimes(1);
+    });
+
+    it('stops warning once a message is supplied', () => {
+      const warn = spyWarn();
+      const initialProps: UseFieldOptions = { invalid: true };
+      const { rerender } = renderHook((options: UseFieldOptions) => useField(options), {
+        initialProps,
+      });
+      rerender({ invalid: true, errorMessage: 'Bad' });
+      expect(warn).toHaveBeenCalledTimes(1);
     });
   });
 });
