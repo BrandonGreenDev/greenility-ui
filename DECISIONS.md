@@ -87,3 +87,12 @@ Full spec: `docs/specs/phase-2.md`.
 - A controlled Checkbox restores `indeterminate` before consumer callbacks run, so handlers see the DOM as React will render it.
 - Badges are not live regions; consumers announce changing statuses in a separate polite region.
 - `danger-border` and `accent-solid-hover` contrast is tested against every surface, because indicators sit on cards and dialogs too.
+- In forced colors, an invalid text box shows a thicker border; the first and last child are pulled outwards by the extra width, so text and adornments do not move.
+- The shared control frame uses `box-sizing: border-box`, so the box height equals its `--gn-size-control-*` token exactly.
+- The text-control focus ring shows on `.box:has(> .input:focus)`, not `:focus-within`, so a focused adornment button shows its own ring instead of lighting up the whole field.
+- Shared `:has()` state rules use the child combinator (`> .input`), so a disabled placeholder `<option>` or adornment button cannot make the whole field look disabled.
+- Read-only fields use a `fg-muted` placeholder, because `fg-subtle` on `bg-subtle` is 4.33:1.
+- `useField` warns when `invalid` is set without an `errorMessage`, since the error would otherwise be shown by color alone (WCAG 1.4.1, 3.3.1).
+- `onChange` then `onValueChange` composition lives in `utils/composeChange.ts`, and the renderable check lives in `utils/isRenderable.ts`, shared by all field components.
+- Select's end padding scales with size, so the large chevron never overlaps the text; the placeholder is grey only when enabled.
+- TextField adornments are not part of the input's name or description: units belong in the label or description.

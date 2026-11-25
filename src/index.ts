@@ -39,3 +39,6 @@ export { Checkbox, type CheckboxProps } from './components/Checkbox';
 export { RadioGroup, Radio, type RadioGroupProps, type RadioProps } from './components/RadioGroup';
 export { Switch, type SwitchProps } from './components/Switch';
 export { Badge, type BadgeProps } from './components/Badge';
+export { TextField, type TextFieldProps } from './components/TextField';
+export { TextArea, type TextAreaProps } from './components/TextArea';
+export { Select, type SelectProps } from './components/Select';

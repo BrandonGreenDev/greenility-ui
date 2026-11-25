@@ -1,0 +1,83 @@
+/*
+ * Select builds on the shared frame in Field/control.module.css (.box and .input).
+ * Selectors here include an attribute or child combinator so they outrank the shared
+ * size rules regardless of stylesheet order.
+ *
+ * The end padding reserves the chevron: outer padding + icon + inner gap, per size.
+ */
+.box {
+  position: relative;
+}
+
+.box[data-size] > .select {
+  padding-inline-end: calc(var(--gn-space-3) + var(--gn-size-icon-md) + var(--gn-space-2));
+  text-overflow: ellipsis;
+  cursor: pointer;
+}
+
+.box[data-size='sm'] > .select {
+  padding-inline-end: calc(var(--gn-space-2) + var(--gn-size-icon-sm) + var(--gn-space-1-5));
+}
+
+.box[data-size='lg'] > .select {
+  padding-inline-end: calc(var(--gn-space-4) + var(--gn-size-icon-lg) + var(--gn-space-2));
+}
+
+.box[data-size] > .select:disabled {
+  cursor: not-allowed;
+}
+
+/* The prompt option is showing on an enabled select: style it like placeholder text. */
+.box[data-size] > .select:not(:disabled):has(> option[data-placeholder]:checked) {
+  color: var(--gn-color-fg-subtle);
+}
+
+/* Some platforms inherit the select colour into the popup list; keep options readable. */
+.select option,
+.select optgroup {
+  background: var(--gn-color-bg-surface);
+  color: var(--gn-color-fg-default);
+}
+
+.select option:disabled {
+  color: var(--gn-color-fg-disabled);
+}
+
+.chevron {
+  position: absolute;
+  inset-block-start: 50%;
+  inset-inline-end: var(--gn-space-3);
+  transform: translateY(-50%);
+  color: var(--gn-color-fg-muted);
+  pointer-events: none;
+}
+
+.box[data-size='sm'] > .chevron {
+  inset-inline-end: var(--gn-space-2);
+}
+
+.box[data-size='lg'] > .chevron {
+  inset-inline-end: var(--gn-space-4);
+}
+
+.box:has(> .select:disabled) > .chevron {
+  color: var(--gn-color-fg-disabled);
+}
+
+@media (forced-colors: active) {
+  .chevron {
+    color: CanvasText;
+  }
+
+  .box:has(> .select:disabled) > .chevron {
+    color: GrayText;
+  }
+
+  .box[data-size] > .select:not(:disabled):has(> option[data-placeholder]:checked) {
+    color: GrayText;
+  }
+
+  .select option:disabled {
+    color: GrayText;
+  }
+}
