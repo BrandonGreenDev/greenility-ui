@@ -824,12 +824,12 @@ tooltipPlacement?: Placement;
    - Forced colors: border `CanvasText`.
 6. **Keyboard:**
 
-| Key                              | Behavior                                                                                          |
-| -------------------------------- | ------------------------------------------------------------------------------------------------- |
-| Tab (focus-visible onto trigger) | Shows the tooltip immediately.                                                                    |
-| Escape                           | Hides the tooltip only; focus stays. A second Escape reaches outer layers (e.g. closes a Dialog). |
-| Enter / Space                    | Trigger activates (its own behaviour); the tooltip hides.                                         |
-| Tab away                         | Hides it.                                                                                         |
+| Key                              | Behavior                                                                                                                                  |
+| -------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------- |
+| Tab (focus-visible onto trigger) | Shows the tooltip immediately.                                                                                                            |
+| Escape                           | Hides the tooltip; focus stays. The tooltip is not a dismiss layer, so the same Escape also reaches the next layer (Menu, Dialog, toast). |
+| Enter / Space                    | Trigger activates (its own behaviour); the tooltip hides.                                                                                 |
+| Tab away                         | Hides it.                                                                                                                                 |
 
 7. **Focus:** the tooltip never takes focus.
 8. **Screen reader:**
@@ -846,7 +846,7 @@ tooltipPlacement?: Placement;
       - Leaving with the pointer hides it after the grace delay.
       - Moving the pointer onto the bubble keeps it open.
     - **Escape (1.4.13):** hides it with focus unchanged; it does not reopen until re-hover or re-focus.
-    - **Inside a Dialog:** the first Escape closes the tooltip only, and the dialog stays open.
+    - **Inside a Dialog:** one Escape hides the tooltip and closes the dialog (tooltips are not blocking layers; `hasLayers()` stays false while only a tooltip is open).
     - **ARIA:**
       - Standalone: `toHaveAccessibleDescription(content)`, `role="tooltip"`.
       - `decorative`: no `aria-describedby`, `aria-hidden="true"`, no tooltip role.

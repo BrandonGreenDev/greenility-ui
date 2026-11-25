@@ -194,3 +194,20 @@ Full spec: `docs/specs/phase-3.md`.
 - The custom Select's form owner follows native rules: the `form` id first, else the ancestor form. An uncontrolled reset calls `onValueChange(defaultValue)`.
 - The custom Select's option text size follows the Select `size`, and every option reserves space for the check icon so labels align.
 - Open-state stories (Select, later Menu) are tagged `!autodocs`, so a top-layer popover never covers a docs page; `test:a11y` still scans them in both themes.
+- `useControllableState` compares each request with the latest requested value for the current tick, not the last rendered one, so two requests before a re-render (e.g. a focus then a blur while `showModal()` moves focus) are both honoured. It resyncs after each commit and at the end of the tick, so a vetoing controlled parent is respected.
+- Shim fixes for jsdom live in `src/test/setup.ts` (popover visibility, a `jest` alias so Testing Library works with Vitest fake timers), so no test file needs local workarounds.
+- Tooltip is not a dismiss layer. Escape hides it through a passive document listener and is not consumed, so one Escape also closes the Menu, Dialog or toast around it, and `hasLayers()` ignores tooltips. This replaces the spec's original "first Escape closes the tooltip only".
+- Tooltip opens on keyboard focus based only on `:focus-visible` (Safari and macOS Firefox don't focus buttons on click). It tracks hover and focus separately and closes only when both have ended (WCAG 1.4.13), and it never shows while its trigger has `aria-expanded="true"`.
+- MenuItem `onSelect` runs synchronously after focus returns to the trigger and the close is requested, without `flushSync`, so it stays inside the user activation (clipboard, window.open). The MenuItem icon prop is `startIcon`, matching Button.
+- Menu refocuses the trigger whenever it closes with focus inside it or lost to body, but not after Tab or an outside press. It ignores blurs with no `relatedTarget` and scrolls its own panel to keep the focused item visible (the page never jumps).
+- `src/utils/popover.ts` holds the shared feature-guarded `showPopover`/`hidePopover` helpers.
+- Exception to "no Portal": the toast region portals into the topmost dialog's outlet, because `showModal()` makes everything outside it inert. While there, it inherits the dialog's theme, and it remounts when the outlet changes.
+- Toast announcements never move: the provider writes plain text (read from the rendered toast after commit) 150 ms after a render into whichever status region is live (the top dialog's always-mounted one, else its own), and removes each line after 1.5 s. Each toast is announced once, even across a dialog closing in the same update.
+- Toast timing for WCAG 2.2.1: warning, danger and action toasts persist; others get the provider `duration` plus 60 ms per character (up to +10 s), and at least 2 s after resuming. Apps should expose `duration` as a user setting, including Never (see the UserPreference story).
+- Narrow or short viewports (30rem or less) show one toast at a time; the region scrolls when too tall and moves to the top inside a modal so it does not cover the footer.
+- The toast region is a named landmark ("Notifications (F8)") only while toasts exist or the hotkey focused it. F8 toggles focus into and out of the region and ignores modifier keys.
+- Dialog initial focus: when the body scrolls and its first tabbable is out of view, the body (a focusable group named by the title) gets focus so reading starts at the top (APG). The panel is focusable only while it is the programmatic focus target, and its ring is inset.
+- Unmounting an open Dialog closes the native dialog and restores focus; a controlled re-show after a native close refocuses the last focused element inside.
+- A backdrop press that starts while a floating layer is open does not also close the Dialog.
+- AlertDialog's confirm is a DialogClose, and `onConfirm(event)` can call `preventDefault()` to keep the dialog open.
+- An empty or whitespace-only Dialog title counts as no title: it warns and is not used as the accessible name.
