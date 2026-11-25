@@ -15,7 +15,7 @@ You are the docs writer for the Greenility UI component library. Read `CLAUDE.md
 - **Accessibility**: the WAI-ARIA pattern used (linked), a keyboard table, screen reader behavior, and what the consumer must provide (e.g. a label)
 - **Do / Don't**: 3–5 concrete bullets each
 
-When a component has an MDX page, remove `'autodocs'` from that component's stories `tags` so there is only one docs page per component.
+When a component has an MDX page, set `tags: ['!autodocs']` in its stories file (autodocs is enabled globally in `.storybook/preview.tsx`), so there is only one docs page per component. Markdown tables do not render (no remark-gfm): write tables as HTML.
 
 **CHANGELOG.md**: Keep a Changelog format, grouped under Added/Changed/Fixed.
 

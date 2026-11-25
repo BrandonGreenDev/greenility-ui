@@ -26,17 +26,18 @@ Make a reasonable decision, add one line to `DECISIONS.md` with the reason, and 
 
 ## Commands
 
-| Command                   | What it does                                                   |
-| ------------------------- | -------------------------------------------------------------- |
-| `npm run storybook`       | Storybook dev server on http://localhost:6006                  |
-| `npm test`                | Run all tests once (`npm run test:watch` to watch)             |
-| `npm run lint`            | ESLint, zero warnings allowed                                  |
-| `npm run typecheck`       | `tsc --noEmit`                                                 |
-| `npm run format`          | Prettier write (`format:check` in CI)                          |
-| `npm run tokens`          | Regenerate `src/tokens/tokens.css` from `src/tokens/tokens.ts` |
-| `npm run build`           | Build the library to `dist/`                                   |
-| `npm run build-storybook` | Static Storybook in `storybook-static/`                        |
-| `npm run ci`              | Everything CI runs, in order                                   |
+| Command                   | What it does                                                           |
+| ------------------------- | ---------------------------------------------------------------------- |
+| `npm run storybook`       | Storybook dev server on http://localhost:6006                          |
+| `npm test`                | Run all tests once (`npm run test:watch` to watch)                     |
+| `npm run lint`            | ESLint, zero warnings allowed                                          |
+| `npm run typecheck`       | `tsc --noEmit`                                                         |
+| `npm run format`          | Prettier write (`format:check` in CI)                                  |
+| `npm run tokens`          | Regenerate `src/tokens/tokens.css` from `src/tokens/tokens.ts`         |
+| `npm run build`           | Build the library to `dist/`                                           |
+| `npm run build-storybook` | Static Storybook in `storybook-static/`                                |
+| `npm run test:a11y`       | axe on every built story in light + dark (run `build-storybook` first) |
+| `npm run ci`              | Everything CI runs, in order                                           |
 
 Windows note: `test`, `build` and `storybook` go through `scripts/run.ts`, which starts the
 tool from the real path of the folder. A lower-case drive letter (`d:\`) otherwise makes Vitest
@@ -95,7 +96,7 @@ src/
 
 **Stories**
 
-- CSF3, title `Components/<Name>`, `tags: ['autodocs']` until an MDX page exists.
+- CSF3, title `Components/<Name>`. Autodocs is on globally (preview.tsx); once a component has an MDX page its stories file sets `tags: ['!autodocs']` so there is only one docs page.
 - One story per variant, size and state, plus `DarkMode` with `parameters: { theme: 'dark' }`.
 
 **Tests**

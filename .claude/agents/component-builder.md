@@ -10,7 +10,7 @@ For each component, work inside `src/components/<Name>/`:
 
 - `<Name>.tsx`: the implementation. Use `forwardRef`, set `displayName`, merge `className` with the `cx` helper from `src/utils/cx.ts`, spread remaining native props onto the documented element, and put JSDoc on every prop.
 - `<Name>.module.css`: styles that use `var(--gn-*)` tokens only. No hex/rgb/hsl colors and no raw px/rem values for spacing, radius, shadow, font or duration. The only literals allowed are `0`, `1px` hairline borders, `100%`, `50%` and `currentColor`. Every interactive element needs a `:focus-visible` style that uses the focus-ring tokens. Motion must use the `--gn-motion-*` duration tokens, which collapse to `0.01ms` under `prefers-reduced-motion: reduce`. Add a `@media (forced-colors: active)` rule where borders or the focus ring would otherwise disappear.
-- `<Name>.stories.tsx`: CSF3, `tags: ['autodocs']`, a story for every variant, size and state, plus a `DarkMode` story using `parameters: { theme: 'dark' }`.
+- `<Name>.stories.tsx`: CSF3 (autodocs is on globally), a story for every variant, size and state, plus a `DarkMode` story using `parameters: { theme: 'dark' }`.
 - `index.ts`: re-export the component and its props type.
 - Add the export to `src/index.ts`.
 

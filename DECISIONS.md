@@ -96,3 +96,5 @@ Full spec: `docs/specs/phase-2.md`.
 - `onChange` then `onValueChange` composition lives in `utils/composeChange.ts`, and the renderable check lives in `utils/isRenderable.ts`, shared by all field components.
 - Select's end padding scales with size, so the large chevron never overlaps the text; the placeholder is grey only when enabled.
 - TextField adornments are not part of the input's name or description: units belong in the label or description.
+- Added `npm run test:a11y` (also in CI): axe runs in real Chromium against every built story in light and dark. It covers what jsdom cannot, chiefly color contrast as rendered. It replaces the need for `@storybook/addon-vitest` at a fraction of the setup.
+- Docs pages use `tags: ['!autodocs']` in the stories file, because autodocs is enabled globally in `preview.tsx`.
