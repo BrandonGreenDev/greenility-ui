@@ -1,0 +1,99 @@
+.root {
+  display: inline-flex;
+  align-items: center;
+  padding: var(--gn-space-0-5) var(--gn-space-2);
+  border: var(--gn-size-border-width) solid transparent;
+  border-radius: var(--gn-radius-full);
+  background-color: var(--gn-color-bg-muted);
+  color: var(--gn-color-fg-default);
+  font-size: var(--gn-font-size-sm);
+  font-weight: var(--gn-font-weight-medium);
+  line-height: var(--gn-font-line-height-tight);
+  white-space: nowrap;
+}
+
+/* Sizes */
+
+.root[data-size='sm'] {
+  padding: var(--gn-space-0-5) var(--gn-space-1-5);
+  font-size: var(--gn-font-size-xs);
+}
+
+.root[data-size='lg'] {
+  padding: var(--gn-space-1) var(--gn-space-3);
+  font-size: var(--gn-font-size-md);
+}
+
+/* Neutral (subtle is the base style above) */
+
+.root[data-tone='neutral'][data-variant='solid'] {
+  background-color: var(--gn-color-bg-inverse);
+  color: var(--gn-color-fg-inverse);
+}
+
+/* Accent */
+
+.root[data-tone='accent'][data-variant='subtle'] {
+  background-color: var(--gn-color-accent-subtle);
+  color: var(--gn-color-accent-subtle-fg);
+}
+
+.root[data-tone='accent'][data-variant='solid'] {
+  background-color: var(--gn-color-accent-solid);
+  color: var(--gn-color-accent-solid-fg);
+}
+
+/* Success */
+
+.root[data-tone='success'][data-variant='subtle'] {
+  background-color: var(--gn-color-success-subtle);
+  color: var(--gn-color-success-subtle-fg);
+}
+
+.root[data-tone='success'][data-variant='solid'] {
+  background-color: var(--gn-color-success-solid);
+  color: var(--gn-color-success-solid-fg);
+}
+
+/* Warning */
+
+.root[data-tone='warning'][data-variant='subtle'] {
+  background-color: var(--gn-color-warning-subtle);
+  color: var(--gn-color-warning-subtle-fg);
+}
+
+.root[data-tone='warning'][data-variant='solid'] {
+  background-color: var(--gn-color-warning-solid);
+  color: var(--gn-color-warning-solid-fg);
+}
+
+/* Danger */
+
+.root[data-tone='danger'][data-variant='subtle'] {
+  background-color: var(--gn-color-danger-subtle);
+  color: var(--gn-color-danger-subtle-fg);
+}
+
+.root[data-tone='danger'][data-variant='solid'] {
+  background-color: var(--gn-color-danger-solid);
+  color: var(--gn-color-danger-solid-fg);
+}
+
+/* Info */
+
+.root[data-tone='info'][data-variant='subtle'] {
+  background-color: var(--gn-color-info-subtle);
+  color: var(--gn-color-info-subtle-fg);
+}
+
+.root[data-tone='info'][data-variant='solid'] {
+  background-color: var(--gn-color-info-solid);
+  color: var(--gn-color-info-solid-fg);
+}
+
+/* The transparent border becomes visible in forced colors, so the shape stays. */
+@media (forced-colors: active) {
+  .root {
+    border-color: CanvasText;
+  }
+}

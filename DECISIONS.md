@@ -77,3 +77,13 @@ Full spec: `docs/specs/phase-2.md`.
 - Alert uses an `auto 1fr` grid plus an implicit auto column, so there is no empty gap when the alert has no dismiss button.
 - The neutral Alert's dismiss hover border uses `border-strong` (border-default on bg-muted is about 1.2:1).
 - Live regions (Alert `live`, Spinner) are documented as "mount first, then change content", because a role added on mount is not reliably announced.
+- A `Radio` outside a `RadioGroup` throws in every environment: without the group it has no shared name or value, so it is always a programming error.
+- Checkbox, Radio and Switch share `Field/indicator.module.css` for layout, states and forced colors. Indeterminate rules stay in Checkbox, because radios match `:indeterminate` when nothing in the group is selected.
+- Indicator glyphs are centered by stacking them with the input in one grid cell, not with `translate(-50%, -50%)`: a physical transform is off-center in RTL.
+- Indicator controls and labels are at least `--gn-size-target-min` (24px) tall, and a transparent `::before` widens the hit area across the gap to the label (WCAG 2.5.8, no dead zone).
+- The Switch thumb moves with a logical `inset-inline-start`, so it slides the right way in RTL with no direction-specific rule.
+- A disabled checked Switch fills its track with `fg-disabled`, so disabled on and off stay distinguishable, consistent with Checkbox and Radio.
+- In forced colors, invalid controls show a thicker border in the system color, not `Mark`: Mark is a fixed yellow that is about 1.1:1 on light high-contrast themes.
+- A controlled Checkbox restores `indeterminate` before consumer callbacks run, so handlers see the DOM as React will render it.
+- Badges are not live regions; consumers announce changing statuses in a separate polite region.
+- `danger-border` and `accent-solid-hover` contrast is tested against every surface, because indicators sit on cards and dialogs too.
