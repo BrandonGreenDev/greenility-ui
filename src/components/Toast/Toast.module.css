@@ -1,0 +1,108 @@
+/*
+ * Fixed at the bottom-end corner. The region itself ignores the pointer so it never
+ * blocks the page; only the toasts take clicks.
+ */
+.region {
+  position: fixed;
+  inset-block-end: var(--gn-space-4);
+  inset-inline-end: var(--gn-space-4);
+  z-index: var(--gn-z-toast);
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  inline-size: min(var(--gn-size-toast-width), calc(100vw - 2 * var(--gn-space-4)));
+  /* Gives the focus ring a visible box when the hotkey focuses an empty region. */
+  min-block-size: var(--gn-size-control-sm);
+  /* Many or long toasts scroll instead of running off the top of the viewport. */
+  max-block-size: calc(100dvh - 2 * var(--gn-space-4));
+  overflow-y: auto;
+  border-radius: var(--gn-radius-lg);
+  pointer-events: none;
+}
+
+/* Inside a modal the footer actions sit at the bottom, so the region moves to the top. */
+.region[data-in-modal] {
+  inset-block-start: var(--gn-space-4);
+  inset-block-end: auto;
+  justify-content: flex-start;
+}
+
+.region:focus-visible {
+  outline: var(--gn-size-focus-ring-width) solid var(--gn-color-border-focus);
+  outline-offset: var(--gn-size-focus-ring-offset);
+}
+
+.region:focus:not(:focus-visible) {
+  outline: none;
+}
+
+/* Chronological DOM order: the newest toast is last, closest to the corner. */
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gn-space-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.toast {
+  pointer-events: auto;
+  animation: gnToastIn var(--gn-motion-duration-normal) var(--gn-motion-easing-enter);
+}
+
+.alert {
+  box-shadow: var(--gn-shadow-lg);
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--gn-space-2);
+  margin-block-start: var(--gn-space-2);
+}
+
+/* Visible hint for the hotkey next to an action (hidden from AT; it is announced instead). */
+.hotkey {
+  padding-inline: var(--gn-space-1-5);
+  border: var(--gn-size-border-width) solid currentColor;
+  border-radius: var(--gn-radius-sm);
+  font-family: var(--gn-font-family-mono);
+  font-size: var(--gn-font-size-xs);
+  line-height: var(--gn-font-line-height-normal);
+}
+
+/* "N more notifications" under the visible toasts. */
+.more {
+  align-self: flex-end;
+  margin: var(--gn-space-2) 0 0;
+  padding: var(--gn-space-1) var(--gn-space-3);
+  border: var(--gn-size-border-width) solid var(--gn-color-border-default);
+  border-radius: var(--gn-radius-full);
+  background-color: var(--gn-color-bg-raised);
+  color: var(--gn-color-fg-muted);
+  font-size: var(--gn-font-size-sm);
+  box-shadow: var(--gn-shadow-md);
+  pointer-events: auto;
+}
+
+/* Vertical only, so it reads the same in LTR and RTL. Exit is instant. */
+@keyframes gnToastIn {
+  from {
+    opacity: 0;
+    translate: 0 var(--gn-space-2);
+  }
+}
+
+/* Shadows vanish in forced colors; Alert keeps its CanvasText border. */
+@media (forced-colors: active) {
+  .region:focus-visible {
+    outline-color: Highlight;
+  }
+
+  .more {
+    border-color: CanvasText;
+  }
+}

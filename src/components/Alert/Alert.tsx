@@ -50,7 +50,8 @@ const toneIcons: Record<AlertTone, IconComponent> = {
   danger: DangerIcon,
 };
 
-const defaultToneLabels: Record<AlertTone, string | undefined> = {
+/** Default visually hidden tone prefixes. Internal: shared with Toast so announcements match. */
+export const alertToneLabels: Record<AlertTone, string | undefined> = {
   neutral: undefined,
   info: 'Info',
   success: 'Success',
@@ -74,7 +75,7 @@ export const Alert = forwardRef<HTMLDivElement, AlertProps>(function Alert(
     live = 'off',
     onDismiss,
     dismissLabel = 'Dismiss',
-    toneLabel = defaultToneLabels[tone],
+    toneLabel = alertToneLabels[tone],
     className,
     ...rest
   },
