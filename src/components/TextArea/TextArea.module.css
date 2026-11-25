@@ -1,0 +1,44 @@
+/*
+ * TextArea builds on the shared frame in Field/control.module.css (.box and .input).
+ * Selectors here include an attribute or child combinator so they outrank the shared
+ * rules regardless of stylesheet order.
+ */
+.box[data-size] {
+  align-items: stretch;
+  padding-block: var(--gn-space-2);
+}
+
+.box[data-size='sm'] {
+  padding-block: var(--gn-space-1-5);
+}
+
+.box[data-size] > .input {
+  resize: vertical;
+}
+
+.box[data-size] > .input:disabled {
+  resize: none;
+}
+
+@supports (field-sizing: content) {
+  .box[data-size] > .input[data-auto-resize] {
+    field-sizing: content;
+    resize: none;
+    min-block-size: calc(var(--gn-font-line-height-normal) * 1em * var(--rows, 3));
+  }
+}
+
+@media (forced-colors: active) {
+  /* The shared invalid rule thickens the border; take the extra width out of the padding. */
+  .box[data-size]:has(> .input[aria-invalid='true']) {
+    padding-block: calc(
+      var(--gn-space-2) + var(--gn-size-border-width) - var(--gn-size-focus-ring-width)
+    );
+  }
+
+  .box[data-size='sm']:has(> .input[aria-invalid='true']) {
+    padding-block: calc(
+      var(--gn-space-1-5) + var(--gn-size-border-width) - var(--gn-size-focus-ring-width)
+    );
+  }
+}
