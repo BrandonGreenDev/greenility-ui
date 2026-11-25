@@ -211,3 +211,6 @@ Full spec: `docs/specs/phase-3.md`.
 - A backdrop press that starts while a floating layer is open does not also close the Dialog.
 - AlertDialog's confirm is a DialogClose, and `onConfirm(event)` can call `preventDefault()` to keep the dialog open.
 - An empty or whitespace-only Dialog title counts as no title: it warns and is not used as the accessible name.
+- Story accessibility runs in Chromium, Firefox and WebKit in CI (a parallel matrix job). The run waits for transitions to settle before measuring, because a color sampled mid-transition is not what users see.
+- Known limitation: a Tooltip that starts open (`defaultOpen`) while its page is still laying out can be positioned against the pre-layout anchor until the next scroll or resize. The Tooltip docs render those examples in their own frame. Repositioning on anchor resize is a follow-up.
+- The Select source avoids `export type { … }` re-exports in the component file, because react-docgen-typescript then mistakes the type for the component and produces an empty props table.
