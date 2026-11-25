@@ -1,0 +1,163 @@
+/*
+ * Shared frame for indicator controls: Checkbox, Radio and Switch. Each draws the real
+ * <input> with `appearance: none`, stacks aria-hidden glyphs on it in one grid cell, and
+ * sets its own size, radius and glyphs. Consume it as `cx(indicatorStyles.input, styles.input)`.
+ *
+ * Indeterminate rules live in Checkbox only: radios also match `:indeterminate` while
+ * their group has no selection.
+ */
+
+/* Row: control, then the label column. */
+.option {
+  display: inline-flex;
+  align-items: flex-start;
+  gap: var(--gn-space-2);
+  min-inline-size: 0;
+}
+
+/*
+ * At least the minimum target size tall (WCAG 2.5.8). The input and its glyphs share one
+ * grid cell, so they centre in both axes in LTR and RTL without transforms.
+ */
+.control {
+  display: inline-grid;
+  flex-shrink: 0;
+  place-items: center;
+  min-block-size: var(--gn-size-target-min);
+}
+
+.control > * {
+  grid-area: 1 / 1;
+}
+
+/* Glyphs sit above the (positioned) input and never take clicks. */
+.glyph {
+  position: relative;
+  pointer-events: none;
+}
+
+.input {
+  appearance: none;
+  position: relative;
+  box-sizing: border-box;
+  display: block;
+  margin: 0;
+  border: var(--gn-size-border-width) solid var(--gn-color-border-strong);
+  background-color: var(--gn-color-bg-surface);
+  cursor: pointer;
+  transition:
+    background-color var(--gn-motion-duration-fast) var(--gn-motion-easing-standard),
+    border-color var(--gn-motion-duration-fast) var(--gn-motion-easing-standard);
+}
+
+/*
+ * Invisible hit area: at least the minimum target size around the box, and stretched
+ * across the gap to the label so there is no dead zone between them. Sized for a
+ * `--gn-size-indicator` box; Switch overrides the insets for its track.
+ */
+.input::before {
+  content: '';
+  position: absolute;
+  inset: calc((var(--gn-size-indicator) - var(--gn-size-target-min)) / 2);
+  inset-inline-end: calc(
+    (var(--gn-size-indicator) - var(--gn-size-target-min)) / 2 - var(--gn-space-2)
+  );
+}
+
+.input:hover {
+  border-color: var(--gn-color-accent-solid);
+}
+
+.input:focus-visible {
+  outline: var(--gn-size-focus-ring-width) solid var(--gn-color-border-focus);
+  outline-offset: var(--gn-size-focus-ring-offset);
+}
+
+.input:checked {
+  border-color: var(--gn-color-accent-solid);
+  background-color: var(--gn-color-accent-solid);
+}
+
+.input:checked:hover {
+  border-color: var(--gn-color-accent-solid-hover);
+  background-color: var(--gn-color-accent-solid-hover);
+}
+
+/* After the checked rules, with matching specificity, so a checked invalid control keeps it. */
+.input[aria-invalid='true'],
+.input[aria-invalid='true']:checked {
+  border-color: var(--gn-color-danger-border);
+}
+
+.input:disabled {
+  border-color: var(--gn-color-border-default);
+  background-color: var(--gn-color-bg-disabled);
+  cursor: not-allowed;
+}
+
+.input:disabled:checked {
+  border-color: var(--gn-color-fg-disabled);
+  background-color: var(--gn-color-fg-disabled);
+}
+
+.text {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gn-space-0-5);
+  min-inline-size: 0;
+}
+
+/* Also a full target tall, with its first line centred on the control. */
+.label {
+  box-sizing: border-box;
+  min-block-size: var(--gn-size-target-min);
+  padding-block: calc((var(--gn-size-target-min) - 1lh) / 2);
+  cursor: pointer;
+}
+
+/* Covers the option's own `disabled` and a disabled ancestor fieldset. */
+.option:has(.input:disabled) .label {
+  color: var(--gn-color-fg-disabled);
+  cursor: not-allowed;
+}
+
+@media (forced-colors: active) {
+  .input {
+    border-color: ButtonText;
+  }
+
+  .input:checked,
+  .input:checked:hover {
+    forced-color-adjust: none;
+    border-color: Highlight;
+    background-color: Highlight;
+  }
+
+  /* Invalid is shown by thickness, not a fixed colour such as Mark, which can fail contrast. */
+  .input[aria-invalid='true'],
+  .input[aria-invalid='true']:checked {
+    border-width: var(--gn-size-focus-ring-width);
+  }
+
+  .input[aria-invalid='true'],
+  .input[aria-invalid='true']:checked:hover {
+    border-color: ButtonText;
+  }
+
+  .input:disabled {
+    border-color: GrayText;
+  }
+
+  .input:disabled:checked {
+    border-color: GrayText;
+    background-color: GrayText;
+  }
+
+  .input:focus-visible {
+    outline-color: Highlight;
+  }
+
+  .option:has(.input:disabled) .label {
+    color: GrayText;
+  }
+}

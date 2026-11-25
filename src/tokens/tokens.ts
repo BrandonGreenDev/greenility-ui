@@ -179,6 +179,8 @@ export const scales = {
     'focus-ring-width': '2px',
     'focus-ring-offset': '2px',
     'border-width': '1px',
+    // WCAG 2.2 SC 2.5.8 minimum target size; small controls extend their hit area to this.
+    'target-min': '1.5rem',
     indicator: '1.125rem',
     'switch-width': '2.25rem',
     'switch-height': '1.25rem',
