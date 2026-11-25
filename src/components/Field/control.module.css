@@ -1,0 +1,94 @@
+/*
+ * Shared frame for text-like controls (TextField, TextArea, Select).
+ * Markup: <div class={box} data-size> ... <input class={input}> ... </div>
+ * The box draws the border and the focus ring; the native element inside is reset.
+ */
+.box {
+  display: flex;
+  align-items: center;
+  gap: var(--gn-space-2);
+  min-block-size: var(--gn-size-control-md);
+  background: var(--gn-color-bg-surface);
+  color: var(--gn-color-fg-default);
+  border: var(--gn-size-border-width) solid var(--gn-color-border-strong);
+  border-radius: var(--gn-radius-md);
+  font-size: var(--gn-font-size-md);
+  line-height: var(--gn-font-line-height-normal);
+  transition: border-color var(--gn-motion-duration-fast) var(--gn-motion-easing-standard);
+}
+
+.box[data-size='sm'] {
+  min-block-size: var(--gn-size-control-sm);
+  gap: var(--gn-space-1-5);
+  font-size: var(--gn-font-size-sm);
+}
+
+.box[data-size='lg'] {
+  min-block-size: var(--gn-size-control-lg);
+  font-size: var(--gn-font-size-lg);
+}
+
+.box:focus-within {
+  outline: var(--gn-size-focus-ring-width) solid var(--gn-color-border-focus);
+  outline-offset: 0;
+}
+
+.box:has([aria-invalid='true']) {
+  border-color: var(--gn-color-danger-border);
+}
+
+.box:has(:disabled) {
+  background: var(--gn-color-bg-disabled);
+  color: var(--gn-color-fg-disabled);
+  border-color: var(--gn-color-border-default);
+  cursor: not-allowed;
+}
+
+.input {
+  appearance: none;
+  flex: 1;
+  min-inline-size: 0;
+  align-self: stretch;
+  margin: 0;
+  padding-block: 0;
+  padding-inline: var(--gn-space-3);
+  border: 0;
+  border-radius: inherit;
+  outline: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+}
+
+.box[data-size='sm'] .input {
+  padding-inline: var(--gn-space-2);
+}
+
+.box[data-size='lg'] .input {
+  padding-inline: var(--gn-space-4);
+}
+
+.input:disabled {
+  cursor: not-allowed;
+}
+
+.input::placeholder {
+  color: var(--gn-color-fg-subtle);
+  opacity: 1;
+}
+
+@media (forced-colors: active) {
+  /* Invalid must not rely on the danger colour alone; the error text and icon remain too. */
+  .box:has([aria-invalid='true']) {
+    border-color: Mark;
+  }
+
+  .box:has(:disabled) {
+    border-color: GrayText;
+    color: GrayText;
+  }
+
+  .input::placeholder {
+    color: GrayText;
+  }
+}

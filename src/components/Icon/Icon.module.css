@@ -1,0 +1,15 @@
+.root {
+  flex-shrink: 0;
+  inline-size: var(--gn-size-icon-md);
+  block-size: var(--gn-size-icon-md);
+}
+
+.root[data-size='sm'] {
+  inline-size: var(--gn-size-icon-sm);
+  block-size: var(--gn-size-icon-sm);
+}
+
+.root[data-size='lg'] {
+  inline-size: var(--gn-size-icon-lg);
+  block-size: var(--gn-size-icon-lg);
+}

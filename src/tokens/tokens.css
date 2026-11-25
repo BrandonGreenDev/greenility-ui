@@ -107,6 +107,8 @@
   --gn-motion-easing-standard: cubic-bezier(0.2, 0, 0, 1);
   --gn-motion-easing-enter: cubic-bezier(0, 0, 0.2, 1);
   --gn-motion-easing-exit: cubic-bezier(0.4, 0, 1, 1);
+  --gn-motion-loop-spin: 800ms;
+  --gn-motion-loop-pulse: 1600ms;
   --gn-z-base: 0;
   --gn-z-dropdown: 1000;
   --gn-z-sticky: 1100;
@@ -123,6 +125,10 @@
   --gn-size-focus-ring-width: 2px;
   --gn-size-focus-ring-offset: 2px;
   --gn-size-border-width: 1px;
+  --gn-size-indicator: 1.125rem;
+  --gn-size-switch-width: 2.25rem;
+  --gn-size-switch-height: 1.25rem;
+  --gn-size-switch-thumb: 0.875rem;
 }
 
 /* Light is the default theme. */

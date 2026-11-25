@@ -18,5 +18,16 @@ export {
 // Tokens (for JS consumers, e.g. charts or canvas)
 export { palette, scales, themes, cssVar, type ThemeName, type ColorRole } from './tokens/tokens';
 
+// Shared prop vocabulary
+export type {
+  AlertTone,
+  BadgeVariant,
+  ButtonVariant,
+  CheckedState,
+  Orientation,
+  Size,
+  Tone,
+} from './utils/types';
+
 // Components
-// (added per component in Phase 2 and 3)
+export { VisuallyHidden, type VisuallyHiddenProps } from './components/VisuallyHidden';

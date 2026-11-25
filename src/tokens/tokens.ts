@@ -157,6 +157,8 @@ export const scales = {
     'easing-standard': 'cubic-bezier(0.2, 0, 0, 1)',
     'easing-enter': 'cubic-bezier(0, 0, 0.2, 1)',
     'easing-exit': 'cubic-bezier(0.4, 0, 1, 1)',
+    'loop-spin': '800ms',
+    'loop-pulse': '1600ms',
   },
   z: {
     base: '0',
@@ -177,13 +179,21 @@ export const scales = {
     'focus-ring-width': '2px',
     'focus-ring-offset': '2px',
     'border-width': '1px',
+    indicator: '1.125rem',
+    'switch-width': '2.25rem',
+    'switch-height': '1.25rem',
+    'switch-thumb': '0.875rem',
   },
 } as const;
 
 /**
- * Under `prefers-reduced-motion: reduce` every duration becomes 0.01ms rather than 0,
- * so `transitionend`/`animationend` still fire and components never get stuck
+ * Under `prefers-reduced-motion: reduce` every `duration-*` token becomes 0.01ms rather
+ * than 0, so `transitionend`/`animationend` still fire and components never get stuck
  * mid-exit.
+ *
+ * The `loop-*` motion tokens (infinite animations such as the spinner) are deliberately
+ * not prefixed `duration-`, so they are not collapsed: a 0.01ms infinite loop would flash.
+ * Components that loop swap to a non-spatial animation under reduced motion instead.
  */
 export const reducedMotionDuration = '0.01ms';
 

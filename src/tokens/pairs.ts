@@ -30,6 +30,27 @@ export const contrastPairs: ContrastPair[] = [
   { fg: 'accent-solid-fg', bg: 'accent-solid-active', min: 4.5, usage: 'Primary button pressed' },
   { fg: 'accent-subtle-fg', bg: 'accent-subtle', min: 4.5, usage: 'Accent badge / selected row' },
   { fg: 'accent-subtle-fg', bg: 'accent-subtle-hover', min: 4.5, usage: 'Secondary button hover' },
+  { fg: 'fg-default', bg: 'bg-hover', min: 4.5, usage: 'Ghost button hover' },
+  { fg: 'fg-default', bg: 'bg-active', min: 4.5, usage: 'Ghost button pressed' },
+  ...(['bg-canvas', 'bg-surface', 'bg-raised'] as const).map((bg): ContrastPair => ({
+    fg: 'danger-subtle-fg',
+    bg,
+    min: 4.5,
+    usage: 'Field error text / required mark',
+  })),
+  { fg: 'danger-border', bg: 'bg-canvas', min: 3, usage: 'Invalid input border on canvas' },
+  ...(['success', 'warning', 'danger', 'info'] as const).map((tone): ContrastPair => ({
+    fg: 'border-focus',
+    bg: `${tone}-subtle`,
+    min: 3,
+    usage: `Focus ring inside ${tone} alert`,
+  })),
+  {
+    fg: 'border-focus',
+    bg: 'accent-subtle',
+    min: 3,
+    usage: 'Focus ring on secondary button surface',
+  },
   ...(['success', 'warning', 'danger', 'info'] as const).flatMap((tone): ContrastPair[] => [
     { fg: `${tone}-solid-fg`, bg: `${tone}-solid`, min: 4.5, usage: `${tone} solid` },
     { fg: `${tone}-solid-fg`, bg: `${tone}-solid-hover`, min: 4.5, usage: `${tone} solid hover` },

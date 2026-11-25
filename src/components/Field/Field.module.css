@@ -1,0 +1,55 @@
+.root {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gn-space-1-5);
+  min-inline-size: 0;
+}
+
+.label {
+  padding: 0;
+  color: var(--gn-color-fg-default);
+  font-size: var(--gn-font-size-sm);
+  font-weight: var(--gn-font-weight-medium);
+  line-height: var(--gn-font-line-height-normal);
+}
+
+.label[data-disabled],
+[data-disabled] > .label,
+fieldset:disabled > .label {
+  color: var(--gn-color-fg-disabled);
+}
+
+.required {
+  margin-inline-start: var(--gn-space-0-5);
+  color: var(--gn-color-danger-subtle-fg);
+}
+
+.description {
+  margin: 0;
+  color: var(--gn-color-fg-muted);
+  font-size: var(--gn-font-size-sm);
+  line-height: var(--gn-font-line-height-normal);
+}
+
+.error {
+  display: inline-flex;
+  align-items: flex-start;
+  gap: var(--gn-space-1);
+  margin: 0;
+  color: var(--gn-color-danger-subtle-fg);
+  font-size: var(--gn-font-size-sm);
+  line-height: var(--gn-font-line-height-normal);
+}
+
+/* Centre the icon on the first line of text, so multi-line errors still align. */
+.errorIcon {
+  margin-block-start: calc((1lh - var(--gn-size-icon-sm)) / 2);
+}
+
+@media (forced-colors: active) {
+  .label[data-disabled],
+  [data-disabled] > .label,
+  fieldset:disabled > .label {
+    color: GrayText;
+  }
+}

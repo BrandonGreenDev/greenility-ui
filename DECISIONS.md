@@ -26,3 +26,46 @@ One line per decision, with the reason. Newest at the bottom of each phase.
 - Hand-written `cx` and `composeRefs` instead of `clsx` and similar: about five lines each, so there are zero runtime dependencies.
 - Renamed to **Greenility** at Checkpoint 1 (owner's choice). The token prefix is `--gn-` and the package is `greenility-ui`.
 - The brand palette is "fern", an original teal-green, to match the name. Light-theme accent uses fern-700 (6:1 on white). It is teal enough to stay distinct from the yellower `success` green, and status always comes with an icon or text anyway.
+
+## Phase 2: Core components
+
+Full spec: `docs/specs/phase-2.md`.
+
+- **Errors use `aria-describedby`, not `aria-errormessage`.** `aria-errormessage` is still not announced by VoiceOver, and NVDA support is partial. Using both double-announces in JAWS.
+- **`aria-describedby` order is description then error,** matching visual order.
+- **Field errors are not live regions.** Announcing on every keystroke validation is noisy. Errors are read on focus, and the docs tell consumers to focus the first invalid field on submit.
+- **Required fields use native `required` plus an aria-hidden asterisk.** Required is announced once, with no "star", and native validation stays available (consumers can use `noValidate`).
+- **Native form controls receive `value`/`checked` directly instead of going through `useControllableState`.** The DOM already owns the state. Mirroring it in React breaks `form.reset()` and autofill and risks controlled/uncontrolled warnings. `useControllableState` stays for non-native state (`open` in Phase 3).
+- **On field components, `className`/`style` go to the root wrapper and `ref`/`id`/rest go to the native control.** Layout styling and DOM access each land where they are useful.
+- **Button variants are primary, secondary, ghost and danger, with no separate `tone`.** Only one destructive style is needed, and a variant × tone matrix would add untested contrast pairs.
+- **Button defaults to `type="button"`.** This prevents accidental form submits.
+- **A loading Button uses `aria-disabled` and swallows clicks, not `disabled`.** Native `disabled` drops focus to `<body>` mid-interaction. The label stays in the DOM at opacity 0 to keep the accessible name and width.
+- **A disabled (not loading) Button uses native `disabled`.** It matches platform behaviour and removes the button from the tab order.
+- **IconButton `label` is a required `string` mapped to `aria-label`, and `aria-labelledby` is omitted from its props.** A name is guaranteed at compile time.
+- **IconButton composes Button through a `data-icon-only` attribute.** There is one source of variant and loading logic and no duplicated CSS.
+- **Checkbox uses `checked: boolean | 'indeterminate'`.** A single source of truth makes "checked and indeterminate at once" unrepresentable. `onCheckedChange` always returns a boolean, because the user can only produce boolean states.
+- **Checkbox indeterminate is set through the DOM `indeterminate` property, not `aria-checked`.** The browser exposes "mixed" natively and clears it on user input.
+- **Checkbox, Radio and Switch style the real input with `appearance: none`, with glyphs as aria-hidden siblings.** The focusable, clickable element is the real input, which keeps forms, labels and forced-colors behaviour.
+- **RadioGroup uses native radios in a fieldset with a legend, not an ARIA radiogroup with roving tabindex.** Browsers implement the APG keyboard model, single tab stop and form submission natively, with no JS.
+- **RadioGroup puts `aria-invalid` and `required` on each radio and describedby on the fieldset.** `aria-invalid` and `aria-required` are not supported on `role=group`. Group help is read on entry without repeating on every arrow press.
+- **Switch is `<input type="checkbox" role="switch">`, not `<button role="switch">`.** It gets native name/value form submission, reset, label click and Space toggling for free. AT without switch support still hears a correct checkbox.
+- **Switch has no invalid or error props.** A switch applies its change immediately and is not validated.
+- **Select uses a native `<select>`.** It provides robust keyboard support and typeahead, the mobile picker, autofill, form participation and AT support, all of which a custom listbox would have to reimplement. A custom listbox can be reconsidered when `appearance: base-select` is widely supported.
+- **The Select placeholder is a disabled `value=""` option, not `hidden`.** iOS ignores `hidden` on options.
+- **TextArea `autoResize` uses CSS `field-sizing: content`.** No JS measuring is needed, and unsupported browsers fall back to a fixed, user-resizable height.
+- **TextField adornments are not auto-linked to the input description.** Most adornments are decorative icons. Units should also appear in the label or description.
+- **Alert uses a `live` prop (`off` → no role, `polite` → `status`, `assertive` → `alert`) with default `off`.** Most alerts are static page content, and `role="alert"` interrupts the user, so it should be opt-in.
+- **Alert neutral tone is included and accent is excluded.** Neutral covers plain notices. Accent is a brand colour, not a meaning for messages.
+- **Alert announces its tone with a visually hidden prefix (`toneLabel`).** Tone otherwise lives only in colour and an aria-hidden icon (WCAG 1.4.1).
+- **Alert dismissal is consumer-controlled (`onDismiss`).** The Alert holds no hidden state, and the consumer decides removal and the focus target.
+- **Spinner is `role="status"` with visually hidden text, and `decorative` hides it inside Button.** Live regions announce text content, not `aria-label`. The Button already conveys its own state.
+- **Under reduced motion, the Spinner swaps rotation for a slow opacity pulse.** It still signals busy without spatial motion. Its loop tokens are `loop-*` so they are not collapsed to 0.01ms, which would make them flash.
+- **Status icons use four distinct shapes (circle-i, circle-check, triangle, octagon).** Tone stays distinguishable without colour.
+- **Icons are internal in Phase 2.** This keeps the public API small; they can be exported later without breaking changes.
+- **Disabled states use semantic colour roles, with no opacity token.** Opacity over arbitrary backgrounds gives unpredictable colours.
+- **Batches do not edit `src/index.ts`, `DECISIONS.md` or tokens.** These are the only files all batches would share, so the integrator owns them to avoid merge conflicts.
+- Added a shared `Orientation` type to `src/utils/types.ts` (used by RadioGroup).
+- `FieldLabel as="legend"` drops `htmlFor`, because `for` is not valid on `<legend>`; the legend greys out from a parent `fieldset:disabled` or `[data-disabled]`.
+- `useField` sets `aria-describedby` ids only when that content renders, so it never points at a missing element.
+- An invalid field box uses a `Mark` border in forced-colors mode rather than a thicker border: there is no layout shift and no raw px value.
+- Icons accept `className` and forward a ref to the `<svg>`, consistent with every other component.
