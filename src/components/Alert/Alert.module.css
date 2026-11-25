@@ -1,0 +1,121 @@
+.root {
+  display: grid;
+  /* Icon, content, then an implicit auto column only when the dismiss button exists. */
+  grid-template-columns: auto 1fr;
+  grid-auto-columns: auto;
+  grid-auto-flow: column;
+  align-items: start;
+  gap: var(--gn-space-3);
+  padding: var(--gn-space-4);
+  border: var(--gn-size-border-width) solid var(--gn-color-info-border);
+  border-radius: var(--gn-radius-lg);
+  background-color: var(--gn-color-info-subtle);
+  color: var(--gn-color-info-subtle-fg);
+  font-size: var(--gn-font-size-md);
+  line-height: var(--gn-font-line-height-normal);
+}
+
+.icon {
+  color: var(--gn-color-info-border);
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gn-space-1);
+  min-inline-size: 0;
+}
+
+.title {
+  font-weight: var(--gn-font-weight-semibold);
+}
+
+.body {
+  font-size: var(--gn-font-size-sm);
+}
+
+/* Tones */
+.root[data-tone='success'] {
+  border-color: var(--gn-color-success-border);
+  background-color: var(--gn-color-success-subtle);
+  color: var(--gn-color-success-subtle-fg);
+}
+
+.root[data-tone='success'] > .icon {
+  color: var(--gn-color-success-border);
+}
+
+.root[data-tone='warning'] {
+  border-color: var(--gn-color-warning-border);
+  background-color: var(--gn-color-warning-subtle);
+  color: var(--gn-color-warning-subtle-fg);
+}
+
+.root[data-tone='warning'] > .icon {
+  color: var(--gn-color-warning-border);
+}
+
+.root[data-tone='danger'] {
+  border-color: var(--gn-color-danger-border);
+  background-color: var(--gn-color-danger-subtle);
+  color: var(--gn-color-danger-subtle-fg);
+}
+
+.root[data-tone='danger'] > .icon {
+  color: var(--gn-color-danger-border);
+}
+
+.root[data-tone='neutral'] {
+  border-color: var(--gn-color-border-default);
+  background-color: var(--gn-color-bg-muted);
+  color: var(--gn-color-fg-default);
+}
+
+.root[data-tone='neutral'] > .icon {
+  color: var(--gn-color-fg-muted);
+}
+
+/*
+ * Dismiss button. The extra attribute selectors outrank Button's ghost-variant rules, so
+ * the button inherits the tone text colour and never paints an untested background.
+ */
+.root[data-tone] > .dismiss[data-variant] {
+  color: inherit;
+}
+
+.root[data-tone] > .dismiss[data-variant]:hover:not(:disabled),
+.root[data-tone] > .dismiss[data-variant]:active:not(:disabled) {
+  background-color: transparent;
+  border-color: var(--gn-color-info-border);
+}
+
+.root[data-tone='success'] > .dismiss[data-variant]:hover:not(:disabled),
+.root[data-tone='success'] > .dismiss[data-variant]:active:not(:disabled) {
+  border-color: var(--gn-color-success-border);
+}
+
+.root[data-tone='warning'] > .dismiss[data-variant]:hover:not(:disabled),
+.root[data-tone='warning'] > .dismiss[data-variant]:active:not(:disabled) {
+  border-color: var(--gn-color-warning-border);
+}
+
+.root[data-tone='danger'] > .dismiss[data-variant]:hover:not(:disabled),
+.root[data-tone='danger'] > .dismiss[data-variant]:active:not(:disabled) {
+  border-color: var(--gn-color-danger-border);
+}
+
+.root[data-tone='neutral'] > .dismiss[data-variant]:hover:not(:disabled),
+.root[data-tone='neutral'] > .dismiss[data-variant]:active:not(:disabled) {
+  border-color: var(--gn-color-border-strong);
+}
+
+/* Keep the frame and icon visible; equal specificity to the tone rules, declared later. */
+@media (forced-colors: active) {
+  .root[data-tone] {
+    border-color: CanvasText;
+  }
+
+  .root[data-tone] > .icon {
+    color: CanvasText;
+  }
+}

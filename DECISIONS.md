@@ -69,3 +69,11 @@ Full spec: `docs/specs/phase-2.md`.
 - `useField` sets `aria-describedby` ids only when that content renders, so it never points at a missing element.
 - An invalid field box uses a `Mark` border in forced-colors mode rather than a thicker border: there is no layout shift and no raw px value.
 - Icons accept `className` and forward a ref to the `<svg>`, consistent with every other component.
+- Button positions its loading Spinner with a higher-specificity selector (`.root > .spinner`): with `preserveModules` the consumer's bundler decides CSS order, so cross-module overrides must win on specificity, not order.
+- IconButton passes its icon through Button's `startIcon` slot with `children={null}`, so it reuses Button's aria-hidden icon wrapper, sizing and loading styles.
+- Button `loadingLabel` (default "Loading") is an aria-hidden VisuallyHidden span referenced by `aria-describedby` while loading: the name stays the label, and screen readers hear that it is busy.
+- IconButton warns on an empty or whitespace `label` (with no env check, because library code avoids `process.env`).
+- Alert puts its live role on the message wrapper (prefix, title, body), not the root, so the icon and dismiss button are not re-announced with each update.
+- Alert uses an `auto 1fr` grid plus an implicit auto column, so there is no empty gap when the alert has no dismiss button.
+- The neutral Alert's dismiss hover border uses `border-strong` (border-default on bg-muted is about 1.2:1).
+- Live regions (Alert `live`, Spinner) are documented as "mount first, then change content", because a role added on mount is not reliably announced.
