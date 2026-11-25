@@ -179,3 +179,12 @@ Full spec: `docs/specs/phase-3.md`.
 - `Tab` and `TabPanel` props omit the ids and ARIA that Tabs manages, so misuse fails to compile.
 - A locked-open Accordion trigger (non-collapsible) keeps `aria-disabled` per APG, hides its chevron, and keeps its title at full contrast.
 - The tab focus ring is inset by the ring width plus the indicator height, so the selected bar stays visible under focus.
+- DataTable announcements are held as pending and committed after 150ms. While loading, sort and page messages are held and announced once, combined with the range, when loading ends: one message per action, never overwritten by "Loading".
+- DataTable announces "Loading" only when no user-triggered message is waiting (on mount or a parent-driven refresh).
+- The DataTable status text is keyed by a nonce inside an always-mounted region, so identical consecutive messages are still announced; clearing a sort announces `messages.unsorted` ("Sort cleared").
+- The DataTable scroll region keeps role, label and tabIndex while focused even if overflow stops, so focus never sits on an unnamed element.
+- The DataTable pagination group is named "Pagination" plus the caption and described by the range text, so several tables on one page stay distinct; buttons default to "Previous page"/"Next page".
+- DataTable infers `Row` from `rows` only (`NoInfer` on `columns`/`getRowId`), so mismatches are reported on the column definitions; an empty literal `rows={[]}` needs a typed array.
+- DataTable sanitises non-finite `page`/`pageSize`/`totalRows`; NaN would otherwise loop the render-phase change detection.
+- The DataTable header uses `bg-muted`, not `bg-subtle`, because in the light theme `bg-subtle` equals the canvas.
+- DataTable warnings fire once per instance; the range text is empty during a first load with no rows.

@@ -49,3 +49,10 @@ export { TextArea, type TextAreaProps } from './components/TextArea';
 export { NativeSelect, type NativeSelectProps } from './components/NativeSelect';
 export * from './components/Tabs';
 export * from './components/Accordion';
+export {
+  DataTable,
+  type CellValue,
+  type DataTableColumn,
+  type DataTableMessages,
+  type DataTableProps,
+} from './components/DataTable';

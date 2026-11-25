@@ -1,0 +1,179 @@
+.root {
+  min-inline-size: 0;
+  color: var(--gn-color-fg-default);
+}
+
+/*
+ * The scroll container. It only becomes a focusable, labelled region while the table
+ * overflows (DataTable.tsx), but the ring is defined unconditionally for that case.
+ */
+.scroll {
+  position: relative;
+  overflow-x: auto;
+  border-radius: var(--gn-radius-sm);
+}
+
+.scroll:focus-visible {
+  outline: var(--gn-size-focus-ring-width) solid var(--gn-color-border-focus);
+  outline-offset: var(--gn-size-focus-ring-offset);
+}
+
+.table {
+  inline-size: 100%;
+  border-collapse: collapse;
+  font-size: var(--gn-font-size-sm);
+  line-height: var(--gn-font-line-height-normal);
+}
+
+.caption {
+  padding-block-end: var(--gn-space-2);
+  font-weight: var(--gn-font-weight-semibold);
+  text-align: start;
+}
+
+.headerCell,
+.cell {
+  padding: var(--gn-space-2) var(--gn-space-3);
+  border-block-end: var(--gn-size-border-width) solid var(--gn-color-border-default);
+  text-align: start;
+  vertical-align: middle;
+}
+
+.headerCell {
+  /* bg-muted, not bg-subtle: in light mode bg-subtle equals the canvas. */
+  background: var(--gn-color-bg-muted);
+  color: var(--gn-color-fg-default);
+  font-weight: var(--gn-font-weight-semibold);
+  white-space: nowrap;
+}
+
+/* Row header cells (<th scope="row">) keep the body look, slightly emphasised. */
+.cell {
+  font-weight: var(--gn-font-weight-regular);
+}
+
+th.cell {
+  font-weight: var(--gn-font-weight-medium);
+}
+
+.headerCell[data-align='end'],
+.cell[data-align='end'] {
+  font-variant-numeric: tabular-nums;
+  text-align: end;
+}
+
+/* The button fills the whole header cell, so the hit area and the inset ring match it. */
+.headerCell[data-sortable] {
+  padding: 0;
+}
+
+.sortButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: var(--gn-space-1);
+  inline-size: 100%;
+  margin: 0;
+  padding: var(--gn-space-2) var(--gn-space-3);
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  text-align: inherit;
+  cursor: pointer;
+}
+
+.headerCell[data-align='end'] > .sortButton {
+  justify-content: flex-end;
+}
+
+.sortButton:hover > .sortLabel {
+  text-decoration: underline;
+  text-underline-offset: var(--gn-space-0-5);
+}
+
+.sortButton:focus-visible {
+  outline: var(--gn-size-focus-ring-width) solid var(--gn-color-border-focus);
+  outline-offset: calc(-1 * var(--gn-size-focus-ring-width));
+}
+
+.sortIcon {
+  flex: none;
+  color: var(--gn-color-fg-muted);
+  transition: color var(--gn-motion-duration-fast) var(--gn-motion-easing-standard);
+}
+
+.sortButton[data-sorted] > .sortIcon {
+  color: var(--gn-color-fg-default);
+}
+
+.body[data-loading] {
+  color: var(--gn-color-fg-muted);
+}
+
+/* Full-width empty and loading cells. */
+.message {
+  padding: var(--gn-space-8);
+  border-block-end: var(--gn-size-border-width) solid var(--gn-color-border-default);
+  color: var(--gn-color-fg-muted);
+  text-align: center;
+}
+
+.loading {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--gn-space-2);
+}
+
+.pagination {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--gn-space-3);
+  padding-block-start: var(--gn-space-3);
+}
+
+.pagination .pageSize {
+  flex-direction: row;
+  align-items: center;
+  gap: var(--gn-space-2);
+}
+
+.range {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--gn-space-2);
+  margin: 0;
+  color: var(--gn-color-fg-muted);
+  font-size: var(--gn-font-size-sm);
+  font-variant-numeric: tabular-nums;
+}
+
+.nav {
+  display: flex;
+  gap: var(--gn-space-2);
+}
+
+/* Chevrons point in the reading direction. */
+.navButton:dir(rtl) svg {
+  transform: scaleX(-1);
+}
+
+@media (forced-colors: active) {
+  .headerCell,
+  .cell,
+  .message {
+    border-color: CanvasText;
+  }
+
+  .scroll:focus-visible,
+  .sortButton:focus-visible {
+    outline-color: Highlight;
+  }
+
+  .sortIcon,
+  .sortButton[data-sorted] > .sortIcon {
+    color: CanvasText;
+  }
+}
