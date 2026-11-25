@@ -1,0 +1,69 @@
+.root {
+  position: relative;
+  display: inline-flex;
+  flex-shrink: 0;
+  inline-size: var(--gn-size-icon-md);
+  block-size: var(--gn-size-icon-md);
+  vertical-align: middle;
+}
+
+.root[data-size='sm'] {
+  inline-size: var(--gn-size-icon-sm);
+  block-size: var(--gn-size-icon-sm);
+}
+
+.root[data-size='lg'] {
+  inline-size: var(--gn-size-icon-lg);
+  block-size: var(--gn-size-icon-lg);
+}
+
+.svg {
+  inline-size: 100%;
+  block-size: 100%;
+  animation: gn-spinner-spin var(--gn-motion-loop-spin) linear infinite;
+}
+
+.track {
+  stroke: var(--gn-color-border-default);
+}
+
+.arc {
+  stroke: currentColor;
+}
+
+@keyframes gn-spinner-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes gn-spinner-pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.4;
+  }
+}
+
+/*
+ * The loop tokens are not collapsed under reduced motion (a 0.01ms loop would flash),
+ * so the rotation is swapped for a slow opacity pulse: still busy, no spatial motion.
+ */
+@media (prefers-reduced-motion: reduce) {
+  .svg {
+    animation: gn-spinner-pulse var(--gn-motion-loop-pulse) ease-in-out infinite;
+  }
+}
+
+@media (forced-colors: active) {
+  .arc {
+    stroke: currentColor;
+  }
+
+  .track {
+    stroke: GrayText;
+  }
+}
