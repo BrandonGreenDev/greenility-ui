@@ -1,0 +1,179 @@
+.root {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--gn-space-2);
+  min-block-size: var(--gn-size-control-md);
+  padding-block: 0;
+  padding-inline: var(--gn-space-4);
+  margin: 0;
+  border: var(--gn-size-border-width) solid transparent;
+  border-radius: var(--gn-radius-md);
+  font-family: inherit;
+  font-size: var(--gn-font-size-md);
+  font-weight: var(--gn-font-weight-medium);
+  line-height: var(--gn-font-line-height-tight);
+  white-space: nowrap;
+  text-decoration: none;
+  vertical-align: middle;
+  cursor: pointer;
+  user-select: none;
+  transition:
+    background-color var(--gn-motion-duration-fast) var(--gn-motion-easing-standard),
+    border-color var(--gn-motion-duration-fast) var(--gn-motion-easing-standard),
+    color var(--gn-motion-duration-fast) var(--gn-motion-easing-standard);
+}
+
+.root:focus-visible {
+  outline: var(--gn-size-focus-ring-width) solid var(--gn-color-border-focus);
+  outline-offset: var(--gn-size-focus-ring-offset);
+}
+
+/* Sizes (control metrics table) */
+.root[data-size='sm'] {
+  gap: var(--gn-space-1-5);
+  min-block-size: var(--gn-size-control-sm);
+  padding-inline: var(--gn-space-3);
+  font-size: var(--gn-font-size-sm);
+}
+
+.root[data-size='lg'] {
+  gap: var(--gn-space-2);
+  min-block-size: var(--gn-size-control-lg);
+  padding-inline: var(--gn-space-5);
+  font-size: var(--gn-font-size-lg);
+}
+
+/* Square icon-only buttons (set by IconButton) */
+.root[data-icon-only] {
+  inline-size: var(--gn-size-control-md);
+  padding-inline: 0;
+}
+
+.root[data-icon-only][data-size='sm'] {
+  inline-size: var(--gn-size-control-sm);
+}
+
+.root[data-icon-only][data-size='lg'] {
+  inline-size: var(--gn-size-control-lg);
+}
+
+/* Variants */
+.root[data-variant='primary'] {
+  background-color: var(--gn-color-accent-solid);
+  color: var(--gn-color-accent-solid-fg);
+}
+
+.root[data-variant='primary']:hover:not(:disabled, [aria-disabled='true']) {
+  background-color: var(--gn-color-accent-solid-hover);
+}
+
+.root[data-variant='primary']:active:not(:disabled, [aria-disabled='true']) {
+  background-color: var(--gn-color-accent-solid-active);
+}
+
+.root[data-variant='secondary'] {
+  background-color: var(--gn-color-accent-subtle);
+  color: var(--gn-color-accent-subtle-fg);
+}
+
+.root[data-variant='secondary']:hover:not(:disabled, [aria-disabled='true']),
+.root[data-variant='secondary']:active:not(:disabled, [aria-disabled='true']) {
+  background-color: var(--gn-color-accent-subtle-hover);
+}
+
+.root[data-variant='ghost'] {
+  background-color: transparent;
+  color: var(--gn-color-fg-default);
+}
+
+.root[data-variant='ghost']:hover:not(:disabled, [aria-disabled='true']) {
+  background-color: var(--gn-color-bg-hover);
+}
+
+.root[data-variant='ghost']:active:not(:disabled, [aria-disabled='true']) {
+  background-color: var(--gn-color-bg-active);
+}
+
+.root[data-variant='danger'] {
+  background-color: var(--gn-color-danger-solid);
+  color: var(--gn-color-danger-solid-fg);
+}
+
+.root[data-variant='danger']:hover:not(:disabled, [aria-disabled='true']),
+.root[data-variant='danger']:active:not(:disabled, [aria-disabled='true']) {
+  background-color: var(--gn-color-danger-solid-hover);
+}
+
+/* Disabled (native) */
+.root:disabled {
+  background-color: var(--gn-color-bg-disabled);
+  color: var(--gn-color-fg-disabled);
+  cursor: not-allowed;
+}
+
+.root[data-variant='ghost']:disabled {
+  background-color: transparent;
+}
+
+/* Loading keeps the variant colours; content is hidden but stays in the DOM for the name and width. */
+.root[data-loading] {
+  cursor: progress;
+}
+
+.root[data-loading] > .label,
+.root[data-loading] > .icon {
+  opacity: 0;
+}
+
+/* `.root >` outranks Spinner's own `.root`, whatever order the CSS Modules load in. */
+.root > .spinner {
+  position: absolute;
+  inset: 0;
+  margin: auto;
+}
+
+/* Slots */
+.label {
+  display: inline-flex;
+  align-items: center;
+}
+
+.icon {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Icon size follows the button size (control metrics table). */
+.root .icon > svg {
+  inline-size: var(--gn-size-icon-md);
+  block-size: var(--gn-size-icon-md);
+}
+
+.root[data-size='sm'] .icon > svg {
+  inline-size: var(--gn-size-icon-sm);
+  block-size: var(--gn-size-icon-sm);
+}
+
+.root[data-size='lg'] .icon > svg {
+  inline-size: var(--gn-size-icon-lg);
+  block-size: var(--gn-size-icon-lg);
+}
+
+@media (forced-colors: active) {
+  .root {
+    border-color: ButtonText;
+  }
+
+  .root:disabled {
+    border-color: GrayText;
+    color: GrayText;
+  }
+
+  .root:focus-visible {
+    outline-color: Highlight;
+  }
+}
