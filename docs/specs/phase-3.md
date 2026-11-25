@@ -1413,12 +1413,12 @@ export const DataTable: <Row>(
    - Forced colors: cell borders become `CanvasText`.
 6. **Keyboard:**
 
-| Key                                 | Behavior                                                                                              |
-| ----------------------------------- | ----------------------------------------------------------------------------------------------------- |
-| Tab                                 | Sort buttons (in header order), the scroll region (only when overflowing), page size, Previous, Next. |
-| Enter / Space on sort button        | Toggle sort for the column; focus stays.                                                              |
-| Arrow keys in focused scroll region | Scroll horizontally (native).                                                                         |
-| Enter / Space on Previous/Next      | Change page; no-op at the bounds (still focusable).                                                   |
+| Key                                 | Behavior                                                                                                                  |
+| ----------------------------------- | ------------------------------------------------------------------------------------------------------------------------- |
+| Tab                                 | The scroll region (only when overflowing; it wraps the table), sort buttons (in header order), page size, Previous, Next. |
+| Enter / Space on sort button        | Toggle sort for the column; focus stays.                                                                                  |
+| Arrow keys in focused scroll region | Scroll horizontally (native).                                                                                             |
+| Enter / Space on Previous/Next      | Change page; no-op at the bounds (still focusable).                                                                       |
 
 7. **Focus:** never moves on sort or page change. A button pressed at a bound keeps focus (`aria-disabled`).
 8. **Screen reader:**

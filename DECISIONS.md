@@ -169,3 +169,13 @@ Full spec: `docs/specs/phase-3.md`.
 - The jsdom setup also shims `HTMLDialogElement.prototype.show` and the `open` property alongside `showModal`/`close`. jsdom 29.1.1 has none of the dialog, popover or `scrollIntoView` APIs. `ResizeObserver` is deliberately not shimmed, so hooks exercise their no-RO path and tests stub it explicitly.
 - `src/components/Floating/index.ts` is an empty module (`export {}`). Components import `floating.module.css` directly.
 - Phase 3 public types (`Placement`, `Align`, `ActivationMode`, `SortDirection`, `SortState`) are exported from the package index. Stage 0 utils, hooks and icons stay internal, as in Phase 2.
+- (Replaces the "query their items from the DOM ... no effects or index bookkeeping" line above.) Tabs and Accordion use the DOM as their item registry. Accordion queries its own `[data-accordion-trigger]` buttons on keydown. Tabs keeps the enabled tab values in DOM order, re-read by a stable `sync()` from layout effects with an equality guard; the default selection and roving tab stop are derived during render, with no index bookkeeping.
+- Uncontrolled Tabs with no `defaultValue` select the first enabled tab without calling `onValueChange`; re-selecting the current tab never calls it.
+- With manual activation, the tab stop follows the focused tab while focus is in the tablist and resets to the selected tab on leaving, so Tab leaves from where the user is (APG).
+- An overflowing tablist fades its edges with `mask-image` and reveals the selected tab by adjusting the list's `scrollLeft`, not `scrollIntoView`, so the page never scrolls.
+- A focused tab that is disabled or removed hands focus to the new tab stop; an Accordion panel closed from code while holding focus returns focus to its trigger.
+- Closed Accordion panels are `inert` (set on the DOM node, because React 18 and 19 handle the prop differently), and open panels use `visibility: inherit`, so nested open panels stay hidden inside a closed parent.
+- Tabs and Accordion state styles use child combinators keyed on their own list or trigger, so nested instances stay independent; Tabs must be direct children of TabList.
+- `Tab` and `TabPanel` props omit the ids and ARIA that Tabs manages, so misuse fails to compile.
+- A locked-open Accordion trigger (non-collapsible) keeps `aria-disabled` per APG, hides its chevron, and keeps its title at full contrast.
+- The tab focus ring is inset by the ring width plus the indicator height, so the selected bar stays visible under focus.

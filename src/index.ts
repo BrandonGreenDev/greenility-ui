@@ -47,3 +47,5 @@ export { Badge, type BadgeProps } from './components/Badge';
 export { TextField, type TextFieldProps } from './components/TextField';
 export { TextArea, type TextAreaProps } from './components/TextArea';
 export { NativeSelect, type NativeSelectProps } from './components/NativeSelect';
+export * from './components/Tabs';
+export * from './components/Accordion';
