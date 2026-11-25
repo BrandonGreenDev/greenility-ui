@@ -1,0 +1,65 @@
+/* Layout, track states and forced colours come from Field/indicator.module.css. */
+
+.track {
+  inline-size: var(--gn-size-switch-width);
+  block-size: var(--gn-size-switch-height);
+  border-radius: var(--gn-radius-full);
+}
+
+/* Hit area: the target height around the track, and across the gap to the label. */
+.track.track::before {
+  inset-block: calc((var(--gn-size-switch-height) - var(--gn-size-target-min)) / 2);
+  inset-inline: 0 calc(-1 * var(--gn-space-2));
+}
+
+/*
+ * The thumb shares the grid cell with the track, pinned to its start edge, and moves with
+ * a logical inset so it slides the right way in both LTR and RTL.
+ */
+.thumb {
+  justify-self: start;
+  inline-size: var(--gn-size-switch-thumb);
+  block-size: var(--gn-size-switch-thumb);
+  inset-inline-start: calc((var(--gn-size-switch-height) - var(--gn-size-switch-thumb)) / 2);
+  border-radius: var(--gn-radius-full);
+  background-color: var(--gn-color-border-strong);
+  transition:
+    inset-inline-start var(--gn-motion-duration-fast) var(--gn-motion-easing-standard),
+    background-color var(--gn-motion-duration-fast) var(--gn-motion-easing-standard);
+}
+
+.track:checked ~ .thumb {
+  inset-inline-start: calc(
+    var(--gn-size-switch-width) - var(--gn-size-switch-height) +
+      (var(--gn-size-switch-height) - var(--gn-size-switch-thumb)) / 2
+  );
+  background-color: var(--gn-color-accent-solid-fg);
+}
+
+.track:disabled ~ .thumb {
+  background-color: var(--gn-color-fg-disabled);
+}
+
+/* The shared rule fills a disabled checked track with fg-disabled; the thumb inverts. */
+.track:disabled:checked ~ .thumb {
+  background-color: var(--gn-color-bg-surface);
+}
+
+@media (forced-colors: active) {
+  .thumb {
+    forced-color-adjust: none;
+    background-color: ButtonText;
+  }
+
+  .track:checked ~ .thumb {
+    background-color: HighlightText;
+  }
+
+  .track:disabled ~ .thumb {
+    background-color: GrayText;
+  }
+
+  .track:disabled:checked ~ .thumb {
+    background-color: Canvas;
+  }
+}
