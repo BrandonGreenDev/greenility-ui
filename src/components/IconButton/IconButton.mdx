@@ -46,7 +46,37 @@ Keeps its name and focus, is exposed with `aria-disabled="true"` and ignores cli
 
 ### Disabled
 
+A disabled IconButton shows no tooltip.
+
 <Canvas of={IconButtonStories.Disabled} />
+
+### Tooltip
+
+By default the `label` is also shown as a small tooltip, so sighted mouse and keyboard users
+can read what the icon means. It appears after a short delay on hover and immediately when the
+button receives keyboard focus (not on a mouse click or touch). <kbd>Escape</kbd> hides it
+without moving focus, and the pointer can move onto it without it closing.
+
+<Canvas of={IconButtonStories.TooltipOn} />
+
+The tooltip is decorative: it is hidden from assistive technology (`aria-hidden`, no
+`role="tooltip"` and no `aria-describedby`), because it repeats the name that already comes
+from `aria-label`. Screen readers announce the button once, with no extra description.
+
+Use `tooltipPlacement` (`'top'`, `'bottom'`, `'start'`, `'end'`, default `'top'`) to choose the
+preferred side. It flips to the opposite side when there is no room, and `start`/`end` follow
+the nearest `dir` attribute.
+
+<Canvas of={IconButtonStories.TooltipPlacements} />
+
+Set `tooltip={false}` when a tooltip would only get in the way, for example when the same text
+is already visible next to the button.
+
+<Canvas of={IconButtonStories.TooltipOff} />
+
+The bubble is rendered as the button's next sibling (not a wrapper) and stays in the DOM while
+hidden. It takes no space and does not change the layout, but it does count for structural
+selectors such as `:last-child` or `+` on the button's siblings.
 
 ## Props
 
@@ -82,13 +112,23 @@ a native `<button>` with `aria-label`.
       </td>
       <td>
         Moves focus to and from the button. A loading button stays in the tab order; a disabled one
-        is skipped.
+        is skipped. Keyboard focus shows the tooltip, and moving focus away hides it.
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <kbd>Escape</kbd>
+      </td>
+      <td>
+        Hides the tooltip; focus stays on the button. A second <kbd>Escape</kbd> reaches outer
+        layers, for example closing a Dialog.
       </td>
     </tr>
   </tbody>
 </table>
 
-**Screen reader.** The name is `label`, applied as `aria-label`. The icon is hidden. Loading
+**Screen reader.** The name is `label`, applied as `aria-label`. The icon and the tooltip are
+hidden. Loading
 behaves exactly like Button: the name stays the same, the button is announced as unavailable,
 and `loadingLabel` is read as the description.
 
@@ -116,4 +156,7 @@ and `loadingLabel` is read as the description.
 - Don't use an IconButton when there is room for text. A text Button is clearer.
 - Don't use a label that disagrees with the icon. Sighted and screen reader users must get the
   same meaning.
-- Don't rely on a tooltip to explain the icon. The label is the name.
+- Don't rely on the tooltip to explain the icon. The label is the name, and touch users never
+  see the tooltip.
+- Don't put a separate Tooltip around an IconButton. It already shows its label; use
+  `tooltip={false}` and a standalone Tooltip only when the hint must say something different.

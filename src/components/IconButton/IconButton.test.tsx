@@ -1,14 +1,27 @@
-import { render, screen } from '@testing-library/react';
+import { act, fireEvent, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { createRef } from 'react';
-import { describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { axe } from '../../test/axe';
-import type { ButtonVariant, Size } from '../../utils/types';
+import type { ButtonVariant, Placement, Size } from '../../utils/types';
 import { CloseIcon } from '../Icon';
 import { IconButton } from './IconButton';
 
 const variants: ButtonVariant[] = ['primary', 'secondary', 'ghost', 'danger'];
 const sizes: Size[] = ['sm', 'md', 'lg'];
+
+/**
+ * jsdom's `:focus-visible` heuristic remembers the last focus-visible element across tests,
+ * and after a focused node is removed the next focus gets `<body>` as relatedTarget. Focusing
+ * and blurring a scratch element resets that, keeping keyboard tests order-independent.
+ */
+function resetFocusVisible() {
+  const scratch = document.createElement('button');
+  document.body.append(scratch);
+  scratch.focus();
+  scratch.blur();
+  scratch.remove();
+}
 
 describe('IconButton', () => {
   describe('rendering', () => {
@@ -225,6 +238,154 @@ describe('IconButton', () => {
         .forEach((svg) => {
           expect(svg.closest('[aria-hidden="true"]')).not.toBeNull();
         });
+    });
+  });
+
+  describe('tooltip', () => {
+    beforeEach(() => {
+      resetFocusVisible();
+      vi.useFakeTimers();
+    });
+    afterEach(() => {
+      vi.restoreAllMocks();
+      vi.useRealTimers();
+    });
+
+    function setup() {
+      return userEvent.setup({ advanceTimers: vi.advanceTimersByTime.bind(vi) });
+    }
+
+    function advance(ms: number) {
+      act(() => {
+        vi.advanceTimersByTime(ms);
+      });
+    }
+
+    it('is on by default and decorative: the name stays label with no description', () => {
+      render(<IconButton label="Close" icon={<CloseIcon />} />);
+      const button = screen.getByRole('button', { name: 'Close' });
+      const bubble = button.nextElementSibling;
+      expect(bubble).toHaveTextContent('Close');
+      expect(bubble).toHaveAttribute('aria-hidden', 'true');
+      expect(bubble).not.toHaveAttribute('role');
+      expect(bubble).not.toBeVisible();
+      expect(button).toHaveAttribute('aria-label', 'Close');
+      expect(button).not.toHaveAttribute('aria-describedby');
+      expect(button).toHaveAccessibleDescription('');
+      expect(screen.queryByRole('tooltip')).not.toBeInTheDocument();
+    });
+
+    it('shows the label on hover after the default delay', async () => {
+      const user = setup();
+      render(<IconButton label="Close" icon={<CloseIcon />} />);
+      const button = screen.getByRole('button', { name: 'Close' });
+      await user.hover(button);
+      advance(499);
+      expect(button.nextElementSibling).not.toBeVisible();
+      advance(1);
+      expect(button.nextElementSibling).toBeVisible();
+      expect(screen.getByText('Close')).toBeVisible();
+      expect(screen.queryByRole('tooltip')).not.toBeInTheDocument();
+      expect(button).toHaveAccessibleName('Close');
+      expect(button).toHaveAccessibleDescription('');
+
+      await user.unhover(button);
+      advance(100);
+      expect(button.nextElementSibling).not.toBeVisible();
+    });
+
+    it('shows on keyboard focus and hides on Escape with focus kept', async () => {
+      const user = setup();
+      render(<IconButton label="Close" icon={<CloseIcon />} />);
+      await user.tab();
+      const button = screen.getByRole('button', { name: 'Close' });
+      expect(button).toHaveFocus();
+      expect(button.nextElementSibling).toBeVisible();
+      await user.keyboard('{Escape}');
+      expect(button.nextElementSibling).not.toBeVisible();
+      expect(button).toHaveFocus();
+    });
+
+    it('hides when the button is activated', async () => {
+      const user = setup();
+      const onClick = vi.fn();
+      render(<IconButton label="Close" icon={<CloseIcon />} onClick={onClick} />);
+      await user.tab();
+      const button = screen.getByRole('button', { name: 'Close' });
+      expect(button.nextElementSibling).toBeVisible();
+      await user.keyboard('{Enter}');
+      expect(onClick).toHaveBeenCalledTimes(1);
+      expect(button.nextElementSibling).not.toBeVisible();
+    });
+
+    it('ignores touch pointers', () => {
+      render(<IconButton label="Close" icon={<CloseIcon />} />);
+      const button = screen.getByRole('button', { name: 'Close' });
+      fireEvent.pointerEnter(button, { pointerType: 'touch' });
+      advance(1000);
+      expect(button.nextElementSibling).not.toBeVisible();
+    });
+
+    it('defaults tooltipPlacement to top', () => {
+      render(<IconButton label="Close" icon={<CloseIcon />} />);
+      expect(screen.getByRole('button').nextElementSibling).toHaveAttribute(
+        'data-placement',
+        'top',
+      );
+    });
+
+    it.each<Placement>(['top', 'bottom', 'start', 'end'])(
+      'passes tooltipPlacement="%s" to the tooltip',
+      (placement) => {
+        render(<IconButton label="Close" icon={<CloseIcon />} tooltipPlacement={placement} />);
+        expect(screen.getByRole('button').nextElementSibling).toHaveAttribute(
+          'data-placement',
+          placement,
+        );
+      },
+    );
+
+    it('renders no bubble with tooltip={false}', async () => {
+      const user = setup();
+      render(<IconButton tooltip={false} label="Close" icon={<CloseIcon />} />);
+      const button = screen.getByRole('button', { name: 'Close' });
+      expect(button.nextElementSibling).toBeNull();
+      await user.hover(button);
+      advance(1000);
+      expect(button.nextElementSibling).toBeNull();
+      expect(document.querySelector('[popover]')).toBeNull();
+    });
+
+    it('renders no bubble while disabled', () => {
+      const { rerender } = render(<IconButton label="Close" icon={<CloseIcon />} />);
+      expect(screen.getByRole('button').nextElementSibling).not.toBeNull();
+      rerender(<IconButton disabled label="Close" icon={<CloseIcon />} />);
+      expect(screen.getByRole('button').nextElementSibling).toBeNull();
+    });
+
+    it.each(['', '   '])('renders no bubble when label is empty (%j)', (label) => {
+      vi.spyOn(console, 'warn').mockImplementation(() => undefined);
+      render(<IconButton label={label} icon={<CloseIcon />} />);
+      expect(screen.getByRole('button').nextElementSibling).toBeNull();
+    });
+
+    it('keeps the ref on the button and the bubble as a sibling, not a wrapper', () => {
+      const ref = createRef<HTMLButtonElement>();
+      const { container } = render(<IconButton ref={ref} label="Close" icon={<CloseIcon />} />);
+      const button = screen.getByRole('button', { name: 'Close' });
+      expect(ref.current).toBe(button);
+      expect(button.parentElement).toBe(container);
+      expect(container.children).toHaveLength(2);
+    });
+
+    it('has no axe violations with the tooltip open', async () => {
+      const user = setup();
+      const { container } = render(<IconButton label="Close" icon={<CloseIcon />} />);
+      await user.hover(screen.getByRole('button'));
+      advance(500);
+      expect(screen.getByText('Close')).toBeVisible();
+      vi.useRealTimers();
+      expect(await axe(container)).toHaveNoViolations();
     });
   });
 

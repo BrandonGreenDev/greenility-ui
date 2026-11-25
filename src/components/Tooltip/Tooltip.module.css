@@ -1,0 +1,33 @@
+/*
+ * Tooltip bubble. Composes `.floating` (position, popover reset, gap margin and fade-in) from
+ * Floating/floating.module.css; this file adds the inverse-colour bubble.
+ */
+.root {
+  z-index: var(--gn-z-tooltip);
+  max-inline-size: min(var(--gn-size-tooltip-max-width), calc(100vw - 2 * var(--gn-space-1)));
+  padding: var(--gn-space-1) var(--gn-space-2);
+  /* Transparent here, visible in forced colors so the bubble keeps an edge. */
+  border: var(--gn-size-border-width) solid transparent;
+  border-radius: var(--gn-radius-md);
+  background: var(--gn-color-bg-inverse);
+  box-shadow: var(--gn-shadow-md);
+  color: var(--gn-color-fg-inverse);
+  font-family: var(--gn-font-family-sans);
+  font-size: var(--gn-font-size-sm);
+  font-style: normal;
+  font-weight: var(--gn-font-weight-regular);
+  line-height: var(--gn-font-line-height-tight);
+  letter-spacing: normal;
+  text-align: start;
+  text-transform: none;
+  white-space: normal;
+  overflow-wrap: break-word;
+  /* Hoverable (WCAG 1.4.13): the pointer can move onto the bubble. */
+  pointer-events: auto;
+}
+
+@media (forced-colors: active) {
+  .root {
+    border-color: CanvasText;
+  }
+}
