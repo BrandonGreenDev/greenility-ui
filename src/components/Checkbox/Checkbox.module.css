@@ -1,0 +1,85 @@
+/* Layout, states and forced colours come from Field/indicator.module.css. */
+
+.input {
+  inline-size: var(--gn-size-indicator);
+  block-size: var(--gn-size-indicator);
+  border-radius: var(--gn-radius-sm);
+}
+
+/* Indeterminate lives here only: radios also match :indeterminate with no selection. */
+.input:indeterminate {
+  border-color: var(--gn-color-accent-solid);
+  background-color: var(--gn-color-accent-solid);
+}
+
+.input:indeterminate:hover {
+  border-color: var(--gn-color-accent-solid-hover);
+  background-color: var(--gn-color-accent-solid-hover);
+}
+
+.input[aria-invalid='true']:indeterminate {
+  border-color: var(--gn-color-danger-border);
+}
+
+.input:disabled:indeterminate {
+  border-color: var(--gn-color-fg-disabled);
+  background-color: var(--gn-color-fg-disabled);
+}
+
+/* Centred by the shared grid cell. */
+.check,
+.dash {
+  color: var(--gn-color-accent-solid-fg);
+  visibility: hidden;
+}
+
+/* Sized inside the border. Two classes, to win over the Icon's own size rules. */
+.check.check,
+.dash.dash {
+  inline-size: calc(var(--gn-size-indicator) - 2 * var(--gn-size-border-width));
+  block-size: calc(var(--gn-size-indicator) - 2 * var(--gn-size-border-width));
+}
+
+.input:checked ~ .check,
+.input:indeterminate ~ .dash {
+  visibility: visible;
+}
+
+.input:indeterminate ~ .check {
+  visibility: hidden;
+}
+
+.input:disabled ~ .check,
+.input:disabled ~ .dash {
+  color: var(--gn-color-bg-surface);
+}
+
+@media (forced-colors: active) {
+  .input:indeterminate,
+  .input:indeterminate:hover {
+    forced-color-adjust: none;
+    border-color: Highlight;
+    background-color: Highlight;
+  }
+
+  .input[aria-invalid='true']:indeterminate {
+    border-color: ButtonText;
+    border-width: var(--gn-size-focus-ring-width);
+  }
+
+  .input:disabled:indeterminate {
+    border-color: GrayText;
+    background-color: GrayText;
+  }
+
+  .check,
+  .dash {
+    forced-color-adjust: none;
+    color: HighlightText;
+  }
+
+  .input:disabled ~ .check,
+  .input:disabled ~ .dash {
+    color: Canvas;
+  }
+}
