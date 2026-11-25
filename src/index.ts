@@ -56,3 +56,10 @@ export {
   type DataTableMessages,
   type DataTableProps,
 } from './components/DataTable';
+export {
+  Select,
+  type SelectItem,
+  type SelectOption,
+  type SelectOptionGroup,
+  type SelectProps,
+} from './components/Select';

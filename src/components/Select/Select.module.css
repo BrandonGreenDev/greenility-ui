@@ -1,0 +1,115 @@
+/*
+ * Select builds on the shared frame in Field/control.module.css (.box and .input) and the
+ * floating styles in Floating/floating.module.css (.floating, .surface, .item). The closed
+ * box copies NativeSelect's chevron rules so the two look the same. Selectors include an
+ * attribute or child combinator so they outrank the shared rules regardless of order.
+ */
+.box {
+  position: relative;
+}
+
+/* The combobox button is reset to look like the text inside the box. End padding reserves the chevron. */
+.box[data-size] > .trigger {
+  display: flex;
+  align-items: center;
+  padding-inline-end: calc(var(--gn-space-3) + var(--gn-size-icon-md) + var(--gn-space-2));
+  line-height: inherit;
+  text-align: start;
+  cursor: pointer;
+}
+
+.box[data-size='sm'] > .trigger {
+  padding-inline-end: calc(var(--gn-space-2) + var(--gn-size-icon-sm) + var(--gn-space-1-5));
+}
+
+.box[data-size='lg'] > .trigger {
+  padding-inline-end: calc(var(--gn-space-4) + var(--gn-size-icon-lg) + var(--gn-space-2));
+}
+
+.box[data-size] > .trigger:disabled {
+  cursor: not-allowed;
+}
+
+.value {
+  overflow: hidden;
+  min-inline-size: 0;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.box[data-size] > .trigger:not(:disabled) > .placeholder {
+  color: var(--gn-color-fg-subtle);
+}
+
+.chevron {
+  position: absolute;
+  inset-block-start: 50%;
+  inset-inline-end: var(--gn-space-3);
+  transform: translateY(-50%);
+  color: var(--gn-color-fg-muted);
+  pointer-events: none;
+  transition: transform var(--gn-motion-duration-fast) var(--gn-motion-easing-standard);
+}
+
+.box[data-size='sm'] > .chevron {
+  inset-inline-end: var(--gn-space-2);
+}
+
+.box[data-size='lg'] > .chevron {
+  inset-inline-end: var(--gn-space-4);
+}
+
+.box:has(> .trigger[aria-expanded='true']) > .chevron {
+  transform: translateY(-50%) rotate(180deg);
+}
+
+.box:has(> .trigger:disabled) > .chevron {
+  color: var(--gn-color-fg-disabled);
+}
+
+/* Listbox: Floating .surface. Option text follows the Select size. */
+.listbox[data-size='md'] > .option,
+.listbox[data-size='md'] > [role='group'] > .option {
+  font-size: var(--gn-font-size-md);
+}
+
+.listbox[data-size='lg'] > .option,
+.listbox[data-size='lg'] > [role='group'] > .option {
+  min-block-size: var(--gn-size-control-md);
+  font-size: var(--gn-font-size-lg);
+}
+
+/* Long labels wrap instead of overflowing; the padding keeps wrapped lines off the edges. */
+.option {
+  padding-block: var(--gn-space-1);
+}
+
+.optionLabel {
+  flex: 1;
+  min-inline-size: 0;
+  overflow-wrap: anywhere;
+}
+
+/* Every option reserves the check so labels line up; only the selected one shows it. */
+.check {
+  flex-shrink: 0;
+  visibility: hidden;
+}
+
+.option[aria-selected='true'] > .check {
+  visibility: visible;
+}
+
+@media (forced-colors: active) {
+  .chevron {
+    color: CanvasText;
+  }
+
+  .box:has(> .trigger:disabled) > .chevron {
+    color: GrayText;
+  }
+
+  .box[data-size] > .trigger:not(:disabled) > .placeholder {
+    color: GrayText;
+  }
+}

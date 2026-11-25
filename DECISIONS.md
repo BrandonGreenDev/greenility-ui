@@ -188,3 +188,9 @@ Full spec: `docs/specs/phase-3.md`.
 - DataTable sanitises non-finite `page`/`pageSize`/`totalRows`; NaN would otherwise loop the render-phase change detection.
 - The DataTable header uses `bg-muted`, not `bg-subtle`, because in the light theme `bg-subtle` equals the canvas.
 - DataTable warnings fire once per instance; the range text is empty during a first load with no rows.
+- The custom Select's listbox preventDefaults pointerdown and mousedown, cancels Space on keyup, and focuses the combobox explicitly on click (Safari), so DOM focus always stays on the combobox (APG).
+- Any focus that lands on the custom Select's listbox (tabIndex -1, for axe's scrollable-region rule) is redirected to the combobox; `aria-controls` is set only while the listbox exists.
+- The custom Select submits nothing while nothing is selected, the value is unknown, or it is disabled, which matches NativeSelect's disabled placeholder. Unknown values and duplicate or '' option values warn from effects.
+- The custom Select's form owner follows native rules: the `form` id first, else the ancestor form. An uncontrolled reset calls `onValueChange(defaultValue)`.
+- The custom Select's option text size follows the Select `size`, and every option reserves space for the check icon so labels align.
+- Open-state stories (Select, later Menu) are tagged `!autodocs`, so a top-layer popover never covers a docs page; `test:a11y` still scans them in both themes.
