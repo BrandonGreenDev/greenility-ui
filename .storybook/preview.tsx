@@ -81,8 +81,17 @@ const preview: Preview = {
       test: 'error',
     },
     options: {
-      storySort: {
-        order: ['Introduction', 'Showcase', 'Foundations', ['Design Tokens'], 'Components', '*'],
+      // Sections in a fixed order, components A–Z, stories in file order.
+      // Storybook evaluates this as plain JS, so it must be self-contained and have no type
+      // annotations; the default values only give TypeScript the parameter types.
+      storySort: (a = { title: '' }, b = { title: '' }) => {
+        const sections = ['Introduction', 'Showcase', 'Foundations', 'Components'];
+        const rank = (title = '') => {
+          const index = sections.findIndex((section) => title.startsWith(section));
+          return index === -1 ? sections.length : index;
+        };
+        if (a.title === b.title) return 0;
+        return rank(a.title) - rank(b.title) || a.title.localeCompare(b.title);
       },
     },
   },
