@@ -1,0 +1,158 @@
+.root {
+  display: flex;
+  flex-direction: column;
+}
+
+.root[data-orientation='vertical'] {
+  flex-direction: row;
+  align-items: flex-start;
+}
+
+/* List */
+
+.list {
+  display: flex;
+  flex-shrink: 0;
+  border-block-end: var(--gn-size-border-width) solid var(--gn-color-border-default);
+  /* Many tabs scroll instead of wrapping. The focus ring is inset, so it is never clipped. */
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+}
+
+/*
+ * Overflow fade: both edges fade over the tab padding, hinting that the list scrolls. The
+ * mask uses only alpha, so currentColor stands in for an opaque colour.
+ */
+.list[data-overflowing][aria-orientation='horizontal'] {
+  mask-image: linear-gradient(
+    to right,
+    transparent,
+    currentColor var(--gn-space-4),
+    currentColor calc(100% - var(--gn-space-4)),
+    transparent
+  );
+}
+
+/* Orientation rules key on each tab's own list, so nested Tabs keep their own layout. */
+.list[aria-orientation='vertical'] {
+  flex-direction: column;
+  align-self: stretch;
+  border-block-end: 0;
+  border-inline-end: var(--gn-size-border-width) solid var(--gn-color-border-default);
+  overflow: visible;
+}
+
+/* Tab */
+
+.tab {
+  position: relative;
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  min-block-size: var(--gn-size-control-md);
+  margin: 0;
+  padding-block: 0;
+  padding-inline: var(--gn-space-4);
+  border: 0;
+  background-color: transparent;
+  color: var(--gn-color-fg-muted);
+  font-family: inherit;
+  font-size: var(--gn-font-size-sm);
+  font-weight: var(--gn-font-weight-medium);
+  line-height: var(--gn-font-line-height-tight);
+  white-space: nowrap;
+  cursor: pointer;
+  transition:
+    color var(--gn-motion-duration-fast) var(--gn-motion-easing-standard),
+    background-color var(--gn-motion-duration-fast) var(--gn-motion-easing-standard);
+}
+
+.list[aria-orientation='vertical'] > .tab {
+  justify-content: flex-start;
+  text-align: start;
+}
+
+/* Selected indicator: a background-painted bar, so forced colors can paint it Highlight. */
+.tab::after {
+  content: '';
+  position: absolute;
+  inset-inline: 0;
+  inset-block-end: 0;
+  block-size: var(--gn-size-tab-indicator);
+  background-color: transparent;
+  transition: background-color var(--gn-motion-duration-fast) var(--gn-motion-easing-standard);
+}
+
+.list[aria-orientation='vertical'] > .tab::after {
+  inset-block: 0;
+  inset-inline: auto 0;
+  block-size: auto;
+  inline-size: var(--gn-size-tab-indicator);
+}
+
+.tab:hover:not(:disabled) {
+  background-color: var(--gn-color-bg-hover);
+  color: var(--gn-color-fg-default);
+}
+
+.tab[aria-selected='true'] {
+  color: var(--gn-color-fg-default);
+}
+
+.tab[aria-selected='true']::after {
+  background-color: var(--gn-color-accent-solid);
+}
+
+.tab:disabled {
+  color: var(--gn-color-fg-disabled);
+  cursor: not-allowed;
+}
+
+/*
+ * Inset, so the scrolling list does not clip it, and inside the indicator, so a focused
+ * selected tab still shows its indicator (it would otherwise sit under the ring).
+ */
+.tab:focus-visible {
+  outline: var(--gn-size-focus-ring-width) solid var(--gn-color-border-focus);
+  outline-offset: calc(-1 * (var(--gn-size-focus-ring-width) + var(--gn-size-tab-indicator)));
+}
+
+/* Panel */
+
+.panel {
+  padding-block: var(--gn-space-4);
+  border-radius: var(--gn-radius-sm);
+}
+
+.root[data-orientation='vertical'] > .panel {
+  flex: 1;
+  min-inline-size: 0;
+  padding-block: 0;
+  padding-inline: var(--gn-space-4);
+}
+
+.panel[hidden] {
+  display: none;
+}
+
+.panel:focus-visible {
+  outline: var(--gn-size-focus-ring-width) solid var(--gn-color-border-focus);
+  outline-offset: var(--gn-size-focus-ring-offset);
+}
+
+@media (forced-colors: active) {
+  /* A border would not work here: transparent borders turn visible in forced colors. */
+  .tab[aria-selected='true']::after {
+    forced-color-adjust: none;
+    background-color: Highlight;
+  }
+
+  .tab:disabled {
+    color: GrayText;
+  }
+
+  .tab:focus-visible,
+  .panel:focus-visible {
+    outline-color: Highlight;
+  }
+}
