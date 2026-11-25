@@ -1,0 +1,61 @@
+.root {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gn-space-1-5);
+  min-inline-size: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+/* A rendered legend is not a flex item, so the gap does not reach it. */
+.legend {
+  margin-block-end: var(--gn-space-1-5);
+}
+
+.options {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gn-space-2);
+}
+
+.root[data-orientation='horizontal'] > .options {
+  flex-flow: row wrap;
+  gap: var(--gn-space-2) var(--gn-space-4);
+}
+
+/* Each option's layout, states and forced colours come from Field/indicator.module.css. */
+
+.input {
+  inline-size: var(--gn-size-indicator);
+  block-size: var(--gn-size-indicator);
+  border-radius: var(--gn-radius-full);
+}
+
+/* Centred by the shared grid cell. */
+.dot {
+  inline-size: calc(var(--gn-size-indicator) / 2.5);
+  block-size: calc(var(--gn-size-indicator) / 2.5);
+  border-radius: var(--gn-radius-full);
+  background-color: var(--gn-color-accent-solid-fg);
+  visibility: hidden;
+}
+
+.input:checked ~ .dot {
+  visibility: visible;
+}
+
+.input:disabled ~ .dot {
+  background-color: var(--gn-color-bg-surface);
+}
+
+@media (forced-colors: active) {
+  .dot {
+    forced-color-adjust: none;
+    background-color: HighlightText;
+  }
+
+  .input:disabled ~ .dot {
+    background-color: Canvas;
+  }
+}
