@@ -15,14 +15,14 @@ import {
 
 # Design tokens
 
-Tokens are the only source of visual values in Lumora. Component CSS never contains a raw
-color, spacing or duration; it references a `--lu-*` custom property instead.
+Tokens are the only source of visual values in Greenility. Component CSS never contains a raw
+color, spacing or duration; it references a `--gn-*` custom property instead.
 
 There are three layers:
 
-1. **Palette**: raw color primitives (`--lu-palette-iris-600`). Components never use these
+1. **Palette**: raw color primitives (`--gn-palette-fern-600`). Components never use these
    directly.
-2. **Semantic tokens**: intent-based names (`--lu-color-accent-solid`) that point at a
+2. **Semantic tokens**: intent-based names (`--gn-color-accent-solid`) that point at a
    palette step. Each theme is a different mapping, which is all it takes to support dark mode.
 3. **Scales**: theme-independent tokens for type, space, radius, motion, z-index and sizes.
 

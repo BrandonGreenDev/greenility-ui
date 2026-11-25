@@ -1,4 +1,4 @@
-# Lumora UI: project guide for Claude
+# Greenility UI: project guide for Claude
 
 Read this first in every session. It is the contract for how this project is built.
 
@@ -82,10 +82,10 @@ src/
 **Styles**
 
 - CSS Modules, with class names in camelCase. The root class is `.root`. State is expressed through data/ARIA attributes (`[data-size='sm']`, `[aria-invalid='true']`) rather than extra classes where possible.
-- Tokens only: `var(--lu-*)`. Use no raw colors and no raw px/rem values for spacing, radius, font, shadow or duration. Allowed literals: `0`, `1px` hairlines, `100%`, `50%`, `currentColor`, `transparent`.
-- Components use semantic tokens (`--lu-color-*`), never palette tokens (`--lu-palette-*`).
-- Every interactive element has `:focus-visible` using `--lu-color-border-focus`, `--lu-size-focus-ring-width` and `--lu-size-focus-ring-offset`.
-- Motion uses the `--lu-motion-*` tokens. They collapse to `0.01ms` under reduced motion, so never hard-code a duration.
+- Tokens only: `var(--gn-*)`. Use no raw colors and no raw px/rem values for spacing, radius, font, shadow or duration. Allowed literals: `0`, `1px` hairlines, `100%`, `50%`, `currentColor`, `transparent`.
+- Components use semantic tokens (`--gn-color-*`), never palette tokens (`--gn-palette-*`).
+- Every interactive element has `:focus-visible` using `--gn-color-border-focus`, `--gn-size-focus-ring-width` and `--gn-size-focus-ring-offset`.
+- Motion uses the `--gn-motion-*` tokens. They collapse to `0.01ms` under reduced motion, so never hard-code a duration.
 - Add `@media (forced-colors: active)` fixes where a border, focus ring or state would vanish.
 
 **Tokens**

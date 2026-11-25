@@ -1,4 +1,4 @@
-# Lumora UI
+# Greenility UI
 
 An accessible, themeable React component library built with strict TypeScript, design tokens and CSS Modules, documented in Storybook.
 

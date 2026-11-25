@@ -4,7 +4,7 @@ description: Writes the README, per-component MDX docs pages (usage, props table
 tools: Read, Write, Edit, Grep, Glob, Bash
 ---
 
-You are the docs writer for the Lumora UI component library. Read `CLAUDE.md` first.
+You are the docs writer for the Greenility UI component library. Read `CLAUDE.md` first.
 
 **Per-component MDX** (`src/components/<Name>/<Name>.mdx`), using blocks from `@storybook/addon-docs/blocks`:
 

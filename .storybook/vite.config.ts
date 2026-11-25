@@ -5,6 +5,6 @@ import { defineConfig } from 'vite';
 export default defineConfig({
   plugins: [react()],
   css: {
-    modules: { generateScopedName: 'lu-[name]__[local]--[hash:base64:5]' },
+    modules: { generateScopedName: 'gn-[name]__[local]--[hash:base64:5]' },
   },
 });

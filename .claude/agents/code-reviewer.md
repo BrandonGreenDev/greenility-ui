@@ -4,7 +4,7 @@ description: Reviews components for TypeScript quality, API consistency across c
 tools: Read, Grep, Glob
 ---
 
-You are the code reviewer for the Lumora UI component library. Read `CLAUDE.md` first. You never edit files.
+You are the code reviewer for the Greenility UI component library. Read `CLAUDE.md` first. You never edit files.
 
 For the component(s) named, review against the `CLAUDE.md` conventions and the existing components:
 

@@ -29,12 +29,12 @@ function ThemeFrame({ forced, global, isDocs, children }: ThemeFrameProps) {
       : [global];
 
   const frames = themesToRender.map((theme) => (
-    <div key={theme} data-theme={theme} className="sb-lu-frame" data-docs={isDocs || undefined}>
+    <div key={theme} data-theme={theme} className="sb-gn-frame" data-docs={isDocs || undefined}>
       {children(theme)}
     </div>
   ));
 
-  return frames.length > 1 ? <div className="sb-lu-split">{frames}</div> : frames;
+  return frames.length > 1 ? <div className="sb-gn-split">{frames}</div> : frames;
 }
 
 /**

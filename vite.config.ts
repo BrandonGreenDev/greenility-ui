@@ -25,7 +25,7 @@ export default defineConfig({
   css: {
     modules: {
       // Stable, readable, collision-safe class names in the published CSS.
-      generateScopedName: 'lu-[name]__[local]--[hash:base64:5]',
+      generateScopedName: 'gn-[name]__[local]--[hash:base64:5]',
     },
   },
   build: {

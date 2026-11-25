@@ -1,5 +1,5 @@
 /**
- * Lumora design tokens: the single source of truth.
+ * Greenility design tokens: the single source of truth.
  *
  * There are three layers:
  *  1. `palette`: raw color primitives. Components never use these directly.
@@ -26,18 +26,18 @@ export const palette = {
     900: '#1b1f27',
     950: '#11141a',
   },
-  iris: {
-    50: '#f2f1ff',
-    100: '#e5e3ff',
-    200: '#cbc7ff',
-    300: '#a9a2ff',
-    400: '#8a7ffb',
-    500: '#6e5ff0',
-    600: '#5a49dc',
-    700: '#4a3bbb',
-    800: '#3c3196',
-    900: '#2f2873',
-    950: '#1d1947',
+  fern: {
+    50: '#ecfdf7',
+    100: '#d0f8ea',
+    200: '#a3efd6',
+    300: '#6ddfbe',
+    400: '#38c9a2',
+    500: '#18ad88',
+    600: '#0e8c6f',
+    700: '#0d705a',
+    800: '#0e5949',
+    900: '#0d493d',
+    950: '#052a23',
   },
   green: {
     50: '#ecfbf1',
@@ -252,20 +252,20 @@ const light: Theme = {
     'fg-subtle': 'neutral.500',
     'fg-inverse': 'neutral.0',
     'fg-disabled': 'neutral.400',
-    'fg-link': 'iris.700',
+    'fg-link': 'fern.700',
 
     'border-default': 'neutral.200',
     'border-strong': 'neutral.500',
-    'border-focus': 'iris.600',
+    'border-focus': 'fern.600',
 
-    'accent-solid': 'iris.600',
-    'accent-solid-hover': 'iris.700',
-    'accent-solid-active': 'iris.800',
+    'accent-solid': 'fern.700',
+    'accent-solid-hover': 'fern.800',
+    'accent-solid-active': 'fern.900',
     'accent-solid-fg': 'neutral.0',
-    'accent-subtle': 'iris.50',
-    'accent-subtle-hover': 'iris.100',
-    'accent-subtle-fg': 'iris.800',
-    'accent-border': 'iris.600',
+    'accent-subtle': 'fern.50',
+    'accent-subtle-hover': 'fern.100',
+    'accent-subtle-fg': 'fern.800',
+    'accent-border': 'fern.700',
 
     'success-solid': 'green.700',
     'success-solid-hover': 'green.800',
@@ -322,20 +322,20 @@ const dark: Theme = {
     'fg-subtle': 'neutral.400',
     'fg-inverse': 'neutral.900',
     'fg-disabled': 'neutral.500',
-    'fg-link': 'iris.300',
+    'fg-link': 'fern.300',
 
     'border-default': 'neutral.700',
     'border-strong': 'neutral.400',
-    'border-focus': 'iris.300',
+    'border-focus': 'fern.300',
 
-    'accent-solid': 'iris.400',
-    'accent-solid-hover': 'iris.300',
-    'accent-solid-active': 'iris.200',
+    'accent-solid': 'fern.400',
+    'accent-solid-hover': 'fern.300',
+    'accent-solid-active': 'fern.200',
     'accent-solid-fg': 'neutral.950',
-    'accent-subtle': 'iris.950',
-    'accent-subtle-hover': 'iris.900',
-    'accent-subtle-fg': 'iris.200',
-    'accent-border': 'iris.400',
+    'accent-subtle': 'fern.950',
+    'accent-subtle-hover': 'fern.900',
+    'accent-subtle-fg': 'fern.200',
+    'accent-border': 'fern.400',
 
     'success-solid': 'green.400',
     'success-solid-hover': 'green.200',
@@ -377,7 +377,7 @@ export const themes = { light, dark } as const;
 export type ThemeName = keyof typeof themes;
 
 /** The CSS custom property prefix used by every token. */
-export const TOKEN_PREFIX = '--lu';
+export const TOKEN_PREFIX = '--gn';
 
 /** Builds the CSS variable reference for a token, e.g. `cssVar('color', 'fg-default')`. */
 export function cssVar(group: string, name: string): string {

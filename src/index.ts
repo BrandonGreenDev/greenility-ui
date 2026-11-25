@@ -1,8 +1,8 @@
 /**
- * Lumora UI public API.
+ * Greenility UI public API.
  *
  * Consumers also import the stylesheet once at the app root:
- *   import 'lumora-ui/styles.css';
+ *   import 'greenility-ui/styles.css';
  */
 import './tokens/tokens.css';
 import './styles/base.css';

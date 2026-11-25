@@ -1,13 +1,13 @@
 /*
- * Minimal base styles. Lumora does not reset the host page.
+ * Minimal base styles. Greenility does not reset the host page.
  *
  * Any element with a data-theme attribute ("light", "dark", or "system" on
  * <html>) becomes a themed surface. That also lets a page nest a dark section
  * inside a light one, or the reverse.
  */
 [data-theme] {
-  background-color: var(--lu-color-bg-canvas);
-  color: var(--lu-color-fg-default);
-  font-family: var(--lu-font-family-sans);
-  line-height: var(--lu-font-line-height-normal);
+  background-color: var(--gn-color-bg-canvas);
+  color: var(--gn-color-fg-default);
+  font-family: var(--gn-font-family-sans);
+  line-height: var(--gn-font-line-height-normal);
 }

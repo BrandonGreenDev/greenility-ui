@@ -1,24 +1,24 @@
 /* Storybook-only chrome around stories. Not shipped with the library. */
-.sb-lu-frame {
-  padding: var(--lu-space-6);
+.sb-gn-frame {
+  padding: var(--gn-space-6);
   min-height: 100vh;
   box-sizing: border-box;
 }
 
-.sb-lu-frame[data-docs] {
+.sb-gn-frame[data-docs] {
   min-height: 0;
-  border-radius: var(--lu-radius-md);
+  border-radius: var(--gn-radius-md);
 }
 
-.sb-lu-split {
+.sb-gn-split {
   display: grid;
   grid-template-columns: 1fr 1fr;
 }
 
-.sb-lu-split > .sb-lu-frame {
+.sb-gn-split > .sb-gn-frame {
   min-height: 100vh;
 }
 
-.sb-lu-split > .sb-lu-frame[data-docs] {
+.sb-gn-split > .sb-gn-frame[data-docs] {
   min-height: 0;
 }

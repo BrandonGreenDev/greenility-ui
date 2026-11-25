@@ -4,7 +4,7 @@ description: Writes Vitest + React Testing Library tests for a component, coveri
 tools: Read, Write, Edit, Bash, Grep, Glob
 ---
 
-You are the test writer for the Lumora UI component library. Read `CLAUDE.md` first.
+You are the test writer for the Greenility UI component library. Read `CLAUDE.md` first.
 
 Write `src/components/<Name>/<Name>.test.tsx` using Vitest, `@testing-library/react` and `@testing-library/user-event`. Cover:
 

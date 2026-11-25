@@ -4,7 +4,7 @@ One line per decision, with the reason. Newest at the bottom of each phase.
 
 ## Phase 1: Foundation
 
-- Working brand name **Lumora** (`lumora-ui`, token prefix `--lu-`). It is made up and easy to rename before Phase 4.
+- Working brand name **Greenility** (`greenility-ui`, token prefix `--gn-`). It is made up and easy to rename before Phase 4.
 - ESLint pinned to v9: `eslint-plugin-jsx-a11y` does not support ESLint 10 yet, and jsx-a11y is a requirement.
 - Kept `forwardRef` although React 19 accepts `ref` as a prop: it works on both React 18 and 19, so the peer range can stay `>=18.2`.
 - ESM-only build with `preserveModules`: modern bundlers tree-shake per file, and CJS adds a dual-package hazard for little gain.
@@ -24,3 +24,5 @@ One line per decision, with the reason. Newest at the bottom of each phase.
 - Added `scripts/run.ts` to launch Vitest, Vite and Storybook from the real path: on Windows a lower-case drive letter made Vitest load twice and vite-plugin-dts silently skip declaration files.
 - `playwright` is a dev dependency only for `scripts/screenshot.ts` (visual checks and README screenshots). It is not used in CI.
 - Hand-written `cx` and `composeRefs` instead of `clsx` and similar: about five lines each, so there are zero runtime dependencies.
+- Renamed to **Greenility** at Checkpoint 1 (owner's choice). The token prefix is `--gn-` and the package is `greenility-ui`.
+- The brand palette is "fern", an original teal-green, to match the name. Light-theme accent uses fern-700 (6:1 on white). It is teal enough to stay distinct from the yellower `success` green, and status always comes with an icon or text anyway.
