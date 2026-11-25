@@ -1,0 +1,79 @@
+/*
+ * Menu panel and items. Composes `.floating`, `.surface`, `.item`, `.groupLabel` and
+ * `.separator` from Floating/floating.module.css (active ring, disabled colour and forced
+ * colors live there); this file adds typography, the icon slot and the panel focus style.
+ */
+.root {
+  font-family: var(--gn-font-family-sans);
+  font-weight: var(--gn-font-weight-regular);
+  line-height: var(--gn-font-line-height-tight);
+  text-align: start;
+}
+
+/*
+ * The panel takes focus only when it has no items, or after a click on a group label or the
+ * padding. Pointer focus shows nothing; keyboard focus gets the standard ring.
+ */
+.root:focus {
+  outline: none;
+}
+
+.root:focus-visible {
+  outline: var(--gn-size-focus-ring-width) solid var(--gn-color-border-focus);
+  outline-offset: var(--gn-size-focus-ring-offset);
+}
+
+.item {
+  /* Covers both the hover/keyboard ring from `.item[data-active]` and the pressed state. */
+  transition: background-color var(--gn-motion-duration-fast) var(--gn-motion-easing-standard);
+}
+
+.icon {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  inline-size: var(--gn-size-icon-sm);
+  block-size: var(--gn-size-icon-sm);
+  color: var(--gn-color-fg-muted);
+}
+
+.icon > svg {
+  inline-size: 100%;
+  block-size: 100%;
+}
+
+.item[aria-disabled='true'] .icon {
+  color: inherit;
+}
+
+.item[data-active] .icon {
+  color: inherit;
+}
+
+.label {
+  flex: 1 1 auto;
+  min-inline-size: 0;
+  padding-block: var(--gn-space-1-5);
+}
+
+@media (forced-colors: active) {
+  .root:focus-visible {
+    outline-color: Highlight;
+  }
+
+  .icon {
+    color: inherit;
+  }
+
+  /*
+   * An active disabled item stays visibly unavailable: GrayText on Canvas (GrayText on a
+   * Highlight fill would be unreadable), with the Highlight ring marking it as active.
+   */
+  .item[aria-disabled='true'][data-active],
+  .item[aria-disabled='true']:focus-visible {
+    outline-color: Highlight;
+    background: Canvas;
+    color: GrayText;
+  }
+}
