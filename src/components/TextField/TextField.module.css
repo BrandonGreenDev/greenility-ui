@@ -1,0 +1,55 @@
+/*
+ * TextField builds on the shared frame in Field/control.module.css (.box and .input).
+ * Selectors here start with .box so they outrank the shared size rules regardless of
+ * stylesheet order.
+ */
+.adornment {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  align-self: stretch;
+  color: var(--gn-color-fg-muted);
+}
+
+/* The adornment takes the outer padding; the box gap separates it from the text. */
+.box > .adornment[data-placement='start'] {
+  padding-inline-start: var(--gn-space-3);
+}
+
+.box > .adornment[data-placement='end'] {
+  padding-inline-end: var(--gn-space-3);
+}
+
+.box[data-size='sm'] > .adornment[data-placement='start'] {
+  padding-inline-start: var(--gn-space-2);
+}
+
+.box[data-size='sm'] > .adornment[data-placement='end'] {
+  padding-inline-end: var(--gn-space-2);
+}
+
+.box[data-size='lg'] > .adornment[data-placement='start'] {
+  padding-inline-start: var(--gn-space-4);
+}
+
+.box[data-size='lg'] > .adornment[data-placement='end'] {
+  padding-inline-end: var(--gn-space-4);
+}
+
+.box[data-size] > .adornment[data-placement='start'] + .input {
+  padding-inline-start: 0;
+}
+
+.box[data-size] > .input:has(+ .adornment[data-placement='end']) {
+  padding-inline-end: 0;
+}
+
+.box:has(> .input:disabled) > .adornment {
+  color: var(--gn-color-fg-disabled);
+}
+
+@media (forced-colors: active) {
+  .box:has(> .input:disabled) > .adornment {
+    color: GrayText;
+  }
+}
