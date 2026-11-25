@@ -5,57 +5,136 @@ import { Meta } from '@storybook/addon-docs/blocks';
 # Greenility UI
 
 Greenility is an accessible, themeable React component library. It is written in strict
-TypeScript and styled with design tokens and CSS Modules, with no UI framework underneath.
+TypeScript and styled with design tokens and CSS Modules, with no UI framework underneath
+and no runtime dependencies.
 
-Every component is built to the same definition of done:
+To see the components working together, open the [Showcase](?path=/story/showcase--light)
+(also in [dark](?path=/story/showcase--dark)).
 
-- **Accessible by construction.** Components follow the
-  [WAI-ARIA Authoring Practices](https://www.w3.org/WAI/ARIA/apg/) and target WCAG 2.2 AA.
-  They are fully keyboard operable, show a visible focus ring, and are tested with axe.
-- **Themed with tokens.** Colors, type, spacing, radius, shadow and motion all come from
-  CSS custom properties. Light and dark themes are a swap of semantic tokens, not a second
-  stylesheet.
-- **Respectful of user settings.** Motion collapses under `prefers-reduced-motion`, and
-  controls stay visible in Windows High Contrast (`forced-colors`).
-- **Typed and documented.** Props carry JSDoc, refs are forwarded, `className` is merged,
-  and native attributes pass through.
-- **Tested.** Rendering, keyboard interaction, focus management and an axe audit run in
-  CI on every push.
+## Components
+
+<table>
+  <thead>
+    <tr>
+      <th>Group</th>
+      <th>Docs pages</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Actions</td>
+      <td>
+        <a href="?path=/docs/components-button--docs">Button</a>,{' '}
+        <a href="?path=/docs/components-iconbutton--docs">IconButton</a>
+      </td>
+    </tr>
+    <tr>
+      <td>Forms</td>
+      <td>
+        <a href="?path=/docs/components-textfield--docs">TextField</a>,{' '}
+        <a href="?path=/docs/components-textarea--docs">TextArea</a>,{' '}
+        <a href="?path=/docs/components-checkbox--docs">Checkbox</a>,{' '}
+        <a href="?path=/docs/components-radiogroup--docs">RadioGroup</a>,{' '}
+        <a href="?path=/docs/components-switch--docs">Switch</a>,{' '}
+        <a href="?path=/docs/components-nativeselect--docs">NativeSelect</a>,{' '}
+        <a href="?path=/docs/components-select--docs">Select</a>
+      </td>
+    </tr>
+    <tr>
+      <td>Feedback</td>
+      <td>
+        <a href="?path=/docs/components-alert--docs">Alert</a>,{' '}
+        <a href="?path=/docs/components-badge--docs">Badge</a>,{' '}
+        <a href="?path=/docs/components-spinner--docs">Spinner</a>,{' '}
+        <a href="?path=/docs/components-toast--docs">Toast</a>
+      </td>
+    </tr>
+    <tr>
+      <td>Overlays</td>
+      <td>
+        <a href="?path=/docs/components-dialog--docs">Dialog</a>,{' '}
+        <a href="?path=/docs/components-alertdialog--docs">AlertDialog</a>,{' '}
+        <a href="?path=/docs/components-tooltip--docs">Tooltip</a>,{' '}
+        <a href="?path=/docs/components-menu--docs">Menu</a>
+      </td>
+    </tr>
+    <tr>
+      <td>Navigation and disclosure</td>
+      <td>
+        <a href="?path=/docs/components-tabs--docs">Tabs</a>,{' '}
+        <a href="?path=/docs/components-accordion--docs">Accordion</a>
+      </td>
+    </tr>
+    <tr>
+      <td>Data and utilities</td>
+      <td>
+        <a href="?path=/docs/components-datatable--docs">DataTable</a>,{' '}
+        <a href="?path=/docs/components-visuallyhidden--docs">VisuallyHidden</a>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+Each page has usage, examples, a props table, accessibility notes and do/don't guidance.
+[Design Tokens](?path=/docs/foundations-design-tokens--docs) lists every token, its value in
+each theme, and the contrast ratio of every color pairing.
+
+## Accessibility
+
+- **Native first.** Native elements are used wherever they fit. Custom widgets follow the
+  [WAI-ARIA Authoring Practices](https://www.w3.org/WAI/ARIA/apg/), and the target is WCAG 2.2 AA.
+- **Keyboard and focus.** Every component is keyboard operable with a visible focus ring.
+  Overlays manage focus and return it when they close.
+- **Announcements.** Changes are announced through polite live regions, once per action.
+  Field errors are linked with `aria-describedby` and are read on focus.
+- **User settings.** Motion collapses under `prefers-reduced-motion`, and controls stay
+  visible in forced colors (Windows High Contrast).
+- **Tested.** Unit tests run axe in jsdom, and token pairs are contrast-tested in both
+  themes. CI also runs axe on every story in light and dark, in Chromium, Firefox and WebKit.
+  Open the **Accessibility** panel on any story to see a live axe report.
+
+**Not yet verified:** the components have not been tested manually with a screen reader
+(NVDA, JAWS or VoiceOver).
 
 ## Getting started
 
-```bash
-npm install greenility-ui
-```
-
-Import the stylesheet once at the root of your app, then use the components:
+Import the stylesheet once at the root of your app. Wrap the app in `ToastProvider` if you
+use toasts:
 
 ```tsx
 import 'greenility-ui/styles.css';
-import { Button } from 'greenility-ui';
+import { Button, ToastProvider, useToast } from 'greenility-ui';
+
+function SaveButton() {
+  const toast = useToast();
+  return (
+    <Button
+      variant="primary"
+      onClick={() => toast.show({ tone: 'success', title: 'Changes saved' })}
+    >
+      Save changes
+    </Button>
+  );
+}
 
 export function App() {
-  return <Button variant="primary">Save changes</Button>;
+  return (
+    <ToastProvider>
+      <SaveButton />
+    </ToastProvider>
+  );
 }
 ```
 
 ## Theming
 
-Set `data-theme` on `<html>` (or on any container) to `light` or `dark`. Use
-`system` on `<html>` to follow the operating system setting. Themes can nest, so a dark
-panel can sit inside a light page.
+Set `data-theme` to `light` or `dark` on `<html>` or on any container. Use `system` on
+`<html>` to follow the operating system. Themes can nest, so a dark panel can sit inside a
+light page, and no provider is needed.
 
 ```ts
 document.documentElement.dataset.theme = 'dark'; // or 'light' | 'system'
 ```
 
-Use the **Theme** button in the toolbar above to switch every story between light,
-dark, or both side by side.
-
-## Using this site
-
-- **Foundations → Design Tokens** lists every token, its value in each theme, and the
-  WCAG contrast ratio of every color pairing.
-- **Components** has a docs page for each component, with usage, a props table,
-  accessibility notes and do/don't guidance. Open the **Accessibility** panel on any story
-  to see a live axe report.
+Use the **Theme** button in the toolbar above to switch every story between light, dark, or
+both side by side.

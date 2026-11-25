@@ -1,7 +1,27 @@
 {
   "name": "greenility-ui",
   "version": "0.1.0",
-  "description": "An accessible, themeable React component library built with TypeScript, design tokens and CSS Modules.",
+  "description": "An accessible, themeable React component library: strict TypeScript, design tokens with light and dark themes, WAI-ARIA patterns, and automated accessibility tests.",
+  "keywords": [
+    "react",
+    "component-library",
+    "design-system",
+    "accessibility",
+    "a11y",
+    "wai-aria",
+    "typescript",
+    "design-tokens",
+    "storybook"
+  ],
+  "homepage": "https://greenility-ui.vercel.app",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/BrandonGreenDev/greenility-ui.git"
+  },
+  "bugs": {
+    "url": "https://github.com/BrandonGreenDev/greenility-ui/issues"
+  },
+  "author": "Brandon Green",
   "license": "MIT",
   "type": "module",
   "files": [

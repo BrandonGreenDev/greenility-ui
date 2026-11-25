@@ -34,9 +34,13 @@
 }
 
 /* Scroll lock without JS: nested dialogs and several open dialogs need no ref counting. */
+/*
+ * Scroll lock. No scrollbar-gutter here: reserving a gutter on a page that had no
+ * scrollbar paints a strip the backdrop does not cover. Pages that scroll can set
+ * html { scrollbar-gutter: stable } themselves to avoid a layout shift (see the docs).
+ */
 :global(html):has(.root[open]) {
   overflow: hidden;
-  scrollbar-gutter: stable;
 }
 
 .panel {

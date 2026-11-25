@@ -189,7 +189,8 @@ ends on the backdrop does not count, and a click that closes an open Menu or Sel
 dialog does not also close the dialog.
 
 **Scroll and reflow.** While a dialog is open, the page behind it does not scroll. This is done
-in CSS with `scrollbar-gutter: stable`, so the layout does not shift. At 320 CSS pixels wide or
+in CSS (`overflow: hidden` on `<html>` while a dialog is open). If your page scrolls, set
+`html { scrollbar-gutter: stable; }` in your app so the layout does not shift when the scrollbar hides. At 320 CSS pixels wide or
 400% zoom, the panel fills the width and the dialog scrolls instead of clipping. On short
 screens (30rem high or less), the whole panel scrolls, not only the body. The footer buttons
 wrap onto new lines when there is not enough room.
