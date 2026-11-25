@@ -38,3 +38,34 @@ describe('useControllableState', () => {
     expect(onChange).not.toHaveBeenCalled();
   });
 });
+
+describe('useControllableState: several requests before a re-render', () => {
+  it('applies a second request made in the same tick (open then close)', () => {
+    const onChange = vi.fn();
+    const { result } = renderHook(() => useControllableState({ defaultValue: false, onChange }));
+    act(() => {
+      result.current[1](true);
+      result.current[1](false);
+    });
+    expect(result.current[0]).toBe(false);
+    expect(onChange.mock.calls).toEqual([[true], [false]]);
+  });
+
+  it('resyncs to a controlled parent that vetoes the change', async () => {
+    const onChange = vi.fn();
+    const { result } = renderHook(() =>
+      useControllableState({ value: false, defaultValue: false, onChange }),
+    );
+    await act(async () => {
+      result.current[1](true);
+      await Promise.resolve();
+    });
+    expect(result.current[0]).toBe(false);
+    // A later event (a new task) asks again, even though the parent never re-rendered.
+    await act(async () => {
+      result.current[1](true);
+      await Promise.resolve();
+    });
+    expect(onChange).toHaveBeenCalledTimes(2);
+  });
+});

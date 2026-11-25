@@ -1,9 +1,17 @@
 import '@testing-library/jest-dom/vitest';
 import { cleanup } from '@testing-library/react';
-import { afterEach, expect } from 'vitest';
+import { afterEach, expect, vi } from 'vitest';
 import * as axeMatchers from 'vitest-axe/matchers';
 
 expect.extend(axeMatchers);
+
+// Testing Library's asyncWrapper only advances fake timers when it detects Jest
+// (a global `jest` plus a faked setTimeout). Expose Vitest's equivalent under that
+// name so `await user.*` does not hang under `vi.useFakeTimers()`. It has no effect
+// with real timers.
+(globalThis as { jest?: unknown }).jest = {
+  advanceTimersByTime: vi.advanceTimersByTime.bind(vi),
+};
 
 afterEach(() => {
   cleanup();
@@ -75,6 +83,13 @@ if (typeof elementProto.showPopover !== 'function') {
     this.toggleAttribute('data-popover-open', next);
     return next;
   };
+
+  // jsdom's UA sheet hides `[popover]:not(:popover-open)`, and the shim cannot make
+  // `:popover-open` match. Only an !important author rule beats that UA rule in jsdom,
+  // so shim-opened popovers stay visible to role queries and axe.
+  const style = document.createElement('style');
+  style.textContent = '[popover][data-popover-open] { display: block !important; }';
+  document.head.appendChild(style);
 }
 
 if (typeof (Element.prototype as Partial<Element>).scrollIntoView !== 'function') {
