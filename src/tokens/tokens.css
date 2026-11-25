@@ -130,6 +130,14 @@
   --gn-size-switch-width: 2.25rem;
   --gn-size-switch-height: 1.25rem;
   --gn-size-switch-thumb: 0.875rem;
+  --gn-size-dialog-sm: 24rem;
+  --gn-size-dialog-md: 32rem;
+  --gn-size-dialog-lg: 48rem;
+  --gn-size-tooltip-max-width: 20rem;
+  --gn-size-menu-min-width: 10rem;
+  --gn-size-listbox-max-height: 18rem;
+  --gn-size-toast-width: 22rem;
+  --gn-size-tab-indicator: 0.125rem;
 }
 
 /* Light is the default theme. */

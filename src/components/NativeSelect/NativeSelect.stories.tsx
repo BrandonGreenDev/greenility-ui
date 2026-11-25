@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { useState } from 'react';
-import { Select, type SelectProps } from './Select';
+import { NativeSelect, type NativeSelectProps } from './NativeSelect';
 
 const regionOptions = (
   <>
@@ -12,8 +12,8 @@ const regionOptions = (
 );
 
 const meta = {
-  title: 'Components/Select',
-  component: Select,
+  title: 'Components/NativeSelect',
+  component: NativeSelect,
   // The MDX page replaces autodocs (enabled globally in .storybook/preview.tsx).
   tags: ['!autodocs'],
   args: {
@@ -31,7 +31,7 @@ const meta = {
       </div>
     ),
   ],
-} satisfies Meta<typeof Select>;
+} satisfies Meta<typeof NativeSelect>;
 
 export default meta;
 type Story = StoryObj<typeof meta>;
@@ -78,9 +78,9 @@ export const Large: Story = {
 export const Sizes: Story = {
   render: (args) => (
     <div style={{ display: 'grid', gap: 'var(--gn-space-4)' }}>
-      <Select {...args} size="sm" label="Small" />
-      <Select {...args} size="md" label="Medium" />
-      <Select {...args} size="lg" label="Large" />
+      <NativeSelect {...args} size="sm" label="Small" />
+      <NativeSelect {...args} size="md" label="Medium" />
+      <NativeSelect {...args} size="lg" label="Large" />
     </div>
   ),
 };
@@ -105,18 +105,18 @@ export const WithGroups: Story = {
   },
 };
 
-function ControlledSelect(args: SelectProps) {
+function ControlledNativeSelect(args: NativeSelectProps) {
   const [value, setValue] = useState('south');
   return (
     <div style={{ display: 'grid', gap: 'var(--gn-space-2)' }}>
-      <Select {...args} value={value} onValueChange={setValue} />
+      <NativeSelect {...args} value={value} onValueChange={setValue} />
       <p style={{ margin: 0 }}>Selected: {value}</p>
     </div>
   );
 }
 
 export const Controlled: Story = {
-  render: (args) => <ControlledSelect {...args} />,
+  render: (args) => <ControlledNativeSelect {...args} />,
 };
 
 export const DarkMode: Story = {
@@ -127,11 +127,11 @@ export const DarkMode: Story = {
   parameters: { theme: 'dark' },
   render: (args) => (
     <div style={{ display: 'grid', gap: 'var(--gn-space-4)' }}>
-      <Select {...args} />
-      <Select {...args} label="Region (selected)" defaultValue="west" />
-      <Select {...args} label="Region (required)" required />
-      <Select {...args} label="Region (invalid)" invalid errorMessage="Choose a region." />
-      <Select {...args} label="Region (disabled)" disabled />
+      <NativeSelect {...args} />
+      <NativeSelect {...args} label="Region (selected)" defaultValue="west" />
+      <NativeSelect {...args} label="Region (required)" required />
+      <NativeSelect {...args} label="Region (invalid)" invalid errorMessage="Choose a region." />
+      <NativeSelect {...args} label="Region (disabled)" disabled />
     </div>
   ),
 };

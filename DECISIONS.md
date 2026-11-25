@@ -98,3 +98,74 @@ Full spec: `docs/specs/phase-2.md`.
 - TextField adornments are not part of the input's name or description: units belong in the label or description.
 - Added `npm run test:a11y` (also in CI): axe runs in real Chromium against every built story in light and dark. It covers what jsdom cannot, chiefly color contrast as rendered. It replaces the need for `@storybook/addon-vitest` at a fraction of the setup.
 - Docs pages use `tags: ['!autodocs']` in the stories file, because autodocs is enabled globally in `preview.tsx`.
+
+## Phase 3: Advanced components
+
+Full spec: `docs/specs/phase-3.md`.
+
+- **No Portal: overlays render in place and reach the top layer through `<dialog>.showModal()` and `popover="manual"`.** Theme inheritance from `[data-theme]` is kept, there are no z-index wars, and content inside a modal stays non-inert.
+- **Positioning is a small pure JS `computePosition` (flip, shift, RTL), not CSS anchor positioning.** Anchor positioning is not yet Baseline widely available, so a JS fallback would be needed anyway. One path is testable; revisit later.
+- **The floating offset and edge padding come from a CSS margin token (`--gn-space-1`), which the positioner measures.** No px constants in JS.
+- **`popover="manual"`, not `auto`.** Auto light-dismiss fights the trigger toggle and bypasses our focus return. One `useDismiss` model serves Tooltip, Menu and Select.
+- **Escape uses a capture listener with a layer stack for floating layers; Dialog ignores `defaultPrevented` Escape and guards `cancel`.** The innermost layer always closes first.
+- **Non-native state callbacks receive only the value (`onOpenChange(open)`, `onValueChange(value)`).** There is no native event to pass, and it matches `useControllableState`.
+- **Consumer handlers on cloned triggers run first; ours are skipped after `preventDefault()`.** Consumers can always veto library behaviour.
+- **Dialog uses native `<dialog>` + `showModal()` instead of `role="dialog"` with a JS trap.** Inert background, top layer, backdrop and Escape come from the platform. Tab may leave to the browser chrome, which is accepted platform behaviour.
+- **Dialog has a prop-based API (`title`, `description`, `footer`, `trigger`) plus `DialogClose`, not a six-part compound.** The name and description are wired correctly by construction, with the smallest API.
+- **AlertDialog is a separate component with a required `description`, initial focus on Cancel, no close button and no backdrop close.** Destructive confirmations cannot be dismissed by accident, per APG.
+- **Dialog scroll lock is pure CSS (`html:has(dialog[open])`, with `overflow: hidden` and `scrollbar-gutter: stable`).** No JS ref counting, no layout shift, and nesting works.
+- **Dialog has an enter animation only; closing is instant.** Discrete exit transitions (`overlay`, `allow-discrete`) are not cross-browser.
+- **Dialog initial focus prefers body content over the header close button.** Users start in the content, and the close button's tooltip does not flash on open.
+- **Dialog content unmounts while closed; the `<dialog>` element stays mounted and never renders `open` from React.** State resets, there are no dangling ids, and it is SSR-safe.
+- **Toasts move into the topmost open modal through `OverlayHostContext`.** Otherwise `showModal()` makes them inert, so they could not be clicked and were not announced.
+- **Toast announcements use a separate always-mounted polite region with message text only.** Buttons are not read out, and the Phase 2 "mount first" rule holds.
+- **All toasts are polite, including danger.** `role=alert` stays reserved for the Alert component's opt-in `assertive`.
+- **Toasts with an action and danger toasts do not auto-dismiss by default; timers pause on hover, on focus and when the tab is hidden, and the provider `duration` can be a user setting.** This meets WCAG 2.2.1.
+- **The toast hotkey is F8, not F6.** Browsers use F6 to cycle panes.
+- **At most 3 toasts are visible and extras queue rather than drop.** Persistent action toasts are never lost.
+- **Toast ids combine the provider's `useId()` with a provider-local ref sequence.** They are scoped and SSR-safe, with no module-level counter.
+- **Tooltip is always mounted (hidden when closed) and opens on hover after a delay or on `:focus-visible` immediately; touch is ignored.** `aria-describedby` always resolves, and mouse clicks do not flash tooltips.
+- **IconButton shows its `label` as a decorative (aria-hidden) tooltip by default; the name stays on `aria-label`.** No double announcement, and the name never depends on the tooltip node.
+- **Tooltip `decorative` reuses Spinner's vocabulary.** "Hidden from AT; the parent supplies semantics" means the same thing everywhere.
+- **Menu scope is `menuitem`, group and separator; checkbox and radio items are deferred.** This avoids a second state API in Phase 3 and can be added without breaking changes.
+- **Disabled menu items stay focusable (`aria-disabled`), while disabled tabs and Select options are skipped.** The first follows APG's menu guidance; the second matches native tabs and `<select>`.
+- **MenuItem `onSelect` runs after the menu closes and focus returns to the trigger.** A Dialog opened from a menu then returns focus to the menu button.
+- **Phase 2 `Select` is renamed `NativeSelect` with an identical API; the new `Select` is a custom select-only combobox.** The owner asked for a custom Select. The native one stays for mobile pickers and native validation.
+- **The custom Select takes an `options` array (with groups), not `<SelectOption>` children.** Typeahead, indexing and activedescendant ids work without registration effects, and it is SSR-safe.
+- **The custom Select combobox is a `<button role="combobox">`.** It gets native disabled, focus and `type=button`, and ARIA in HTML allows the role.
+- **The custom Select maps `required` to `aria-required` and submits through a hidden input; it resets on form `reset`.** Native `required` is invalid on a button. NativeSelect is documented for native validation.
+- **A custom Select label click focuses the combobox without opening it.** This matches native `<select>`.
+- **`''` is the "nothing selected" value for Select and single Accordion.** It matches NativeSelect's placeholder value and keeps `useControllableState` controlled detection simple.
+- **Tabs and Accordion query their items from the DOM on keydown instead of registering them.** Order always matches the DOM, with no effects or index bookkeeping.
+- **All tab panels stay mounted (inactive ones `hidden`).** Panel state is kept, and `aria-controls` always resolves.
+- **The selected-tab indicator is a `::after` background painted `Highlight` in forced colors, not a border.** Transparent borders become visible in forced colors and would erase the difference.
+- **Accordion is the APG button-in-heading pattern, not `<details>`.** Heading semantics are lost inside `<summary>`, non-collapsible mode cannot be enforced, and height animation there is Chromium-only.
+- **Accordion animates with `grid-template-rows` 0fr↔1fr and `visibility`.** No JS measuring, cross-browser, closed content leaves the a11y tree, and reduced motion collapses it through tokens. Find-in-page reveal is traded away.
+- **RTL is read from the nearest `[dir]` ancestor.** It is deterministic in jsdom; CSS-only `direction` is documented as unsupported.
+- **DataTable is a native `<table>` with sort buttons in headers, not `role=grid`.** Cells are not interactive, so grid navigation would only add keystrokes.
+- **DataTable requires a `caption` (with `captionHidden`).** Every table has a name, which also labels the scroll region.
+- **The DataTable scroll container gets `role=region`, a label and `tabIndex=0` only while it overflows.** It meets WCAG 1.4.10 and 2.1.1 without a landmark and tab stop per table.
+- **DataTable announces sort, page and loading changes through one always-mounted polite region; the visible range text is not live.** One announcement per action, no duplicates.
+- **DataTable Prev/Next use `aria-disabled` at the bounds (Stage 0 Button style).** Native `disabled` would drop focus to `<body>` on the last page.
+- **A sort or page-size change resets DataTable to page 1, and an out-of-range page is clamped for display without a callback.** The user always sees the start of the new ordering.
+- **DataTable `manual` mode (with `totalRows`) is included.** Controlled sort and page and the loading state are only useful with server data.
+- **DataTable row selection is deferred.** The scope stays reasonable, and `getRowId` already exists for it.
+- **DataTable column header is `header: string` and the column type is exported as `DataTableColumn<Row>`.** The sort announcement needs text, and a bare `Column` export is too generic for the package index.
+- **DataTable uses a generic `forwardRef` cast pattern.** `forwardRef` erases generics, and the cast keeps `Row` inference.
+- **DataTable `className`/`style` go to the root wrapper, and ref/rest go to the `<table>`.** This mirrors the field rule: layout on the wrapper, DOM access on the main element.
+- **Floating surfaces show the active item with an inset focus ring, not only a background change.** `bg-hover` on `bg-raised` is about 1.1:1, which fails 1.4.11.
+- **jsdom shims for `showModal`, `popover` and `scrollIntoView` are feature-detected in `setup.ts`.** Tests run today and automatically use real implementations when jsdom adds them.
+- The optional "n/a guard" contrast pair (`accent-subtle-fg` on `bg-raised`) was dropped: in forced colors the system palette replaces both colours, so it tested nothing real. All other Phase 3 pairs pass in both themes.
+- `toIdPart` also escapes `_` (the spec kept it): otherwise `'a b'` and the literal `'a_w_b'` would share an id, so the mapping would not be injective.
+- `mergeProps` lets our `aria-expanded`/`aria-controls`/`aria-haspopup` win whenever we pass the key, even as `undefined`, so `aria-controls` disappears while closed. A consumer `id` wins, so components read the final trigger id back (`trigger.props.id ?? ourId`).
+- `getElementRef` checks the React major version: React 19 reads `props.ref`, React 18 reads `element.ref`. Reading `element.ref` in React 19 logs a warning.
+- `getNextIndex` `{ by: n }` moves across n enabled items (the Select "move 10 enabled options" rule), not n raw indexes. Without `loop`, `next`/`prev` stay on `from` at the ends.
+- `useTypeahead` takes a structural event (`key`, modifier flags, `preventDefault`), so React and DOM events both work. It calls `preventDefault()` on every key it consumes, so a Space inside a search never activates the item.
+- `useFloating` widens the anchor by the floating margin on the cross axis, so `align` lines up the visible border box (not the margin box) with the anchor edge. It also subtracts the block margins from `--gn-floating-available-block-size`.
+- `useFloating` measures in a layout effect plus one rAF follow-up. Components must show the popover in a layout effect declared before the hook. A `dir` change while open is picked up on the next resize or scroll.
+- `useIsOverflowing` also watches direct children (ResizeObserver) and child-list changes (MutationObserver), because a fixed-size scroll box does not resize when only its content grows.
+- `useFocusReturn` does not capture `<body>`, so restoring after a pointer-only open is a no-op rather than a blur.
+- `.floating` adds `box-sizing: border-box` and a `--gn-z-dropdown` default (Tooltip overrides it with `--gn-z-tooltip`), so `matchAnchorWidth` equals the anchor's border box. Items also get the ring on `:focus-visible`, as well as `[data-active]`.
+- The jsdom setup also shims `HTMLDialogElement.prototype.show` and the `open` property alongside `showModal`/`close`. jsdom 29.1.1 has none of the dialog, popover or `scrollIntoView` APIs. `ResizeObserver` is deliberately not shimmed, so hooks exercise their no-RO path and tests stub it explicitly.
+- `src/components/Floating/index.ts` is an empty module (`export {}`). Components import `floating.module.css` directly.
+- Phase 3 public types (`Placement`, `Align`, `ActivationMode`, `SortDirection`, `SortState`) are exported from the package index. Stage 0 utils, hooks and icons stay internal, as in Phase 2.

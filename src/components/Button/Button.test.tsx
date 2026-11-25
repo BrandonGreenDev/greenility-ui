@@ -297,6 +297,37 @@ describe('Button', () => {
     });
   });
 
+  describe('caller aria-disabled', () => {
+    it('passes aria-disabled through without data-loading or native disabled', () => {
+      render(<Button aria-disabled="true">Next</Button>);
+      const button = screen.getByRole('button', { name: 'Next' });
+      expect(button).toHaveAttribute('aria-disabled', 'true');
+      expect(button).not.toHaveAttribute('data-loading');
+      expect(button).toBeEnabled();
+    });
+
+    it('stays focusable and leaves click suppression to the caller', async () => {
+      const user = userEvent.setup();
+      const onClick = vi.fn();
+      render(
+        <Button aria-disabled="true" onClick={onClick}>
+          Next
+        </Button>,
+      );
+      await user.tab();
+      const button = screen.getByRole('button', { name: 'Next' });
+      expect(button).toHaveFocus();
+      await user.keyboard('{Enter}');
+      expect(onClick).toHaveBeenCalledOnce();
+      expect(button).toHaveFocus();
+    });
+
+    it('has no axe violations', async () => {
+      const { container } = render(<Button aria-disabled="true">Next</Button>);
+      expect(await axe(container)).toHaveNoViolations();
+    });
+  });
+
   describe('loading', () => {
     it('sets aria-disabled and data-loading but not native disabled', () => {
       render(<Button loading>Save</Button>);

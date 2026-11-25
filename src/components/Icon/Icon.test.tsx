@@ -3,8 +3,13 @@ import { createRef } from 'react';
 import { describe, expect, it } from 'vitest';
 import { axe } from '../../test/axe';
 import {
+  ArrowDownIcon,
+  ArrowUpDownIcon,
+  ArrowUpIcon,
   CheckIcon,
   ChevronDownIcon,
+  ChevronLeftIcon,
+  ChevronRightIcon,
   CloseIcon,
   DangerIcon,
   InfoIcon,
@@ -14,8 +19,13 @@ import {
 } from './index';
 
 const icons = {
+  ArrowDownIcon,
+  ArrowUpDownIcon,
+  ArrowUpIcon,
   CheckIcon,
   ChevronDownIcon,
+  ChevronLeftIcon,
+  ChevronRightIcon,
   CloseIcon,
   DangerIcon,
   InfoIcon,

@@ -3,7 +3,7 @@ import userEvent from '@testing-library/user-event';
 import { createRef, useState, type ChangeEvent } from 'react';
 import { describe, expect, it, vi } from 'vitest';
 import { axe } from '../../test/axe';
-import { Select } from './Select';
+import { NativeSelect } from './NativeSelect';
 
 const options = (
   <>
@@ -17,10 +17,10 @@ function getSelect(name = 'Letter') {
   return screen.getByRole<HTMLSelectElement>('combobox', { name });
 }
 
-describe('Select', () => {
+describe('NativeSelect', () => {
   describe('rendering and labelling', () => {
     it('renders a native select named by its label', () => {
-      render(<Select label="Letter">{options}</Select>);
+      render(<NativeSelect label="Letter">{options}</NativeSelect>);
       const select = getSelect();
       expect(select.tagName).toBe('SELECT');
       expect(screen.getByLabelText('Letter')).toBe(select);
@@ -29,15 +29,15 @@ describe('Select', () => {
     });
 
     it('selects the first option by default without a placeholder', () => {
-      render(<Select label="Letter">{options}</Select>);
+      render(<NativeSelect label="Letter">{options}</NativeSelect>);
       expect(getSelect()).toHaveValue('a');
     });
 
     it('uses a consumer id', () => {
       render(
-        <Select label="Letter" id="letter">
+        <NativeSelect label="Letter" id="letter">
           {options}
-        </Select>,
+        </NativeSelect>,
       );
       expect(getSelect()).toHaveAttribute('id', 'letter');
       expect(screen.getByText('Letter').closest('label')).toHaveAttribute('for', 'letter');
@@ -45,21 +45,21 @@ describe('Select', () => {
 
     it('renders optgroups', () => {
       render(
-        <Select label="Letter">
+        <NativeSelect label="Letter">
           <optgroup label="Early">
             <option value="a">Alpha</option>
           </optgroup>
           <optgroup label="Late">
             <option value="z">Zulu</option>
           </optgroup>
-        </Select>,
+        </NativeSelect>,
       );
       expect(screen.getAllByRole('group')).toHaveLength(2);
       expect(screen.getByRole('option', { name: 'Zulu' })).toBeInTheDocument();
     });
 
     it('hides the chevron from assistive technology', () => {
-      render(<Select label="Letter">{options}</Select>);
+      render(<NativeSelect label="Letter">{options}</NativeSelect>);
       const svg = getSelect().parentElement?.querySelector('svg');
       expect(svg).toBeInTheDocument();
       expect(svg).toHaveAttribute('aria-hidden', 'true');
@@ -69,9 +69,9 @@ describe('Select', () => {
   describe('placeholder', () => {
     it('adds a disabled empty first option that is selected by default', () => {
       render(
-        <Select label="Letter" placeholder="Pick one">
+        <NativeSelect label="Letter" placeholder="Pick one">
           {options}
-        </Select>,
+        </NativeSelect>,
       );
       const placeholder = screen.getByRole<HTMLOptionElement>('option', { name: 'Pick one' });
       const select = getSelect();
@@ -84,18 +84,23 @@ describe('Select', () => {
 
     it('respects defaultValue over the placeholder', () => {
       render(
-        <Select label="Letter" placeholder="Pick one" defaultValue="b">
+        <NativeSelect label="Letter" placeholder="Pick one" defaultValue="b">
           {options}
-        </Select>,
+        </NativeSelect>,
       );
       expect(getSelect()).toHaveValue('b');
     });
 
     it('shows the placeholder when controlled with value=""', () => {
       render(
-        <Select label="Letter" placeholder="Pick one" value="" onValueChange={() => undefined}>
+        <NativeSelect
+          label="Letter"
+          placeholder="Pick one"
+          value=""
+          onValueChange={() => undefined}
+        >
           {options}
-        </Select>,
+        </NativeSelect>,
       );
       expect(screen.getByRole<HTMLOptionElement>('option', { name: 'Pick one' }).selected).toBe(
         true,
@@ -106,9 +111,9 @@ describe('Select', () => {
       const user = userEvent.setup();
       const onValueChange = vi.fn();
       render(
-        <Select label="Letter" placeholder="Pick one" onValueChange={onValueChange}>
+        <NativeSelect label="Letter" placeholder="Pick one" onValueChange={onValueChange}>
           {options}
-        </Select>,
+        </NativeSelect>,
       );
       await user.selectOptions(getSelect(), 'b');
       onValueChange.mockClear();
@@ -120,24 +125,24 @@ describe('Select', () => {
 
   describe('description and error wiring', () => {
     it('has no aria-describedby without description or error', () => {
-      render(<Select label="Letter">{options}</Select>);
+      render(<NativeSelect label="Letter">{options}</NativeSelect>);
       expect(getSelect()).not.toHaveAttribute('aria-describedby');
     });
 
     it('uses the description as the accessible description', () => {
       render(
-        <Select label="Letter" description="Used for sorting.">
+        <NativeSelect label="Letter" description="Used for sorting.">
           {options}
-        </Select>,
+        </NativeSelect>,
       );
       expect(getSelect()).toHaveAccessibleDescription('Used for sorting.');
     });
 
     it('does not render or reference the error when not invalid', () => {
       render(
-        <Select label="Letter" description="Help." errorMessage="Pick a letter.">
+        <NativeSelect label="Letter" description="Help." errorMessage="Pick a letter.">
           {options}
-        </Select>,
+        </NativeSelect>,
       );
       expect(screen.queryByText('Pick a letter.')).not.toBeInTheDocument();
       expect(getSelect()).toHaveAccessibleDescription('Help.');
@@ -147,7 +152,7 @@ describe('Select', () => {
     it('orders description, error, then consumer ids when invalid', () => {
       render(
         <>
-          <Select
+          <NativeSelect
             label="Letter"
             description="Help."
             invalid
@@ -155,7 +160,7 @@ describe('Select', () => {
             aria-describedby="extra"
           >
             {options}
-          </Select>
+          </NativeSelect>
           <p id="extra">Extra.</p>
         </>,
       );
@@ -171,9 +176,9 @@ describe('Select', () => {
 
     it('never emits aria-invalid="false"', () => {
       render(
-        <Select label="Letter" invalid={false}>
+        <NativeSelect label="Letter" invalid={false}>
           {options}
-        </Select>,
+        </NativeSelect>,
       );
       expect(getSelect()).not.toHaveAttribute('aria-invalid');
     });
@@ -182,9 +187,9 @@ describe('Select', () => {
   describe('states', () => {
     it('sets native required and hides the asterisk', () => {
       render(
-        <Select label="Letter" required placeholder="Pick one">
+        <NativeSelect label="Letter" required placeholder="Pick one">
           {options}
-        </Select>,
+        </NativeSelect>,
       );
       const select = getSelect();
       expect(select).toBeRequired();
@@ -196,9 +201,9 @@ describe('Select', () => {
       const user = userEvent.setup();
       const onValueChange = vi.fn();
       const { container } = render(
-        <Select label="Letter" disabled onValueChange={onValueChange}>
+        <NativeSelect label="Letter" disabled onValueChange={onValueChange}>
           {options}
-        </Select>,
+        </NativeSelect>,
       );
       const select = getSelect();
       expect(select).toBeDisabled();
@@ -214,12 +219,12 @@ describe('Select', () => {
       const user = userEvent.setup();
       const onValueChange = vi.fn();
       render(
-        <Select label="Letter" onValueChange={onValueChange}>
+        <NativeSelect label="Letter" onValueChange={onValueChange}>
           <option value="a">Alpha</option>
           <option value="b" disabled>
             Bravo
           </option>
-        </Select>,
+        </NativeSelect>,
       );
       await user.selectOptions(getSelect(), 'b').catch(() => undefined);
       expect(onValueChange).not.toHaveBeenCalled();
@@ -238,9 +243,9 @@ describe('Select', () => {
         calls.push('onValueChange');
       });
       render(
-        <Select label="Letter" onChange={onChange} onValueChange={onValueChange}>
+        <NativeSelect label="Letter" onChange={onChange} onValueChange={onValueChange}>
           {options}
-        </Select>,
+        </NativeSelect>,
       );
       const select = getSelect();
       await user.selectOptions(select, 'b');
@@ -256,9 +261,9 @@ describe('Select', () => {
       const user = userEvent.setup();
       const onValueChange = vi.fn();
       render(
-        <Select label="Letter" onValueChange={onValueChange}>
+        <NativeSelect label="Letter" onValueChange={onValueChange}>
           {options}
-        </Select>,
+        </NativeSelect>,
       );
       await user.selectOptions(getSelect(), 'Charlie');
       expect(onValueChange).toHaveBeenCalledWith('c', expect.anything());
@@ -268,9 +273,9 @@ describe('Select', () => {
     it('updates an uncontrolled select from defaultValue', async () => {
       const user = userEvent.setup();
       render(
-        <Select label="Letter" defaultValue="b">
+        <NativeSelect label="Letter" defaultValue="b">
           {options}
-        </Select>,
+        </NativeSelect>,
       );
       expect(getSelect()).toHaveValue('b');
       await user.selectOptions(getSelect(), 'c');
@@ -284,9 +289,9 @@ describe('Select', () => {
       const user = userEvent.setup();
       const onValueChange = vi.fn();
       render(
-        <Select label="Letter" value="a" onValueChange={onValueChange}>
+        <NativeSelect label="Letter" value="a" onValueChange={onValueChange}>
           {options}
-        </Select>,
+        </NativeSelect>,
       );
       await user.selectOptions(getSelect(), 'b');
       expect(onValueChange).toHaveBeenCalledWith('b', expect.anything());
@@ -298,9 +303,14 @@ describe('Select', () => {
       function Controlled() {
         const [value, setValue] = useState('');
         return (
-          <Select label="Letter" placeholder="Pick one" value={value} onValueChange={setValue}>
+          <NativeSelect
+            label="Letter"
+            placeholder="Pick one"
+            value={value}
+            onValueChange={setValue}
+          >
             {options}
-          </Select>
+          </NativeSelect>
         );
       }
       render(<Controlled />);
@@ -315,7 +325,7 @@ describe('Select', () => {
       const user = userEvent.setup();
       render(
         <>
-          <Select label="Letter">{options}</Select>
+          <NativeSelect label="Letter">{options}</NativeSelect>
           <button type="button">Next</button>
         </>,
       );
@@ -329,7 +339,7 @@ describe('Select', () => {
 
     it('focuses the select when the label is clicked', async () => {
       const user = userEvent.setup();
-      render(<Select label="Letter">{options}</Select>);
+      render(<NativeSelect label="Letter">{options}</NativeSelect>);
       await user.click(screen.getByText('Letter'));
       expect(getSelect()).toHaveFocus();
     });
@@ -338,9 +348,9 @@ describe('Select', () => {
       const user = userEvent.setup();
       const onValueChange = vi.fn();
       render(
-        <Select label="Letter" onValueChange={onValueChange}>
+        <NativeSelect label="Letter" onValueChange={onValueChange}>
           {options}
-        </Select>,
+        </NativeSelect>,
       );
       await user.tab();
       expect(getSelect()).toHaveFocus();
@@ -353,23 +363,23 @@ describe('Select', () => {
   describe('props', () => {
     it.each(['sm', 'md', 'lg'] as const)('applies size %s to the box', (size) => {
       render(
-        <Select label="Letter" size={size}>
+        <NativeSelect label="Letter" size={size}>
           {options}
-        </Select>,
+        </NativeSelect>,
       );
       expect(getSelect().parentElement).toHaveAttribute('data-size', size);
     });
 
     it('defaults to size md', () => {
-      render(<Select label="Letter">{options}</Select>);
+      render(<NativeSelect label="Letter">{options}</NativeSelect>);
       expect(getSelect().parentElement).toHaveAttribute('data-size', 'md');
     });
 
     it('sends className and style to the root', () => {
       const { container } = render(
-        <Select label="Letter" className="custom" style={{ maxWidth: '16rem' }}>
+        <NativeSelect label="Letter" className="custom" style={{ maxWidth: '16rem' }}>
           {options}
-        </Select>,
+        </NativeSelect>,
       );
       const root = container.firstElementChild as HTMLElement;
       expect(root).toHaveClass('custom');
@@ -380,9 +390,15 @@ describe('Select', () => {
 
     it('passes id and other native props to the select', () => {
       render(
-        <Select label="Letter" id="l" name="letter" autoComplete="off" data-testid="letter-input">
+        <NativeSelect
+          label="Letter"
+          id="l"
+          name="letter"
+          autoComplete="off"
+          data-testid="letter-input"
+        >
           {options}
-        </Select>,
+        </NativeSelect>,
       );
       const select = getSelect();
       expect(select).toHaveAttribute('id', 'l');
@@ -394,9 +410,9 @@ describe('Select', () => {
     it('forwards the ref to the native select', () => {
       const ref = createRef<HTMLSelectElement>();
       render(
-        <Select label="Letter" ref={ref}>
+        <NativeSelect label="Letter" ref={ref}>
           {options}
-        </Select>,
+        </NativeSelect>,
       );
       expect(ref.current).toBeInstanceOf(HTMLSelectElement);
       expect(ref.current).toBe(getSelect());
@@ -408,9 +424,9 @@ describe('Select', () => {
       const user = userEvent.setup();
       render(
         <form aria-label="Prefs">
-          <Select label="Letter" name="letter" defaultValue="b">
+          <NativeSelect label="Letter" name="letter" defaultValue="b">
             {options}
-          </Select>
+          </NativeSelect>
         </form>,
       );
       const form = screen.getByRole<HTMLFormElement>('form', { name: 'Prefs' });
@@ -428,9 +444,9 @@ describe('Select', () => {
       const user = userEvent.setup();
       render(
         <form aria-label="Prefs">
-          <Select label="Letter" name="letter" placeholder="Pick one">
+          <NativeSelect label="Letter" name="letter" placeholder="Pick one">
             {options}
-          </Select>
+          </NativeSelect>
         </form>,
       );
       const form = screen.getByRole<HTMLFormElement>('form', { name: 'Prefs' });
@@ -445,9 +461,9 @@ describe('Select', () => {
     it('is left out of form data when disabled', () => {
       render(
         <form aria-label="Prefs">
-          <Select label="Letter" name="letter" defaultValue="b" disabled>
+          <NativeSelect label="Letter" name="letter" defaultValue="b" disabled>
             {options}
-          </Select>
+          </NativeSelect>
         </form>,
       );
       const form = screen.getByRole<HTMLFormElement>('form', { name: 'Prefs' });
@@ -457,33 +473,39 @@ describe('Select', () => {
 
   describe('accessibility', () => {
     it('has no axe violations by default', async () => {
-      const { container } = render(<Select label="Letter">{options}</Select>);
+      const { container } = render(<NativeSelect label="Letter">{options}</NativeSelect>);
       expect(await axe(container)).toHaveNoViolations();
     });
 
     it('has no axe violations with a description and placeholder', async () => {
       const { container } = render(
-        <Select label="Letter" description="Used for sorting." placeholder="Pick one">
+        <NativeSelect label="Letter" description="Used for sorting." placeholder="Pick one">
           {options}
-        </Select>,
+        </NativeSelect>,
       );
       expect(await axe(container)).toHaveNoViolations();
     });
 
     it('has no axe violations when invalid and required', async () => {
       const { container } = render(
-        <Select label="Letter" description="Help." required invalid errorMessage="Pick a letter.">
+        <NativeSelect
+          label="Letter"
+          description="Help."
+          required
+          invalid
+          errorMessage="Pick a letter."
+        >
           {options}
-        </Select>,
+        </NativeSelect>,
       );
       expect(await axe(container)).toHaveNoViolations();
     });
 
     it('has no axe violations when disabled', async () => {
       const { container } = render(
-        <Select label="Letter" disabled>
+        <NativeSelect label="Letter" disabled>
           {options}
-        </Select>,
+        </NativeSelect>,
       );
       expect(await axe(container)).toHaveNoViolations();
     });

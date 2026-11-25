@@ -69,4 +69,14 @@ export const contrastPairs: ContrastPair[] = [
     { fg: `${tone}-border`, bg: `${tone}-subtle`, min: 3, usage: `${tone} alert border` },
     { fg: `${tone}-border`, bg: 'bg-surface', min: 3, usage: `${tone} border on surface` },
   ]),
+  // Phase 3: floating surfaces, tabs and tables.
+  { fg: 'border-focus', bg: 'bg-hover', min: 3, usage: 'Active menu item / listbox option ring' },
+  { fg: 'border-focus', bg: 'bg-subtle', min: 3, usage: 'Focus ring on table header sort button' },
+  { fg: 'fg-muted', bg: 'bg-hover', min: 4.5, usage: 'Unselected tab text on hover' },
+  ...(['success', 'warning', 'danger', 'info'] as const).map((tone): ContrastPair => ({
+    fg: `${tone}-border`,
+    bg: 'bg-raised',
+    min: 3,
+    usage: `${tone} border/icon on raised surface`,
+  })),
 ];

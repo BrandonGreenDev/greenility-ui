@@ -25,5 +25,6 @@ All notable changes to this project are documented here. The format is based on
 - `Badge`: non-interactive status label in six tones, two variants and three sizes.
 - `TextField`: native single-line input with label, description, error message and optional start/end adornments.
 - `TextArea`: native multi-line input with label, description, error message and optional CSS `autoResize`.
-- `Select`: styled native `<select>` with label, description, error message and a disabled placeholder option.
+- `NativeSelect` (named `Select` during Phase 2): styled native `<select>` with label, description, error message and a disabled placeholder option.
 - MDX docs pages for each of these components, with usage, examples, props, accessibility notes and do/don't guidance.
+- Phase 3 shared building blocks: positioning (`computePosition`, `useFloating`), dismissal and a layer stack (`useDismiss`), focus return, typeahead, list navigation, overflow detection, floating-surface styles, sort/arrow icons, and the public types `Placement`, `Align`, `ActivationMode`, `SortDirection`, `SortState`.

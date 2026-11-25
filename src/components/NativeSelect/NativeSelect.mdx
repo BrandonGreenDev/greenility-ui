@@ -1,11 +1,11 @@
 import { ArgTypes, Canvas, Meta } from '@storybook/addon-docs/blocks';
-import * as SelectStories from './Select.stories';
+import * as NativeSelectStories from './NativeSelect.stories';
 
-<Meta of={SelectStories} />
+<Meta of={NativeSelectStories} />
 
-# Select
+# NativeSelect
 
-Select lets the user pick one option from a list. It is a styled native `<select>` with a
+NativeSelect lets the user pick one option from a list. It is a styled native `<select>` with a
 visible label, optional help text and an error message. Because it is native, it gets the
 platform picker on mobile, keyboard typeahead, autofill, form submission and solid screen
 reader support without extra code. You pass ordinary `<option>` and `<optgroup>` elements as
@@ -15,25 +15,25 @@ children.
 
 ```tsx
 import 'greenility-ui/styles.css'; // once, at the root of your app
-import { Select } from 'greenility-ui';
+import { NativeSelect } from 'greenility-ui';
 
-<Select name="region" label="Region" placeholder="Choose a region">
+<NativeSelect name="region" label="Region" placeholder="Choose a region">
   <option value="north">North</option>
   <option value="south">South</option>
-</Select>;
+</NativeSelect>;
 ```
 
-<Canvas of={SelectStories.Default} />
+<Canvas of={NativeSelectStories.Default} />
 
 ## Examples
 
 ### With placeholder
 
-`placeholder` adds a first option with `value=""` that is `disabled`. When the Select is
+`placeholder` adds a first option with `value=""` that is `disabled`. When the NativeSelect is
 uncontrolled and has no `defaultValue`, this option is selected at first. The user cannot pick
 it again once they choose a real option. When controlled, pass `value=""` to show it.
 
-<Canvas of={SelectStories.WithPlaceholder} />
+<Canvas of={NativeSelectStories.WithPlaceholder} />
 
 ### Required
 
@@ -41,43 +41,43 @@ Native `required` works with the placeholder. While the empty placeholder option
 the browser treats the field as missing and blocks submission. The asterisk is hidden from
 screen readers, which announce "required" once instead. Explain the asterisk once per form.
 
-<Canvas of={SelectStories.Required} />
+<Canvas of={NativeSelectStories.Required} />
 
 ### With description
 
 Put instructions in `description`, not in the placeholder.
 
-<Canvas of={SelectStories.WithDescription} />
+<Canvas of={NativeSelectStories.WithDescription} />
 
 ### Invalid
 
 Pass `errorMessage` whenever you set `invalid`. The field logs a console warning if `invalid` is
 set without an `errorMessage`.
 
-<Canvas of={SelectStories.Invalid} />
+<Canvas of={NativeSelectStories.Invalid} />
 
 ### Option groups
 
-<Canvas of={SelectStories.WithGroups} />
+<Canvas of={NativeSelectStories.WithGroups} />
 
 ### Disabled
 
-<Canvas of={SelectStories.Disabled} />
+<Canvas of={NativeSelectStories.Disabled} />
 
 ### Sizes
 
-<Canvas of={SelectStories.Sizes} />
+<Canvas of={NativeSelectStories.Sizes} />
 
 ### Controlled
 
-<Canvas of={SelectStories.Controlled} />
+<Canvas of={NativeSelectStories.Controlled} />
 
 ## Props
 
 `className` and `style` go to the outer wrapper. The ref, `id` and every other prop, such as
 `name` and `autoComplete`, go to the native `<select>`. `multiple` is not supported.
 
-<ArgTypes of={SelectStories} />
+<ArgTypes of={NativeSelectStories} />
 
 ## Accessibility
 
@@ -159,15 +159,15 @@ appears.
 
 **Do**
 
-- Use a Select for one choice from a list of about seven or more options.
+- Use a NativeSelect for one choice from a list of about seven or more options.
 - Use a placeholder such as "Choose a region" with `required` when there is no good default.
 - Group long lists with `<optgroup>`.
 - Validate on submit or blur, and focus the first invalid field.
 
 **Don't**
 
-- Don't use a Select for two to five options that fit on screen. Use a RadioGroup.
+- Don't use a NativeSelect for two to five options that fit on screen. Use a RadioGroup.
 - Don't change the page or navigate when the value changes. Users browse options with the arrow
   keys.
 - Don't put instructions in the placeholder option.
-- Don't use a Select for multiple choices. Use checkboxes.
+- Don't use a NativeSelect for multiple choices. Use checkboxes.

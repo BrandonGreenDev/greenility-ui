@@ -185,6 +185,16 @@ export const scales = {
     'switch-width': '2.25rem',
     'switch-height': '1.25rem',
     'switch-thumb': '0.875rem',
+    'dialog-sm': '24rem',
+    'dialog-md': '32rem',
+    'dialog-lg': '48rem',
+    'tooltip-max-width': '20rem',
+    // Menu and listbox surfaces.
+    'menu-min-width': '10rem',
+    'listbox-max-height': '18rem',
+    'toast-width': '22rem',
+    // Selected tab bar thickness.
+    'tab-indicator': '0.125rem',
   },
 } as const;
 

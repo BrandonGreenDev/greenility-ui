@@ -1,0 +1,137 @@
+/*
+ * Shared styles for floating layers (Tooltip, Menu, Select listbox). Internal: components
+ * import this file directly and compose the classes they need.
+ *
+ * `.floating` resets the UA popover styles. Its margin is the gap to the anchor and the
+ * padding from the viewport edge: useFloating measures the margin box, so there are no px
+ * constants in JS. Without popover support it is still a fixed layer (z-index fallback).
+ */
+.floating {
+  position: fixed;
+  inset: auto;
+  z-index: var(--gn-z-dropdown);
+  box-sizing: border-box;
+  max-inline-size: calc(100vw - 2 * var(--gn-space-1));
+  margin: var(--gn-space-1);
+  padding: 0;
+  overflow: visible;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  animation: gnFloatingIn var(--gn-motion-duration-fast) var(--gn-motion-easing-enter);
+}
+
+@keyframes gnFloatingIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+/* Menu and listbox panel */
+.surface {
+  box-sizing: border-box;
+  min-inline-size: var(--gn-size-menu-min-width);
+  max-block-size: min(
+    var(--gn-size-listbox-max-height),
+    var(--gn-floating-available-block-size, var(--gn-size-listbox-max-height))
+  );
+  padding: var(--gn-space-1);
+  overflow-y: auto;
+  border: var(--gn-size-border-width) solid var(--gn-color-border-default);
+  border-radius: var(--gn-radius-md);
+  background: var(--gn-color-bg-raised);
+  box-shadow: var(--gn-shadow-lg);
+  color: var(--gn-color-fg-default);
+}
+
+/* Menu item or listbox option (works on <button> and <div>) */
+.item {
+  display: flex;
+  box-sizing: border-box;
+  align-items: center;
+  gap: var(--gn-space-2);
+  inline-size: 100%;
+  min-block-size: var(--gn-size-control-sm);
+  margin: 0;
+  padding-block: 0;
+  padding-inline: var(--gn-space-3);
+  border: 0;
+  border-radius: var(--gn-radius-sm);
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  font-size: var(--gn-font-size-sm);
+  text-align: start;
+  text-decoration: none;
+  cursor: pointer;
+  user-select: none;
+}
+
+.item:focus {
+  outline: none;
+}
+
+/*
+ * One active style for keyboard and hover. bg-hover on bg-raised is about 1.1:1, so the
+ * inset ring (border-focus, tested at 3:1 on bg-hover) carries the indication.
+ */
+.item[data-active],
+.item:focus-visible {
+  outline: var(--gn-size-focus-ring-width) solid var(--gn-color-border-focus);
+  outline-offset: calc(-1 * var(--gn-size-focus-ring-width));
+  background: var(--gn-color-bg-hover);
+}
+
+.item[aria-selected='true'] {
+  background: var(--gn-color-accent-subtle);
+  color: var(--gn-color-accent-subtle-fg);
+}
+
+.item[aria-disabled='true'] {
+  color: var(--gn-color-fg-disabled);
+  cursor: not-allowed;
+}
+
+.groupLabel {
+  padding: var(--gn-space-1-5) var(--gn-space-3) var(--gn-space-1);
+  color: var(--gn-color-fg-muted);
+  font-size: var(--gn-font-size-xs);
+  font-weight: var(--gn-font-weight-semibold);
+}
+
+.separator {
+  block-size: 1px;
+  margin-block: var(--gn-space-1);
+  background: var(--gn-color-border-default);
+}
+
+@media (forced-colors: active) {
+  .surface {
+    border-color: CanvasText;
+  }
+
+  /* Selection shows through the check icon only; the tinted background is dropped. */
+  .item[aria-selected='true'] {
+    color: CanvasText;
+  }
+
+  .item[aria-disabled='true'] {
+    color: GrayText;
+  }
+
+  .item[data-active],
+  .item:focus-visible {
+    forced-color-adjust: none;
+    outline-color: HighlightText;
+    background: Highlight;
+    color: HighlightText;
+  }
+
+  .separator {
+    background: CanvasText;
+  }
+}

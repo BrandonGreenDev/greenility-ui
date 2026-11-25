@@ -23,3 +23,23 @@ export type CheckedState = boolean | 'indeterminate';
 
 /** Layout direction of a group of controls, e.g. RadioGroup. */
 export type Orientation = 'vertical' | 'horizontal';
+
+/** Preferred side of a floating element relative to its anchor. `start`/`end` follow the text direction. */
+export type Placement = 'top' | 'bottom' | 'start' | 'end';
+
+/** Cross-axis alignment of a floating element relative to its anchor. */
+export type Align = 'start' | 'center' | 'end';
+
+/** Tabs: `automatic` selects on arrow focus, `manual` selects on Enter/Space. */
+export type ActivationMode = 'automatic' | 'manual';
+
+/** Sort direction. Identical to the `aria-sort` values. */
+export type SortDirection = 'ascending' | 'descending';
+
+/** Sorted column and direction of a DataTable. */
+export interface SortState {
+  /** Id of the sorted column. */
+  columnId: string;
+  /** Sort direction. */
+  direction: SortDirection;
+}

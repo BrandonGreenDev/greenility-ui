@@ -1,5 +1,5 @@
 /*
- * Shared frame for text-like controls (TextField, TextArea, Select).
+ * Shared frame for text-like controls (TextField, TextArea, NativeSelect, Select).
  * Markup: <div class={box} data-size> ... <input class={input}> ... </div>
  * The box draws the border and the focus ring; the native element inside is reset.
  */

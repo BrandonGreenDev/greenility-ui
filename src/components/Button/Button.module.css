@@ -106,14 +106,20 @@
   background-color: var(--gn-color-danger-solid-hover);
 }
 
-/* Disabled (native) */
-.root:disabled {
+/*
+ * Disabled: native `disabled`, or `aria-disabled="true"` from a caller that keeps the button
+ * focusable (e.g. DataTable Prev/Next at the bounds; the caller suppresses the click).
+ * Loading also sets aria-disabled but keeps the variant colours, so it is excluded.
+ */
+.root:disabled,
+.root[aria-disabled='true']:not([data-loading]) {
   background-color: var(--gn-color-bg-disabled);
   color: var(--gn-color-fg-disabled);
   cursor: not-allowed;
 }
 
-.root[data-variant='ghost']:disabled {
+.root[data-variant='ghost']:disabled,
+.root[data-variant='ghost'][aria-disabled='true']:not([data-loading]) {
   background-color: transparent;
 }
 
@@ -168,7 +174,8 @@
     border-color: ButtonText;
   }
 
-  .root:disabled {
+  .root:disabled,
+  .root[aria-disabled='true']:not([data-loading]) {
     border-color: GrayText;
     color: GrayText;
   }

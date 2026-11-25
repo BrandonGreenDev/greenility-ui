@@ -1,5 +1,5 @@
 /*
- * Select builds on the shared frame in Field/control.module.css (.box and .input).
+ * NativeSelect builds on the shared frame in Field/control.module.css (.box and .input).
  * Selectors here include an attribute or child combinator so they outrank the shared
  * size rules regardless of stylesheet order.
  *

@@ -6,9 +6,9 @@ import type { Size } from '../../utils/types';
 import { Field, FieldDescription, FieldError, FieldLabel } from '../Field';
 import controlStyles from '../Field/control.module.css';
 import { ChevronDownIcon } from '../Icon';
-import styles from './Select.module.css';
+import styles from './NativeSelect.module.css';
 
-export interface SelectProps
+export interface NativeSelectProps
   extends
     FieldBaseProps,
     Omit<
@@ -36,7 +36,7 @@ export interface SelectProps
  * `className` and `style` go to the outer wrapper. The ref, `id` and every other prop
  * go to the native `<select>`.
  */
-export const Select = forwardRef<HTMLSelectElement, SelectProps>(function Select(
+export const NativeSelect = forwardRef<HTMLSelectElement, NativeSelectProps>(function NativeSelect(
   {
     label,
     description,
@@ -106,4 +106,4 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(function Select
   );
 });
 
-Select.displayName = 'Select';
+NativeSelect.displayName = 'NativeSelect';

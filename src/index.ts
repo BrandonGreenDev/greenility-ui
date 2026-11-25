@@ -20,12 +20,17 @@ export { palette, scales, themes, cssVar, type ThemeName, type ColorRole } from 
 
 // Shared prop vocabulary
 export type {
+  ActivationMode,
+  Align,
   AlertTone,
   BadgeVariant,
   ButtonVariant,
   CheckedState,
   Orientation,
+  Placement,
   Size,
+  SortDirection,
+  SortState,
   Tone,
 } from './utils/types';
 
@@ -41,4 +46,4 @@ export { Switch, type SwitchProps } from './components/Switch';
 export { Badge, type BadgeProps } from './components/Badge';
 export { TextField, type TextFieldProps } from './components/TextField';
 export { TextArea, type TextAreaProps } from './components/TextArea';
-export { Select, type SelectProps } from './components/Select';
+export { NativeSelect, type NativeSelectProps } from './components/NativeSelect';
